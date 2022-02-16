@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Vosk Demo</string>
-    <string name="recognize_file">Recognize File</string>
-    <string name="recognize_microphone">Recognize Microphone</string>
-    <string name="stop_microphone">Stop Microphone</string>
+    <string name="app_name">Vosk Voice Keyboard</string>
+    <string name="recognize_microphone">Start Transcribing</string>
+    <string name="stop_microphone">Stop Transcribing</string>
     <string name="preparing">Preparing the recognizer\n</string>
     <string name="ready">Ready\n</string>
     <string name="failed">Failed to init recognizer %s\n</string>
@@ -14,5 +13,26 @@
     <string name="stop_file">Stop File</string>
     <string name="pause">Pause</string>
     <string name="continueRecognition">Continue</string>
+    <string name="comma">,</string>
+    <string name="exclamation">!</string>
+    <string name="colon">:</string>
+    <string name="dot">.</string>
+    <string name="enter"><![CDATA[<-\']]></string>
+    <string name="world">O</string>
+    <string name="backspace"><![CDATA[<-]]></string>
+    <string name="question">\?</string>
+
+
+    <string name="grant_microphone_permission">Grant Microphone permission</string>
+    <string name="not_granted">Not Granted</string>
+    <string name="granted">Granted</string>
+
+    <string name="enable_keyboard">Enable Keyboard</string>
+    <string name="not_enabled">Not Enabled</string>
+    <string name="enabled">Enabled</string>
+
+    <string name="switch_keyboard">Switch Keyboard</string>
+    <string name="open_ime_switcher">Open IME Switcher</string>
+    <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the \"Start Transcribing\" button.</string>
 
 </resources>
