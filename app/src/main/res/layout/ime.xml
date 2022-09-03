@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="0dp"
     android:layout_alignParentBottom="true"
     android:background="@color/colorPrimary">
 
@@ -15,142 +15,93 @@
     <!--        android:text="@string/recognize_file"/>-->
 
     <ImageButton
-        android:id="@+id/back"
+        android:id="@+id/back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="back"
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="8dp"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_back" />
 
-    <Button
-        android:id="@+id/recognize_mic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/recognize_microphone"
-        app:layout_constraintBottom_toTopOf="@id/question"
+    <ImageButton
+        android:id="@+id/mic_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="48dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_mic_none"
+        app:layout_constraintBottom_toTopOf="@id/result_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline3" />
+        app:layout_constraintTop_toTopOf="parent" /> <!-- margin = Bottom row height -->
 
-    <Button
-        android:id="@+id/enter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/enter"
-        app:layout_constraintBottom_toBottomOf="@id/dot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/dot"
-        app:layout_constraintTop_toTopOf="@id/dot" />
-
-    <Button
-        android:id="@+id/colon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/colon"
-        app:layout_constraintBottom_toBottomOf="@id/exclamation"
-        app:layout_constraintEnd_toStartOf="@id/exclamation"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/exclamation" />
-
-    <Button
-        android:id="@+id/exclamation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/exclamation"
-        app:layout_constraintBottom_toBottomOf="@id/question"
-        app:layout_constraintEnd_toStartOf="@id/question"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/colon"
-        app:layout_constraintTop_toTopOf="@id/question" />
-
-    <Button
-        android:id="@+id/question"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/question"
-        app:layout_constraintBottom_toBottomOf="@id/comma"
-        app:layout_constraintEnd_toStartOf="@id/comma"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/exclamation"
-        app:layout_constraintTop_toTopOf="@id/comma" />
-
-    <Button
-        android:id="@+id/comma"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/comma"
-        app:layout_constraintBottom_toBottomOf="@id/dot"
-        app:layout_constraintEnd_toStartOf="@id/dot"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/question"
-        app:layout_constraintTop_toTopOf="@id/dot" />
-
-    <Button
-        android:id="@+id/dot"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/dot"
-        app:layout_constraintBottom_toBottomOf="@id/enter"
-        app:layout_constraintEnd_toStartOf="@id/enter"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/comma"
-        app:layout_constraintTop_toTopOf="@id/enter" />
-
-    <Button
-        android:id="@+id/backspace"
+    <ImageButton
+        android:id="@+id/backspace_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/backspace"
-        app:layout_constraintBottom_toTopOf="@id/enter"
+        android:src="@drawable/ic_keyboard_backspace"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/recognize_mic"
-        app:layout_constraintTop_toBottomOf="@id/guideline3" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--    <Button-->
-    <!--        android:id="@+id/world"-->
+    <!--        android:id="@+id/comma_button"-->
+    <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
     <!--        android:layout_width="wrap_content"-->
     <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginBottom="16dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:text="@string/world"-->
-    <!--        app:layout_constraintBottom_toTopOf="@id/exclamation"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/recognize_mic"-->
-    <!--        app:layout_constraintHorizontal_bias="0.5"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/guideline3" />-->
+    <!--        android:text="@string/comma"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--    <Button-->
+    <!--        android:id="@+id/dot_button"-->
+    <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/dot"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/comma_button" />-->
+
+    <!--    <Button-->
+    <!--        android:id="@+id/question_button"-->
+    <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/question"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/dot_button" />-->
+
+    <!--    <Button-->
+    <!--        android:id="@+id/exclamation_button"-->
+    <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/exclamation"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toEndOf="@id/exclamation_button" />-->
+
+    <!-- Bottom row   -->
 
     <TextView
         android:id="@+id/result_text"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:gravity="bottom|center"
         android:scrollbars="horizontal"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintBottom_toTopOf="@id/guideline3"
+        app:layout_constraintBottom_toTopOf="@id/return_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier2"
+    <ImageButton
+        android:id="@+id/return_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        tools:layout_editor_absoluteY="319dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="0dp" />
+        android:src="@drawable/ic_keyboard_return"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

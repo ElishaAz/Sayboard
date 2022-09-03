@@ -8,6 +8,7 @@
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         tools:targetApi="s">
@@ -27,7 +28,7 @@
         </service>
 
         <activity
-            android:name="org.vosk.ime.Settings"
+            android:name="org.vosk.ime.SettingsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

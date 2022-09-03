@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
-public class Settings extends Activity {
+public class SettingsActivity extends Activity {
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
@@ -49,7 +49,7 @@ public class Settings extends Activity {
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
 
         boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
-        microphonePermission.setText(getString(permissionGranted ? R.string.granted : R.string.not_granted));
+        microphonePermission.setText(getString(permissionGranted ? R.string.mic_permission_granted : R.string.mic_permission_not_granted));
         microphonePermission.setEnabled(!permissionGranted);
 
         boolean keyboardInEnabledList = false;
@@ -61,7 +61,7 @@ public class Settings extends Activity {
             }
         }
 
-        enableKeyboard.setText(getString(keyboardInEnabledList? R.string.enabled: R.string.not_enabled));
+        enableKeyboard.setText(getString(keyboardInEnabledList? R.string.keyboard_enabled : R.string.keyboard_not_enabled));
         enableKeyboard.setEnabled(!keyboardInEnabledList);
     }
 

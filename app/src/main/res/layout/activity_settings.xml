@@ -21,14 +21,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/grant_microphone_permission"
+            android:text="@string/mic_permission_grant"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/microphonePermission"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/not_granted" />
+            android:text="@string/mic_permission_not_granted" />
 
         <Space
             android:layout_width="match_parent"
@@ -39,14 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/enable_keyboard"
+            android:text="@string/keyboard_enable"
             android:textSize="16sp" />
 
         <Button
             android:id="@+id/enableKeyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/not_enabled" />
+            android:text="@string/keyboard_not_enabled" />
 
         <Space
             android:layout_width="match_parent"

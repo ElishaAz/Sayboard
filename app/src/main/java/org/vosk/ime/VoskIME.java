@@ -21,16 +21,19 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +49,9 @@ import org.vosk.android.StorageService;
 
 import java.io.IOException;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.core.content.ContextCompat;
 
 public class VoskIME extends InputMethodService implements
@@ -54,7 +60,7 @@ public class VoskIME extends InputMethodService implements
     static private final int STATE_START = 0;
     static private final int STATE_READY = 1;
     static private final int STATE_DONE = 2;
-    static private final int STATE_FILE = 3;
+    static private final int STATE_ERROR = 3;
     static private final int STATE_MIC = 4;
 
     /* Used to handle permission request */
@@ -65,7 +71,10 @@ public class VoskIME extends InputMethodService implements
     private SpeechStreamService speechStreamService;
     private TextView resultView;
 
-    private View overlayView;
+    private ConstraintLayout overlayView;
+
+    private ImageButton micButton;
+    private ImageView fabAnimation;
 
     private InputMethodManager mInputMethodManager;
 
@@ -127,10 +136,17 @@ public class VoskIME extends InputMethodService implements
     @Override
     public View onCreateInputView() {
         // create view
-        overlayView = (View) getLayoutInflater().inflate(R.layout.ime, null);
+        overlayView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.ime, null);
+
+        resultView = overlayView.findViewById(R.id.result_text);
+        micButton = overlayView.findViewById(R.id.mic_button);
+
+        overlayView.setMinHeight(convertDpToPixel(300));
+
+
+        resultView.setMovementMethod(new ScrollingMovementMethod());
 
         // Setup layout
-        resultView = overlayView.findViewById(R.id.result_text);
         setUiState(STATE_START);
 
 //        overlayView.findViewById(R.id.recognize_file).setOnClickListener(new View.OnClickListener() {
@@ -140,14 +156,14 @@ public class VoskIME extends InputMethodService implements
 //            }
 //        });
 
-        overlayView.findViewById(R.id.recognize_mic).setOnClickListener(new View.OnClickListener() {
+        micButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 recognizeMicrophone();
             }
         });
 
-        overlayView.findViewById(R.id.recognize_mic).setOnLongClickListener(new View.OnLongClickListener() {
+        micButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 InputMethodManager imeManager = (InputMethodManager)
@@ -157,19 +173,19 @@ public class VoskIME extends InputMethodService implements
             }
         });
 
-        overlayView.findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+        overlayView.findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchToLastIme();
             }
         });
-        overlayView.findViewById(R.id.backspace).setOnClickListener(new View.OnClickListener() {
+        overlayView.findViewById(R.id.backspace_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 deleteLastChar();
             }
         });
-        overlayView.findViewById(R.id.backspace).setOnTouchListener(new View.OnTouchListener() {
+        overlayView.findViewById(R.id.backspace_button).setOnTouchListener(new View.OnTouchListener() {
             private float initX, initY;
             private final float threshold = getResources().getDisplayMetrics().densityDpi / 6f;
             private final float charLen = getResources().getDisplayMetrics().densityDpi / 32f;
@@ -212,47 +228,47 @@ public class VoskIME extends InputMethodService implements
                 return true;
             }
         });
-        overlayView.findViewById(R.id.colon).
-
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        appendSpecial(":");
-                    }
-                });
-        overlayView.findViewById(R.id.exclamation).
-
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        appendSpecial("!");
-                    }
-                });
-        overlayView.findViewById(R.id.question).
-
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        appendSpecial("?");
-                    }
-                });
-        overlayView.findViewById(R.id.comma).
-
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        appendSpecial(",");
-                    }
-                });
-        overlayView.findViewById(R.id.dot).
-
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        appendSpecial(".");
-                    }
-                });
-        overlayView.findViewById(R.id.enter).
+//        overlayView.findViewById(R.id.colon).
+//
+//                setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        appendSpecial(":");
+//                    }
+//                });
+//        overlayView.findViewById(R.id.exclamation).
+//
+//                setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        appendSpecial("!");
+//                    }
+//                });
+//        overlayView.findViewById(R.id.question).
+//
+//                setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        appendSpecial("?");
+//                    }
+//                });
+//        overlayView.findViewById(R.id.comma).
+//
+//                setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        appendSpecial(",");
+//                    }
+//                });
+//        overlayView.findViewById(R.id.dot).
+//
+//                setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        appendSpecial(".");
+//                    }
+//                });
+        overlayView.findViewById(R.id.return_button).
 
                 setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -282,6 +298,7 @@ public class VoskIME extends InputMethodService implements
         selectionEnd = newSelEnd;
         Log.d("VoskIME", "selection update: " + selectionStart + ", " + selectionEnd);
     }
+
 
     private int selectionStart = 0;
     private int selectionEnd = 0;
@@ -449,43 +466,42 @@ public class VoskIME extends InputMethodService implements
     }
 
     private void setUiState(int state) {
+        boolean enabled;
+        int text;
+        int icon;
         switch (state) {
             case STATE_START:
-                resultView.setText(R.string.preparing);
-                resultView.setMovementMethod(new ScrollingMovementMethod());
-//                overlayView.findViewById(R.id.recognize_file).setEnabled(false);
-                overlayView.findViewById(R.id.recognize_mic).setEnabled(false);
+                text = R.string.mic_info_preparing;
+                icon = R.drawable.ic_settings_voice;
+                enabled = false;
                 break;
             case STATE_READY:
-                resultView.setText(R.string.ready);
-                ((Button) overlayView.findViewById(R.id.recognize_mic)).setText(R.string.recognize_microphone);
-//                overlayView.findViewById(R.id.recognize_file).setEnabled(true);
-                overlayView.findViewById(R.id.recognize_mic).setEnabled(true);
-                break;
             case STATE_DONE:
-                ((Button) overlayView.findViewById(R.id.recognize_mic)).setText(R.string.recognize_microphone);
-//                overlayView.findViewById(R.id.recognize_file).setEnabled(true);
-                overlayView.findViewById(R.id.recognize_mic).setEnabled(true);
-                break;
-            case STATE_FILE:
-                resultView.setText(getString(R.string.starting));
-                overlayView.findViewById(R.id.recognize_mic).setEnabled(false);
-//                overlayView.findViewById(R.id.recognize_file).setEnabled(false);
+                text = R.string.mic_info_ready;
+                icon = R.drawable.ic_mic_none;
+                enabled = true;
                 break;
             case STATE_MIC:
-                ((Button) overlayView.findViewById(R.id.recognize_mic)).setText(R.string.stop_microphone);
-                resultView.setText(getString(R.string.say_something));
-//                overlayView.findViewById(R.id.recognize_file).setEnabled(false);
-                overlayView.findViewById(R.id.recognize_mic).setEnabled(true);
+                text = R.string.mic_info_recording;
+                icon = R.drawable.ic_mic;
+                enabled = true;
                 break;
+            case STATE_ERROR:
+                text = R.string.mic_info_error;
+                icon = R.drawable.ic_mic_off;
+                enabled = false;
+                break;
+            default:
+                return;
         }
+        resultView.setText(text);
+        micButton.setImageDrawable(AppCompatResources.getDrawable(this, icon));
+        micButton.setEnabled(enabled);
     }
 
     private void setErrorState(String message) {
+        setUiState(STATE_ERROR);
         resultView.setText(message);
-        ((Button) overlayView.findViewById(R.id.recognize_mic)).setText(R.string.recognize_microphone);
-//        overlayView.findViewById(R.id.recognize_file).setEnabled(false);
-        overlayView.findViewById(R.id.recognize_mic).setEnabled(false);
     }
 
     private void recognizeMicrophone() {
@@ -512,4 +528,8 @@ public class VoskIME extends InputMethodService implements
         }
     }
 
+
+    public int convertDpToPixel(float dp) {
+        return (int) (dp * (getResources().getDisplayMetrics().densityDpi / 160f));
+    }
 }
