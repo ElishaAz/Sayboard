@@ -8,8 +8,8 @@
     <string name="mic_info_ready">Ready\n</string>
     <string name="mic_info_error_failed">Failed to init recognizer %s\n</string>
     <string name="mic_info_recording">Say something\n</string>
-<!--    <string name="pause">Pause</string>-->
-<!--    <string name="continueRecognition">Continue</string>-->
+    <!--    <string name="pause">Pause</string>-->
+    <!--    <string name="continueRecognition">Continue</string>-->
     <string name="comma">,</string>
     <string name="exclamation">!</string>
     <string name="colon">:</string>
@@ -31,4 +31,15 @@
     <string name="switch_keyboard">Switch Keyboard</string>
     <string name="open_ime_switcher">Open IME Switcher</string>
     <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <string name="title_setup">Setup</string>
+    <string name="title_models">Models</string>
+    <string name="title_theme">Theme</string>
+
+    <!-- Preference Titles -->
+    <string name="themes_header">Theme</string>
+
+    <!-- Theme Preferences -->
+    <string name="signature_title">Your signature</string>
 </resources>

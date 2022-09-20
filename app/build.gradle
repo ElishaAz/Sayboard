@@ -27,13 +27,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'net.java.dev.jna:jna:5.8.0@aar'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'net.java.dev.jna:jna:5.9.0@aar'
     implementation group: 'com.alphacephei', name: 'vosk-android', version: '0.3.32'
     implementation project(':models')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.2'
+    implementation 'androidx.navigation:navigation-ui:2.5.2'
+    implementation 'androidx.preference:preference:1.2.0'
 }

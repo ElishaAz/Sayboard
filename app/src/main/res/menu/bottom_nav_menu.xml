@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    <item-->
+    <!--        android:id="@+id/navigation_home"-->
+    <!--        android:icon="@drawable/ic_home_black_24dp"-->
+    <!--        android:title="@string/title_home" />-->
+    <item
+        android:id="@+id/navigation_models"
+        android:icon="@drawable/ic_baseline_translate_24"
+        android:title="@string/title_models" />
+
+    <item
+        android:id="@+id/navigation_theme"
+        android:icon="@drawable/ic_baseline_color_lens_24"
+        android:title="@string/title_theme" />
+
+</menu>

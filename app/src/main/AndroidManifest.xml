@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="org.vosk.ime">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
+        android:theme="@style/AppTheme"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="true"

@@ -1,75 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
-        android:orientation="vertical"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/mic_permission_grant"
-            android:textSize="16sp" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment_activity_settings"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/mobile_navigation" />
 
-        <Button
-            android:id="@+id/microphonePermission"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/mic_permission_not_granted" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="32dp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/keyboard_enable"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/enableKeyboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/keyboard_not_enabled" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="32dp" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/switch_keyboard"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/openImeSwitcher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/open_ime_switcher" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/open_ime_note" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

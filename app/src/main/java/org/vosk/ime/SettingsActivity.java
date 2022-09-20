@@ -1,79 +1,54 @@
 package org.vosk.ime;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.view.View;
 
-public class SettingsActivity extends Activity {
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-    /* Used to handle permission request */
-    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
-    private Button microphonePermission;
-    private Button enableKeyboard;
-    private Button openImeSwitcher;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
-    private InputMethodManager imeManager;
+import org.vosk.ime.databinding.ActivitySettingsBinding;
+
+public class SettingsActivity extends AppCompatActivity {
+
+    private ActivitySettingsBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
 
-        microphonePermission = findViewById(R.id.microphonePermission);
-        enableKeyboard = findViewById(R.id.enableKeyboard);
-        openImeSwitcher = findViewById(R.id.openImeSwitcher);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        imeManager = (InputMethodManager) getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_settings);
+        navController = navHostFragment.getNavController();
 
-        microphonePermission.setOnClickListener(v ->
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO));
-
-        enableKeyboard.setOnClickListener(v ->
-                startActivity(new Intent("android.settings.INPUT_METHOD_SETTINGS")));
-
-        openImeSwitcher.setOnClickListener(v -> imeManager.showInputMethodPicker());
-
-        reloadButtons();
-    }
-
-    private void reloadButtons() {
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-
-        boolean permissionGranted = permissionCheck == PackageManager.PERMISSION_GRANTED;
-        microphonePermission.setText(getString(permissionGranted ? R.string.mic_permission_granted : R.string.mic_permission_not_granted));
-        microphonePermission.setEnabled(!permissionGranted);
-
-        boolean keyboardInEnabledList = false;
-        for (InputMethodInfo i :
-                imeManager.getEnabledInputMethodList()) {
-            if (i.getPackageName().equals(this.getPackageName())) {
-                keyboardInEnabledList = true;
-                break;
-            }
+        if (Tools.isMicrophonePermissionGranted(this) && Tools.isIMEEnabled(this)) {
+            permissionsGranted();
+        } else {
+            navController.navigate(R.id.navigation_setup);
+            binding.navView.setVisibility(View.GONE);
         }
-
-        enableKeyboard.setText(getString(keyboardInEnabledList? R.string.keyboard_enabled : R.string.keyboard_not_enabled));
-        enableKeyboard.setEnabled(!keyboardInEnabledList);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        reloadButtons();
+    public void permissionsGranted() {
+        binding.navView.setVisibility(View.VISIBLE);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//                R.id.navigation_setup,
+                R.id.navigation_models,
+                R.id.navigation_theme)
+                .build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+        navController.navigate(R.id.navigation_models);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        reloadButtons();
-    }
 }
