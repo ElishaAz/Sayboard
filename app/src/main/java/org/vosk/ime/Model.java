@@ -1,19 +1,17 @@
 package org.vosk.ime;
 
-import android.text.TextUtils;
-
 import java.io.Serializable;
 import java.util.Locale;
 
 public class Model implements Serializable {
     public final String path;
     public final Locale locale;
-    public final String name;
+    public final String filename;
 
-    public Model(String path, Locale locale, String name) {
+    public Model(String path, Locale locale, String filename) {
         this.path = path;
         this.locale = locale;
-        this.name = name;
+        this.filename = filename;
     }
 
     public String serialize() {
@@ -23,7 +21,7 @@ public class Model implements Serializable {
     public static String serialize(Model model) {
         return "[path:\"" + encode(model.path) +
                 "\", locale:\"" + model.locale +
-                "\", name:\"" + encode(model.name) + "\"]";
+                "\", name:\"" + encode(model.filename) + "\"]";
     }
 
     public static Model deserialize(String serialized) {

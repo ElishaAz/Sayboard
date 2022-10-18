@@ -113,16 +113,22 @@ public class FileDownloadService extends IntentService {
 
             if (downloadDetails.isRequiresUnzip()) {
 
-                String unzipDestination = downloadDetails.getUnzipAtFilePath();
-
-                if (unzipDestination == null) {
+                File unzipDestination;
+                if (downloadDetails.getUnzipAtFilePath() == null) {
 
                     File file = new File(localPath);
 
-                    unzipDestination = file.getParentFile().getAbsolutePath();
+                    unzipDestination = file.getParentFile();
+                } else {
+
+                    unzipDestination = new File(downloadDetails.getUnzipAtFilePath());
                 }
 
-                unzip(localPath, unzipDestination);
+
+                File unzipFolder = Constants.getTemporaryUnzipLocation(this);
+                File currentUnzipFolder = new File(unzipFolder, unzipDestination.getName());
+
+                unzip(localPath, currentUnzipFolder, unzipDestination);
             }
 
             downloadCompleted(resultReceiver);
@@ -170,24 +176,35 @@ public class FileDownloadService extends IntentService {
         resultReceiver.send(STATUS_FAILED, progressBundle);
     }
 
-    private void unzip(String zipFilePath, String unzipAtLocation) throws Exception {
-
+    private void unzip(String zipFilePath, File tempUnzipLocation, File unzipFinalDestination) throws IOException {
         File archive = new File(zipFilePath);
 
-        try {
+        if (tempUnzipLocation.exists()) {
+            Tools.deleteRecursive(tempUnzipLocation);
+        }
 
-            ZipFile zipfile = new ZipFile(archive);
+        ZipFile zipfile = new ZipFile(archive);
 
-            for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
+        for (Enumeration<? extends ZipEntry> e = zipfile.entries(); e.hasMoreElements(); ) {
 
-                ZipEntry entry = (ZipEntry) e.nextElement();
+            ZipEntry entry = (ZipEntry) e.nextElement();
 
-                unzipEntry(zipfile, entry, unzipAtLocation);
+            unzipEntry(zipfile, entry, tempUnzipLocation.getAbsolutePath());
+        }
+        boolean moveSuccess;
+        if (unzipFinalDestination.exists()) {
+            moveSuccess = true;
+            for (File f : tempUnzipLocation.listFiles()) {
+                moveSuccess = f.renameTo(new File(unzipFinalDestination, f.getName()));
+                if (!moveSuccess) break;
             }
+            tempUnzipLocation.delete();
+        } else {
+            moveSuccess = tempUnzipLocation.renameTo(unzipFinalDestination);
+        }
 
-        } catch (Exception e) {
-
-            Log.e("Unzip zip", "Unzip exception", e);
+        if (!moveSuccess) {
+            throw new IOException("Renaming temporary unzip directory failed");
         }
     }
 
@@ -206,27 +223,13 @@ public class FileDownloadService extends IntentService {
         Log.v("ZIP E", "Extracting: " + entry);
 
         InputStream zin = zipfile.getInputStream(entry);
-        BufferedInputStream inputStream = new BufferedInputStream(zin);
-        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
 
-        try {
-
-            //IOUtils.copy(inputStream, outputStream);
-
-            try {
-
-                for (int c = inputStream.read(); c != -1; c = inputStream.read()) {
-                    outputStream.write(c);
-                }
-
-            } finally {
-
-                outputStream.close();
+        try (BufferedInputStream inputStream = new BufferedInputStream(zin); BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+            byte[] b = new byte[1024];
+            int n;
+            while ((n = inputStream.read(b, 0, 1024)) >= 0) {
+                outputStream.write(b, 0, n);
             }
-
-        } finally {
-            outputStream.close();
-            inputStream.close();
         }
     }
 

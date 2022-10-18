@@ -1,17 +1,20 @@
 package org.vosk.ime;
 
-import android.os.LocaleList;
+import android.content.Context;
 
 import androidx.annotation.StringRes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 // Locale list available at: https://stackoverflow.com/questions/7973023/what-is-the-list-of-supported-languages-locales-on-android
 
 /**
- * 
+ *
  */
-public enum ModelLinks {
+public enum ModelLink {
     ENGLISH_US("https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip", Locale.US, R.string.model_en_us),
     ENGLISH_IN("https://alphacephei.com/vosk/models/vosk-model-small-en-in-0.4.zip", new Locale("en", "IN"), R.string.model_en_in),
     CHINESE("https://alphacephei.com/vosk/models/vosk-model-small-cn-0.22.zip", Locale.CHINESE, R.string.model_cn),
@@ -38,9 +41,13 @@ public enum ModelLinks {
     public final Locale locale;
     public final int name;
 
-    ModelLinks(String link, Locale locale, @StringRes int name) {
+    ModelLink(String link, Locale locale, @StringRes int name) {
         this.link = link;
         this.locale = locale;
         this.name = name;
+    }
+
+    public String getFilename() {
+        return link.substring(link.lastIndexOf('/') + 1, link.lastIndexOf('.'));
     }
 }

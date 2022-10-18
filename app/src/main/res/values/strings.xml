@@ -19,6 +19,8 @@
     <string name="backspace"><![CDATA[<-]]></string>
     <string name="question">\?</string>
 
+    <string name="model_dialog_title">Select Model</string>
+
 
     <string name="mic_permission_grant">Grant Microphone permission</string>
     <string name="mic_permission_not_granted">Not Granted</string>
