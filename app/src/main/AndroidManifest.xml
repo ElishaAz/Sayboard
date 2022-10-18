@@ -17,7 +17,7 @@
         tools:targetApi="s">
 
         <service
-            android:name="org.vosk.ime.VoskIME"
+            android:name="com.elishaazaria.sayboard.VoskIME"
             android:exported="true"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_INPUT_METHOD">
@@ -31,7 +31,7 @@
         </service>
 
         <activity
-            android:name="org.vosk.ime.SettingsActivity"
+            android:name="com.elishaazaria.sayboard.SettingsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
         </activity>
 
         <service
-            android:name=".FileDownloadService"
+            android:name="com.elishaazaria.sayboard.FileDownloadService"
             android:enabled="true" />
     </application>
 

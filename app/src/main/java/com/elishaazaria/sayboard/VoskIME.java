@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -37,7 +37,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,12 +48,10 @@ import org.vosk.Recognizer;
 import org.vosk.android.RecognitionListener;
 import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
+import com.elishaazaria.sayboard.R;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -96,7 +93,7 @@ public class VoskIME extends InputMethodService implements
 
     private InputMethodManager mInputMethodManager;
 
-    private List<org.vosk.ime.Model> models;
+    private List<com.elishaazaria.sayboard.Model> models;
     private int currentModelIndex = 0;
 
     @Override
@@ -140,7 +137,7 @@ public class VoskIME extends InputMethodService implements
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 
-    private void initModel(org.vosk.ime.Model myModel) {
+    private void initModel(com.elishaazaria.sayboard.Model myModel) {
         loadedModel = myModel.locale.getDisplayName();
         if (modelButton != null)
             modelButton.setText(loadedModel);

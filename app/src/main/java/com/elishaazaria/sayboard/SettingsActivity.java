@@ -1,18 +1,16 @@
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import org.vosk.ime.databinding.ActivitySettingsBinding;
+import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.databinding.ActivitySettingsBinding;
 
 public class SettingsActivity extends AppCompatActivity {
 

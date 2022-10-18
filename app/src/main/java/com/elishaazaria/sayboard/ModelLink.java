@@ -1,13 +1,10 @@
-package org.vosk.ime;
-
-import android.content.Context;
+package com.elishaazaria.sayboard;
 
 import androidx.annotation.StringRes;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.elishaazaria.sayboard.R;
+
 import java.util.Locale;
-import java.util.Map;
 
 // Locale list available at: https://stackoverflow.com/questions/7973023/what-is-the-list-of-supported-languages-locales-on-android
 

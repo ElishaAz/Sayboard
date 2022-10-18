@@ -1,4 +1,4 @@
-package org.vosk.ime.settingsfragments;
+package com.elishaazaria.sayboard.settingsfragments;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import org.vosk.ime.R;
-import org.vosk.ime.SettingsActivity;
-import org.vosk.ime.Tools;
-import org.vosk.ime.databinding.FragmentSetupBinding;
+import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.SettingsActivity;
+import com.elishaazaria.sayboard.Tools;
+import com.elishaazaria.sayboard.databinding.FragmentSetupBinding;
 
 public class SetupFragment extends Fragment {
     /* Used to handle permission request */

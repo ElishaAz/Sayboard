@@ -1,28 +1,20 @@
-package org.vosk.ime.settingsfragments;
+package com.elishaazaria.sayboard.settingsfragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.vosk.ime.FileDownloadService;
-import org.vosk.ime.Model;
-import org.vosk.ime.ModelLink;
-import org.vosk.ime.Tools;
-import org.vosk.ime.databinding.FragmentModelsBinding;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import com.elishaazaria.sayboard.FileDownloadService;
+import com.elishaazaria.sayboard.Model;
+import com.elishaazaria.sayboard.Tools;
+import com.elishaazaria.sayboard.databinding.FragmentModelsBinding;
 
 public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickListener {
     private static final String TAG = "ModelsFragment";

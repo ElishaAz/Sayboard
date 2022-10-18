@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Vosk Voice Keyboard</string>
+    <string name="app_name">Sayboard</string>
 
     <string name="mic_info_error">Error\n</string>
     <string name="mic_info_preparing">Preparing the recognizer\n</string>

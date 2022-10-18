@@ -1,4 +1,4 @@
-package org.vosk.ime.settingsfragments;
+package com.elishaazaria.sayboard.settingsfragments;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.vosk.ime.Model;
-import org.vosk.ime.ModelLink;
-import org.vosk.ime.R;
+import com.elishaazaria.sayboard.Model;
+import com.elishaazaria.sayboard.ModelLink;
+
+import com.elishaazaria.sayboard.R;
 
 import java.util.List;
 import java.util.Locale;

@@ -1,4 +1,4 @@
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+
+import com.elishaazaria.sayboard.R;
 
 public class MainFragment extends Activity {
 

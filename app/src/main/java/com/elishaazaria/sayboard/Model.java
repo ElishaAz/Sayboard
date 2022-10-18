@@ -1,4 +1,4 @@
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import java.io.Serializable;
 import java.util.Locale;

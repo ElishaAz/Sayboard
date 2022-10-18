@@ -1,4 +1,4 @@
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import android.app.IntentService;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package org.vosk.ime;
+package com.elishaazaria.sayboard;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.core.content.ContextCompat;
 
-import org.vosk.ime.settingsfragments.ModelsAdapter;
+import com.elishaazaria.sayboard.settingsfragments.ModelsAdapter;
 
 import java.io.File;
 import java.util.ArrayList;

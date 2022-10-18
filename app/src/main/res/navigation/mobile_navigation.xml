@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_setup"
-        android:name="org.vosk.ime.settingsfragments.SetupFragment"
+        android:name="com.elishaazaria.sayboard.settingsfragments.SetupFragment"
         android:label="@string/title_setup"
         tools:layout="@layout/fragment_setup" >
         <action
@@ -17,13 +17,13 @@
 
     <fragment
         android:id="@+id/navigation_models"
-        android:name="org.vosk.ime.settingsfragments.ModelsFragment"
+        android:name="com.elishaazaria.sayboard.settingsfragments.ModelsFragment"
         android:label="@string/title_models"
         tools:layout="@layout/fragment_models" />
 
     <fragment
         android:id="@+id/navigation_theme"
-        android:name="org.vosk.ime.settingsfragments.ThemeFragment"
+        android:name="com.elishaazaria.sayboard.settingsfragments.ThemeFragment"
         android:label="@string/title_theme"
         tools:layout="@layout/fragment_theme" />
 </navigation>

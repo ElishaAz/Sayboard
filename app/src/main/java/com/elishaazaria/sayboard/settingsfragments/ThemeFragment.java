@@ -1,10 +1,10 @@
-package org.vosk.ime.settingsfragments;
+package com.elishaazaria.sayboard.settingsfragments;
 
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 
-import org.vosk.ime.R;
+import com.elishaazaria.sayboard.R;
 
 public class ThemeFragment extends PreferenceFragmentCompat {
 
