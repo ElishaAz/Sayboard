@@ -48,17 +48,17 @@
             android:layout_height="wrap_content"
             android:text="@string/keyboard_not_enabled" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="32dp" />
+        <!--        <Space-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="32dp" />-->
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/switch_keyboard"
-            android:textSize="16sp" />
+        <!--        <TextView-->
+        <!--            android:id="@+id/textView3"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:gravity="center"-->
+        <!--            android:text="@string/switch_keyboard"-->
+        <!--            android:textSize="16sp" />-->
 
         <!--        <Button-->
         <!--            android:id="@+id/openImeSwitcher"-->
