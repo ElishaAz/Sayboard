@@ -2,8 +2,11 @@ package com.elishaazaria.sayboard;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
@@ -36,34 +39,41 @@ public class Tools {
         return false;
     }
 
-    public static void downloadModelFromLink(ModelLink model, FileDownloadService.OnDownloadStatusListener listener, Context context) {
-        String serverFilePath = model.link;
+//    public static void downloadModelFromLink(ModelLink model, OnDownloadStatusListener listener, Context context) {
+//        String serverFilePath = model.link;
+//
+//        File tempFolder = Constants.getTemporaryDownloadLocation(context);
+//        if (!tempFolder.exists()) {
+//            tempFolder.mkdirs();
+//        }
+//
+//        String fileName = model.link.substring(model.link.lastIndexOf('/') + 1); // file name
+//        File tempFile = new File(tempFolder, fileName);
+//
+//        String localPath = tempFile.getAbsolutePath();
+//
+//        File modelFolder = Constants.getDirectoryForModel(context, model.locale);
+//
+//        if (!modelFolder.exists()) {
+//            modelFolder.mkdirs();
+//        }
+//
+//        String unzipPath = modelFolder.getAbsolutePath();
+//
+//        DownloadRequest downloadRequest = new DownloadRequest(serverFilePath, localPath, true);
+//        downloadRequest.setRequiresUnzip(true);
+//        downloadRequest.setDeleteZipAfterExtract(true);
+//        downloadRequest.setUnzipAtFilePath(unzipPath);
+//
+//        FileDownloader downloader = FileDownloader.getInstance(listener);
+//        downloader.download(downloadRequest, context);
+//    }
 
-        File tempFolder = Constants.getTemporaryDownloadLocation(context);
-        if (!tempFolder.exists()) {
-            tempFolder.mkdirs();
-        }
+    public static void deleteModel(Model model, Context context) {
+        File modelFile = new File(model.path);
 
-        String fileName = model.link.substring(model.link.lastIndexOf('/') + 1); // file name
-        File tempFile = new File(tempFolder, fileName);
-
-        String localPath = tempFile.getAbsolutePath();
-
-        File modelFolder = Constants.getDirectoryForModel(context, model.locale);
-
-        if (!modelFolder.exists()) {
-            modelFolder.mkdirs();
-        }
-
-        String unzipPath = modelFolder.getAbsolutePath();
-
-        FileDownloadService.DownloadRequest downloadRequest = new FileDownloadService.DownloadRequest(serverFilePath, localPath, true);
-        downloadRequest.setRequiresUnzip(true);
-        downloadRequest.setDeleteZipAfterExtract(true);
-        downloadRequest.setUnzipAtFilePath(unzipPath);
-
-        FileDownloadService.FileDownloader downloader = FileDownloadService.FileDownloader.getInstance(downloadRequest, listener);
-        downloader.download(context);
+        if (modelFile.exists())
+            deleteRecursive(modelFile);
     }
 
     public static void deleteRecursive(File fileOrDirectory) {
@@ -96,7 +106,7 @@ public class Tools {
         return localeMap;
     }
 
-    public static List<Model> getInstalledModelsList(Context context){
+    public static List<Model> getInstalledModelsList(Context context) {
         List<Model> models = new ArrayList<>();
 
         File modelsDir = Constants.getModelsDirectory(context);
@@ -153,5 +163,21 @@ public class Tools {
             return null;
         }
         return new Model(modelDir.getAbsolutePath(), modelLink.locale, modelLink.getFilename());
+    }
+
+    public static void createNotificationChannel(Context context) {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = context.getString(R.string.notification_download_channel_name);
+            String description = context.getString(R.string.notification_download_channel_description);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel(Constants.DOWNLOADER_CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

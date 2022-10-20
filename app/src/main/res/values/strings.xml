@@ -44,4 +44,14 @@
 
     <!-- Theme Preferences -->
     <string name="signature_title">Your signature</string>
+
+    <!--  Notifications  -->
+    <string name="notification_download_channel_name">Model download</string>
+    <string name="notification_download_channel_description">Model download status notifications.</string>
+    <string name="notification_download_title">Downloading Model</string>
+    <string name="notification_download_content_unknown">Loading…</string>
+    <string name="notification_download_content_downloading">Downloading in progress…</string>
+    <string name="notification_download_content_unzipping">Extracting Model…</string>
+    <string name="notification_download_content_finished">Download Finished!</string>
+    <string name="notification_download_content_error">Error downloading Model</string>
 </resources>

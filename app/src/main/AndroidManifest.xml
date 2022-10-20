@@ -41,7 +41,7 @@
         </activity>
 
         <service
-            android:name="com.elishaazaria.sayboard.FileDownloadService"
+            android:name="com.elishaazaria.sayboard.downloader.FileDownloadService"
             android:enabled="true" />
     </application>
 

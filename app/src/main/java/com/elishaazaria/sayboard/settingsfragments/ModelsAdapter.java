@@ -24,6 +24,8 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         private Model model;
         private boolean installed;
 
+        private boolean downloading;
+
         public Data(ModelLink modelLink) {
             this.modelLink = modelLink;
             this.model = null;
@@ -45,17 +47,19 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         public String getFilename() {
             if (modelLink != null) {
                 return modelLink.getFilename();
-            } else {
+            } else if (model != null) {
                 return model.filename;
+            } else {
+                return "Undefined";
             }
         }
 
         public Locale getLocale() {
             if (model != null) {
                 return model.locale;
-            } else {
+            } else if (modelLink != null) {
                 return modelLink.locale;
-            }
+            } else return Locale.forLanguageTag("und");
         }
 
         public boolean isInstalled() {
@@ -65,6 +69,22 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         public void wasInstalled(Model model) {
             this.model = model;
             this.installed = true;
+            this.downloading = false;
+        }
+
+        public boolean wasDeleted() {
+            this.model = null;
+            this.installed = false;
+            this.downloading = false;
+            return this.modelLink == null;
+        }
+
+        public boolean isDownloading() {
+            return downloading;
+        }
+
+        public void setDownloading(boolean downloading) {
+            this.downloading = downloading;
         }
 
         public ModelLink getModelLink() {
@@ -101,7 +121,15 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         Data data = mData.get(position);
         holder.titleTextView.setText(data.getLocale().getDisplayName());
         holder.subtitleTextView.setText(data.getFilename());
-        holder.downloadButton.setVisibility(data.isInstalled() ? View.INVISIBLE : View.VISIBLE);
+
+        if (data.isInstalled()) {
+            holder.downloadButton.setImageResource(R.drawable.ic_delete);
+        } else if (data.isDownloading()) {
+            holder.downloadButton.setImageResource(R.drawable.ic_downloading);
+        } else {
+            holder.downloadButton.setImageResource(R.drawable.ic_download);
+        }
+
         holder.data = data;
     }
 
@@ -135,14 +163,36 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         }
 
         private void onButtonClick(View view) {
-            if (mClickListener != null)
-                mClickListener.onDownloadButtonClicked(view, getAdapterPosition(), data);
+            if (mClickListener != null) {
+                if (data.isInstalled()) {
+                    mClickListener.onDeleteButtonClicked(view, getAdapterPosition(), data);
+                } else {
+                    if (!data.isDownloading()) {
+                        mClickListener.onDownloadButtonClicked(view, getAdapterPosition(), data);
+                    }
+                }
+            }
         }
     }
 
     // convenience method for getting data at click position
     Data getItem(int id) {
         return mData.get(id);
+    }
+
+    public boolean changed(Data data) {
+        int index = mData.indexOf(data);
+        if (index == -1) return false;
+        notifyItemChanged(index);
+        return true;
+    }
+
+    public boolean removed(Data data) {
+        int index = mData.indexOf(data);
+        if (index == -1) return false;
+        mData.remove(index);
+        notifyItemRemoved(index);
+        return true;
     }
 
     // allows clicks events to be caught
@@ -155,5 +205,7 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         void onItemClick(View view, int position, Data data);
 
         void onDownloadButtonClicked(View view, int position, Data data);
+
+        void onDeleteButtonClicked(View view, int position, Data data);
     }
 }
