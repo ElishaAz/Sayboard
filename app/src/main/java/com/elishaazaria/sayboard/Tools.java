@@ -159,7 +159,7 @@ public class Tools {
         File modelsDir = Constants.getModelsDirectory(context);
         File localeDir = new File(modelsDir, modelLink.locale.toLanguageTag());
         File modelDir = new File(localeDir, modelLink.getFilename());
-        if (!localeDir.exists() || modelDir.exists() || !modelDir.isDirectory()) {
+        if (!localeDir.exists() || !modelDir.exists() || !modelDir.isDirectory()) {
             return null;
         }
         return new Model(modelDir.getAbsolutePath(), modelLink.locale, modelLink.getFilename());

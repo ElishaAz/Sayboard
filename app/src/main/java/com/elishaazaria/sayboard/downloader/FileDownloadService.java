@@ -69,7 +69,7 @@ public class FileDownloadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        ModelInfo modelInfo = Communication.getInfoForIntent(intent);
+        ModelInfo modelInfo = FileDownloader.getInfoForIntent(intent);
         if (modelInfo == null) return START_NOT_STICKY;
 
         Log.d(TAG, "Got message " + modelInfo);

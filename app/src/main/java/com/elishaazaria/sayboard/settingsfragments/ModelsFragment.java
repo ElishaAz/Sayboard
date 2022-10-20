@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.elishaazaria.sayboard.Model;
 import com.elishaazaria.sayboard.Tools;
 import com.elishaazaria.sayboard.databinding.FragmentModelsBinding;
-import com.elishaazaria.sayboard.downloader.Communication;
+import com.elishaazaria.sayboard.downloader.FileDownloader;
 import com.elishaazaria.sayboard.downloader.messages.DownloadError;
 import com.elishaazaria.sayboard.downloader.messages.DownloadProgress;
 import com.elishaazaria.sayboard.downloader.messages.DownloadState;
@@ -65,53 +65,30 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
     public void onDownloadButtonClicked(View view, int position, ModelsAdapter.Data data) {
         if (data.isInstalled() || isDownloading) return;
         isDownloading = true;
-//        OnDownloadStatusListener listener = new OnDownloadStatusListener() {
-//            @Override
-//            public void onDownloadStarted() {
-//                progressBar.setVisibility(View.VISIBLE);
-//                data.setDownloading(true);
-//                adapter.changed(data);
-////                Toast.makeText(getContext(), "onDownloadStarted", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onDownloadCompleted() {
-//                isDownloading = false;
-//                progressBar.setVisibility(View.GONE);
-//                Model model = Tools.getModelForLink(data.getModelLink(), getContext());
-//                if (model != null) data.wasInstalled(model);
-//                adapter.changed(data);
-////                Toast.makeText(getContext(), "onDownloadCompleted", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onDownloadFailed() {
-//                isDownloading = false;
-//                progressBar.setVisibility(View.GONE);
-//                Toast.makeText(getContext(), "Download failed for " + data.getFilename(), Toast.LENGTH_SHORT).show();
-//
-//                data.setDownloading(false);
-//                adapter.changed(data);
-//            }
-//
-//            @Override
-//            public void onDownloadProgress(int progress) {
-//                progressBar.setProgress(progress);
-////                Toast.makeText(getContext(), "download started", Toast.LENGTH_SHORT).show();
-//            }
-//        };
-        Communication.downloadModel(data.getModelLink(), requireContext());
+        FileDownloader.downloadModel(data.getModelLink(), requireContext());
     }
 
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onState(DownloadState state) {
+        ModelsAdapter.Data current = adapter.get(state.info);
         switch (state.state) {
             case DOWNLOAD_STARTED:
                 progressBar.setVisibility(View.VISIBLE);
+                current.setDownloading(true);
+                adapter.changed(current);
                 break;
             case FINISHED:
                 progressBar.setVisibility(View.GONE);
+                Model model = Tools.getModelForLink(current.getModelLink(), getContext());
+                if (model != null) current.wasInstalled(model);
+                adapter.changed(current);
+                break;
+            case ERROR:
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Download failed for " + current.getFilename(), Toast.LENGTH_SHORT).show();
+                current.setDownloading(false);
+                adapter.changed(current);
                 break;
         }
     }
@@ -119,7 +96,16 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStatus(Status status) {
-
+        if (status.current == null) return;
+        onState(new DownloadState(status.current, status.state));
+        switch (status.state) {
+            case DOWNLOAD_STARTED:
+                onDownloadProgress(new DownloadProgress(status.current, status.downloadProgress));
+                break;
+            case UNZIP_STARTED:
+                onUnzipProgress(new UnzipProgress(status.current, status.unzipProgress));
+                break;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -137,7 +123,7 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadError(DownloadError error) {
-        Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -159,6 +145,8 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
         boolean removed = data.wasDeleted();
         if (removed) {
             adapter.removed(data);
+        } else {
+            adapter.changed(data);
         }
     }
 }

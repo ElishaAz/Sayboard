@@ -1,79 +1,38 @@
-//package com.elishaazaria.sayboard.downloader;
-//
-//import android.content.Context;
-//import android.content.Intent;
-//import android.os.Bundle;
-//import android.os.Handler;
-//import android.os.Looper;
-//import android.os.ResultReceiver;
-//
-//public class FileDownloader extends ResultReceiver {
-//
-//    private OnDownloadStatusListener onDownloadStatusListener;
-//
-//    public static FileDownloader getInstance(OnDownloadStatusListener downloadStatusListener) {
-//
-//        Handler handler = new Handler(Looper.getMainLooper());
-//
-//        FileDownloader fileDownloader = new FileDownloader(handler);
-//
-//        fileDownloader.onDownloadStatusListener = downloadStatusListener;
-//
-//        return fileDownloader;
-//    }
-//
-//    public void download(DownloadRequest downloadDetails, Context context) {
-//        if (DownloaderTools.isOnline(context)) {
-//            Intent intent = new Intent(context, FileDownloadIntentService.class);
-//            intent.putExtra(Communication.DOWNLOADER_RECEIVER, this);
-//            intent.putExtra(Communication.DOWNLOAD_DETAILS, downloadDetails);
-//            context.startService(intent);
-//        }
-//    }
-//
-//    private FileDownloader(Handler handler) {
-//
-//        super(handler);
-//    }
-//
-//    @Override
-//    protected void onReceiveResult(int resultCode, Bundle resultData) {
-//
-//        super.onReceiveResult(resultCode, resultData);
-//
-//        if (onDownloadStatusListener == null) {
-//
-//            return;
-//        }
-//
-//        if (resultCode == Communication.STATUS_OK) {
-//
-//            if (resultData.containsKey(Communication.DOWNLOAD_STARTED)
-//                    && resultData.getBoolean(Communication.DOWNLOAD_STARTED)) {
-//
-//                onDownloadStatusListener.onDownloadStarted();
-//
-//            } else if (resultData.containsKey(Communication.DOWNLOAD_COMPLETED)
-//                    && resultData.getBoolean(Communication.DOWNLOAD_COMPLETED)) {
-//
-//                onDownloadStatusListener.onDownloadCompleted();
-//
-//            } else if (resultData.containsKey(Communication.DOWNLOAD_PROGRESS)) {
-//
-//                int progress = resultData.getInt(Communication.DOWNLOAD_PROGRESS);
-//                onDownloadStatusListener.onDownloadProgress(progress);
-//
-//            }
-//
-//        } else if (resultCode == Communication.STATUS_FAILED) {
-//
-//            onDownloadStatusListener.onDownloadFailed();
-//        }
-//    }
-//
-//    public void setOnDownloadStatusListener(OnDownloadStatusListener onDownloadStatusListener) {
-//
-//        this.onDownloadStatusListener = onDownloadStatusListener;
-//    }
-//
-//}
+package com.elishaazaria.sayboard.downloader;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+
+import com.elishaazaria.sayboard.ModelLink;
+import com.elishaazaria.sayboard.downloader.messages.ModelInfo;
+
+import java.util.Locale;
+
+public class FileDownloader {
+    public static final String DOWNLOAD_URL = "download_url";
+    public static final String DOWNLOAD_FILENAME = "download_filename";
+    public static final String DOWNLOAD_LOCALE = "download_locale";
+
+    static ModelInfo getInfoForIntent(Intent intent) {
+        String url = intent.getStringExtra(DOWNLOAD_URL);
+        String filename = intent.getStringExtra(DOWNLOAD_FILENAME);
+        Locale locale = (Locale) intent.getSerializableExtra(DOWNLOAD_LOCALE);
+        if (url == null || filename == null || locale == null) return null;
+        return new ModelInfo(url, filename, locale);
+    }
+
+    public static void downloadModel(ModelLink model, Context context) {
+        Intent serviceIntent = new Intent(context, FileDownloadService.class);
+
+        serviceIntent.putExtra(DOWNLOAD_URL, model.link);
+        serviceIntent.putExtra(DOWNLOAD_FILENAME, model.getFilename());
+        serviceIntent.putExtra(DOWNLOAD_LOCALE, model.locale);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(serviceIntent);
+        } else {
+            context.startService(serviceIntent);
+        }
+    }
+}

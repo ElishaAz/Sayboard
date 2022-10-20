@@ -13,6 +13,7 @@ import com.elishaazaria.sayboard.Model;
 import com.elishaazaria.sayboard.ModelLink;
 
 import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.downloader.messages.ModelInfo;
 
 import java.util.List;
 import java.util.Locale;
@@ -180,7 +181,16 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         return mData.get(id);
     }
 
-    public boolean changed(Data data) {
+    public Data get(ModelInfo modelInfo){
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).getFilename().equals(modelInfo.filename)){
+                return mData.get(i);
+            }
+        }
+        return null;
+    }
+
+   public boolean changed(Data data) {
         int index = mData.indexOf(data);
         if (index == -1) return false;
         notifyItemChanged(index);
