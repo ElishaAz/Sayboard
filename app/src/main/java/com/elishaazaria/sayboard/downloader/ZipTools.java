@@ -65,13 +65,15 @@ public class ZipTools {
 
         Log.v("ZIP E", "Extracting: " + entry);
 
-        InputStream zin = zipfile.getInputStream(entry);
-
-        try (BufferedInputStream inputStream = new BufferedInputStream(zin); BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
-            byte[] b = new byte[1024];
-            int n;
-            while ((n = inputStream.read(b, 0, 1024)) >= 0) {
-                outputStream.write(b, 0, n);
+        try (InputStream zin = zipfile.getInputStream(entry)) {
+            try (BufferedInputStream inputStream = new BufferedInputStream(zin)) {
+                try (BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+                    byte[] b = new byte[1024];
+                    int n;
+                    while ((n = inputStream.read(b, 0, 1024)) >= 0) {
+                        outputStream.write(b, 0, n);
+                    }
+                }
             }
         }
     }

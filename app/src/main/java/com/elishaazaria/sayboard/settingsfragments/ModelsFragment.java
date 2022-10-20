@@ -19,7 +19,10 @@ import com.elishaazaria.sayboard.downloader.FileDownloader;
 import com.elishaazaria.sayboard.downloader.messages.DownloadError;
 import com.elishaazaria.sayboard.downloader.messages.DownloadProgress;
 import com.elishaazaria.sayboard.downloader.messages.DownloadState;
+import com.elishaazaria.sayboard.downloader.messages.ModelInfo;
+import com.elishaazaria.sayboard.downloader.messages.State;
 import com.elishaazaria.sayboard.downloader.messages.Status;
+import com.elishaazaria.sayboard.downloader.messages.StatusQuery;
 import com.elishaazaria.sayboard.downloader.messages.UnzipProgress;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,7 +34,6 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
 
     private FragmentModelsBinding binding;
     private ModelsAdapter adapter;
-    private boolean isDownloading = false;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
 
@@ -62,10 +64,27 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
     }
 
     @Override
-    public void onDownloadButtonClicked(View view, int position, ModelsAdapter.Data data) {
-        if (data.isInstalled() || isDownloading) return;
-        isDownloading = true;
-        FileDownloader.downloadModel(data.getModelLink(), requireContext());
+    public void onButtonClicked(View view, int position, ModelsAdapter.Data data) {
+        switch (data.getState()) {
+            case CLOUD: // Not installed, download
+                FileDownloader.downloadModel(data.getModelLink(), requireContext());
+                break;
+            case INSTALLED: // Installed, delete
+                Tools.deleteModel(data.getModel(), getContext());
+                boolean removed = data.wasDeleted();
+                if (removed) {
+                    adapter.removed(data);
+                } else {
+                    adapter.changed(data);
+                }
+                break;
+            case DOWNLOADING: // Downloading, cancel download
+                // TODO: cancel download
+                break;
+            case QUEUED: // Queued for download, remove from queue
+                // TODO: remove from downloading queue
+                break;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -75,7 +94,7 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
         switch (state.state) {
             case DOWNLOAD_STARTED:
                 progressBar.setVisibility(View.VISIBLE);
-                current.setDownloading(true);
+                current.downloading();
                 adapter.changed(current);
                 break;
             case FINISHED:
@@ -87,7 +106,12 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
             case ERROR:
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), "Download failed for " + current.getFilename(), Toast.LENGTH_SHORT).show();
-                current.setDownloading(false);
+                current.downloadCanceled();
+                adapter.changed(current);
+                break;
+
+            case QUEUED:
+                current.wasQueued();
                 adapter.changed(current);
                 break;
         }
@@ -105,6 +129,11 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
             case UNZIP_STARTED:
                 onUnzipProgress(new UnzipProgress(status.current, status.unzipProgress));
                 break;
+        }
+
+        for (ModelInfo modelInfo :
+                status.queued) {
+            onState(new DownloadState(modelInfo, State.QUEUED));
         }
     }
 
@@ -131,22 +160,12 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        EventBus.getDefault().post(new StatusQuery());
     }
 
     @Override
     public void onStop() {
         EventBus.getDefault().unregister(this);
         super.onStop();
-    }
-
-    @Override
-    public void onDeleteButtonClicked(View view, int position, ModelsAdapter.Data data) {
-        Tools.deleteModel(data.getModel(), getContext());
-        boolean removed = data.wasDeleted();
-        if (removed) {
-            adapter.removed(data);
-        } else {
-            adapter.changed(data);
-        }
     }
 }

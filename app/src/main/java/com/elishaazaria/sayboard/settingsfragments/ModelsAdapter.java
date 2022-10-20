@@ -20,29 +20,31 @@ import java.util.Locale;
 
 public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder> {
 
+    public enum DataState {
+        CLOUD, INSTALLED, DOWNLOADING, QUEUED
+    }
+
     public static class Data {
         private ModelLink modelLink;
         private Model model;
-        private boolean installed;
-
-        private boolean downloading;
+        private DataState state;
 
         public Data(ModelLink modelLink) {
             this.modelLink = modelLink;
             this.model = null;
-            this.installed = false;
+            state = DataState.CLOUD;
         }
 
         public Data(Model model) {
             this.modelLink = null;
             this.model = model;
-            this.installed = true;
+            state = DataState.INSTALLED;
         }
 
         public Data(ModelLink modelLink, Model model) {
             this.modelLink = modelLink;
             this.model = model;
-            this.installed = true;
+            state = DataState.INSTALLED;
         }
 
         public String getFilename() {
@@ -63,29 +65,32 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
             } else return Locale.forLanguageTag("und");
         }
 
-        public boolean isInstalled() {
-            return installed;
-        }
-
         public void wasInstalled(Model model) {
             this.model = model;
-            this.installed = true;
-            this.downloading = false;
+            state = DataState.INSTALLED;
         }
 
         public boolean wasDeleted() {
             this.model = null;
-            this.installed = false;
-            this.downloading = false;
+            state = DataState.CLOUD;
             return this.modelLink == null;
         }
 
-        public boolean isDownloading() {
-            return downloading;
+        public void wasQueued() {
+            state = DataState.QUEUED;
         }
 
-        public void setDownloading(boolean downloading) {
-            this.downloading = downloading;
+        public void downloading() {
+            state = DataState.DOWNLOADING;
+        }
+
+        public void downloadCanceled() {
+            if (state == DataState.DOWNLOADING)
+                state = DataState.CLOUD;
+        }
+
+        public DataState getState() {
+            return state;
         }
 
         public ModelLink getModelLink() {
@@ -123,12 +128,19 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         holder.titleTextView.setText(data.getLocale().getDisplayName());
         holder.subtitleTextView.setText(data.getFilename());
 
-        if (data.isInstalled()) {
-            holder.downloadButton.setImageResource(R.drawable.ic_delete);
-        } else if (data.isDownloading()) {
-            holder.downloadButton.setImageResource(R.drawable.ic_downloading);
-        } else {
-            holder.downloadButton.setImageResource(R.drawable.ic_download);
+        switch (data.getState()) {
+            case CLOUD:
+                holder.downloadButton.setImageResource(R.drawable.ic_download);
+                break;
+            case INSTALLED:
+                holder.downloadButton.setImageResource(R.drawable.ic_delete);
+                break;
+            case DOWNLOADING:
+                holder.downloadButton.setImageResource(R.drawable.ic_downloading);
+                break;
+            case QUEUED:
+                holder.downloadButton.setImageResource(R.drawable.ic_add_circle_outline);
+                break;
         }
 
         holder.data = data;
@@ -165,13 +177,7 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
 
         private void onButtonClick(View view) {
             if (mClickListener != null) {
-                if (data.isInstalled()) {
-                    mClickListener.onDeleteButtonClicked(view, getAdapterPosition(), data);
-                } else {
-                    if (!data.isDownloading()) {
-                        mClickListener.onDownloadButtonClicked(view, getAdapterPosition(), data);
-                    }
-                }
+                mClickListener.onButtonClicked(view, getAdapterPosition(), data);
             }
         }
     }
@@ -181,16 +187,16 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
         return mData.get(id);
     }
 
-    public Data get(ModelInfo modelInfo){
+    public Data get(ModelInfo modelInfo) {
         for (int i = 0; i < mData.size(); i++) {
-            if (mData.get(i).getFilename().equals(modelInfo.filename)){
+            if (mData.get(i).getFilename().equals(modelInfo.filename)) {
                 return mData.get(i);
             }
         }
         return null;
     }
 
-   public boolean changed(Data data) {
+    public boolean changed(Data data) {
         int index = mData.indexOf(data);
         if (index == -1) return false;
         notifyItemChanged(index);
@@ -214,8 +220,6 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
     public interface ItemClickListener {
         void onItemClick(View view, int position, Data data);
 
-        void onDownloadButtonClicked(View view, int position, Data data);
-
-        void onDeleteButtonClicked(View view, int position, Data data);
+        void onButtonClicked(View view, int position, Data data);
     }
 }

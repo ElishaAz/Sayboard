@@ -23,6 +23,8 @@ public class FileDownloader {
     }
 
     public static void downloadModel(ModelLink model, Context context) {
+        context = context.getApplicationContext();
+
         Intent serviceIntent = new Intent(context, FileDownloadService.class);
 
         serviceIntent.putExtra(DOWNLOAD_URL, model.link);

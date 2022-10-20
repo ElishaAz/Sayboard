@@ -40,6 +40,7 @@ public class FileDownloadService extends Service {
     private static final String TAG = "FileDownloadService";
     private static final int notificationId = 1;
     private static final int PROGRESS_MAX = 100;
+    private static final long minUpdateTime = 1000 / 5; // 5 updates a second;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
     private NotificationManagerCompat notificationManager;
@@ -77,9 +78,11 @@ public class FileDownloadService extends Service {
         queuedModels.add(modelInfo);
         executor.execute(this::main);
 
+        sendEnqueued(modelInfo);
+
         startForeground(notificationId, notificationBuilder.build());
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void main() {
@@ -196,11 +199,25 @@ public class FileDownloadService extends Service {
     private int lastUnzipProgress;
     private State lastState;
 
+    private long lastUpdateTime;
+
     private void updateNotification() {
         if (lastDownloadProgress == downloadProgress &&
                 lastUnzipProgress == unzipProgress &&
                 lastState == currentState) // nothing changed
             return;
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime < minUpdateTime) {
+            if (lastState == currentState) { // it's a progress update
+                if (!(downloadProgress == PROGRESS_MAX && unzipProgress == 0) &&
+                        !(unzipProgress == PROGRESS_MAX)) { // it's not the last progress update
+                    lastUpdateTime = currentTime;
+                    return;
+                }
+            }
+        }
+        lastUpdateTime = currentTime;
 
         switch (currentState) {
             case NONE:
@@ -258,6 +275,9 @@ public class FileDownloadService extends Service {
         updateNotification();
     }
 
+    private void sendEnqueued(ModelInfo modelInfo) {
+        EventBus.getDefault().post(new DownloadState(modelInfo, State.QUEUED));
+    }
 
     @Subscribe
     @SuppressWarnings("unused")
