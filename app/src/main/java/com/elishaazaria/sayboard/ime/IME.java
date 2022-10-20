@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.elishaazaria.sayboard;
+package com.elishaazaria.sayboard.ime;
 
 import android.Manifest;
 import android.app.Dialog;
@@ -48,7 +48,9 @@ import org.vosk.Recognizer;
 import org.vosk.android.RecognitionListener;
 import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
+
 import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.Tools;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,54 +62,28 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-public class VoskIME extends InputMethodService implements
+public class IME extends InputMethodService implements
         RecognitionListener {
-
-    static private final int STATE_START = 0;
-    static private final int STATE_READY = 1;
-    static private final int STATE_DONE = 2;
-    static private final int STATE_ERROR = 3;
-    static private final int STATE_MIC = 4;
 
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 
-    private Model model;
-    private SpeechService speechService;
-    private SpeechStreamService speechStreamService;
     private EditorInfo editorInfo;
-
     private int enterAction = EditorInfo.IME_ACTION_UNSPECIFIED;
 
-    private TextView resultView;
-
-    private int currentState = STATE_START;
-    private String currentErrorMessage = "";
-    private String loadedModel = "";
-
-    private ConstraintLayout overlayView;
-
-    private ImageButton micButton;
-    private ImageView fabAnimation;
-    private Button modelButton;
+    private ViewManager viewManager;
+    private ModelManager modelManager;
 
     private InputMethodManager mInputMethodManager;
-
-    private List<com.elishaazaria.sayboard.Model> models;
-    private int currentModelIndex = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        models = Tools.getInstalledModelsList(this);
+        viewManager = new ViewManager(this);
 
-        if (models.size() == 0) {
-            setErrorState("No Model installed!");
-        } else {
-            currentModelIndex = 0;
-            initModel(models.get(0));
-        }
+        modelManager = new ModelManager(this, viewManager);
+
 
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
     }
@@ -135,39 +111,6 @@ public class VoskIME extends InputMethodService implements
         }
     }
 
-    private final Executor executor = Executors.newSingleThreadExecutor();
-
-    private void initModel(com.elishaazaria.sayboard.Model myModel) {
-        loadedModel = myModel.locale.getDisplayName();
-        if (modelButton != null)
-            modelButton.setText(loadedModel);
-        setUiState(STATE_START);
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
-            Model model = new Model(myModel.path);
-            handler.post(() -> {
-                this.model = model;
-                setUiState(STATE_READY);
-            });
-        });
-//        StorageService.unpack(this, "model-en-us", "model",
-//                (model) -> {
-//                    this.model = model;
-//                    setUiState(STATE_READY);
-//                },
-//                (exception) -> setErrorState("Failed to unpack the model" + exception.getMessage()));
-    }
-
-    private void loadNextModel() {
-        if (models.size() == 0) return;
-
-        currentModelIndex++;
-        if (currentModelIndex >= models.size())
-            currentModelIndex = 0;
-        initModel(models.get(currentModelIndex));
-    }
-
     @Override
     public void onBindInput() {
         // when user first clicks e.g. in text field
@@ -193,6 +136,8 @@ public class VoskIME extends InputMethodService implements
                 break;
             }
         }
+
+        modelManager.reloadModels();
     }
 
     @Override
@@ -202,62 +147,37 @@ public class VoskIME extends InputMethodService implements
 
     @Override
     public View onCreateInputView() {
-        // create view
-        overlayView = (ConstraintLayout) getLayoutInflater().inflate(R.layout.ime, null);
+        viewManager.init();
 
-        resultView = overlayView.findViewById(R.id.result_text);
-        micButton = overlayView.findViewById(R.id.mic_button);
-        modelButton = overlayView.findViewById(R.id.model_button);
-
-        overlayView.setMinHeight(convertDpToPixel(300));
-
-
-        resultView.setMovementMethod(new ScrollingMovementMethod());
-
-        // Setup layout
-        setUiState(currentState);
-        if (!currentErrorMessage.isEmpty()) {
-            setErrorState(currentErrorMessage);
-        }
-
-//        overlayView.findViewById(R.id.recognize_file).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                recognizeFile();
-//            }
-//        });
-
-        micButton.setOnClickListener(new View.OnClickListener() {
+        viewManager.setListener(new ViewManager.Listener() {
             @Override
-            public void onClick(View view) {
-                if (model != null)
-                    recognizeMicrophone();
+            public void micClick() {
+                if (modelManager.isRunning()) {
+                    modelManager.stop();
+                    viewManager.setUiState(ViewManager.STATE_DONE);
+                } else {
+                    modelManager.start();
+                }
             }
-        });
 
-        micButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public boolean micLongClick() {
                 InputMethodManager imeManager = (InputMethodManager)
                         getApplicationContext().getSystemService(INPUT_METHOD_SERVICE);
                 imeManager.showInputMethodPicker();
                 return true;
             }
-        });
 
-        overlayView.findViewById(R.id.back_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void backClicked() {
                 switchToLastIme();
             }
-        });
-        overlayView.findViewById(R.id.backspace_button).setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
+            public void backspaceClicked() {
                 deleteLastChar();
             }
-        });
-        overlayView.findViewById(R.id.backspace_button).setOnTouchListener(new View.OnTouchListener() {
+
             private float initX, initY;
             private final float threshold = getResources().getDisplayMetrics().densityDpi / 6f;
             private final float charLen = getResources().getDisplayMetrics().densityDpi / 32f;
@@ -266,7 +186,7 @@ public class VoskIME extends InputMethodService implements
             private int lastAmount = 0;
 
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public boolean backspaceTouched(View v, MotionEvent event) {
                 float x = event.getX() - initX;
                 float y = event.getY() - initY;
 
@@ -299,60 +219,15 @@ public class VoskIME extends InputMethodService implements
                 }
                 return true;
             }
-        });
-//        overlayView.findViewById(R.id.colon).
-//
-//                setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        appendSpecial(":");
-//                    }
-//                });
-//        overlayView.findViewById(R.id.exclamation).
-//
-//                setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        appendSpecial("!");
-//                    }
-//                });
-//        overlayView.findViewById(R.id.question).
-//
-//                setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        appendSpecial("?");
-//                    }
-//                });
-//        overlayView.findViewById(R.id.comma).
-//
-//                setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        appendSpecial(",");
-//                    }
-//                });
-//        overlayView.findViewById(R.id.dot).
-//
-//                setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        appendSpecial(".");
-//                    }
-//                });
-        modelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                showModelPicker();
-                loadNextModel();
-            }
-        });
-        modelButton.setText(loadedModel);
 
-        overlayView.findViewById(R.id.return_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void returnClicked() {
                 sendEnter();
+            }
+
+            @Override
+            public void modelClicked() {
+                modelManager.loadNextModel();
             }
         });
 
@@ -369,30 +244,7 @@ public class VoskIME extends InputMethodService implements
         }
 
 
-        return overlayView;
-    }
-
-    private void showModelPicker() {
-        // setup the alert builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.model_dialog_title);
-
-        models = Tools.getInstalledModelsList(this);
-
-        String[] names = new String[models.size()];
-        for (int i = 0; i < models.size(); i++) {
-            names[i] = models.get(i).locale.getDisplayLanguage();
-        }
-
-        builder.setItems(names, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                initModel(models.get(which));
-            }
-        });
-
-// create and show the alert dialog
-        AlertDialog dialog = builder.show();
+        return viewManager.getRoot();
     }
 
     @Override
@@ -505,15 +357,7 @@ public class VoskIME extends InputMethodService implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        if (speechService != null) {
-            speechService.stop();
-            speechService.shutdown();
-        }
-
-        if (speechStreamService != null) {
-            speechStreamService.stop();
-        }
+        modelManager.onDestroy();
     }
 
     @Override
@@ -554,7 +398,7 @@ public class VoskIME extends InputMethodService implements
         try {
             JSONObject partialResult = new JSONObject(hypothesis);
             String partialText = partialResult.getString("partial").trim();
-            if (partialText.equals("") || partialText.equals("nun")) return; // wtf nun ?!
+            if (partialText.equals("") || partialText.equals("nun")) return;
 //            resultView.setText(partialText);
             InputConnection ic = getCurrentInputConnection();
             if (ic == null) return;
@@ -572,85 +416,16 @@ public class VoskIME extends InputMethodService implements
 
     @Override
     public void onError(Exception e) {
-        setErrorState(e.getMessage());
+        viewManager.setErrorState(e.getMessage());
     }
 
     @Override
     public void onTimeout() {
-        setUiState(STATE_DONE);
-    }
-
-    private void setUiState(int state) {
-        boolean enabled;
-        int text;
-        int icon;
-        switch (state) {
-            case STATE_START:
-                text = R.string.mic_info_preparing;
-                icon = R.drawable.ic_settings_voice;
-                enabled = false;
-                break;
-            case STATE_READY:
-            case STATE_DONE:
-                text = R.string.mic_info_ready;
-                icon = R.drawable.ic_mic_none;
-                enabled = true;
-                break;
-            case STATE_MIC:
-                text = R.string.mic_info_recording;
-                icon = R.drawable.ic_mic;
-                enabled = true;
-                break;
-            case STATE_ERROR:
-                text = R.string.mic_info_error;
-                icon = R.drawable.ic_mic_off;
-                enabled = false;
-                break;
-            default:
-                return;
-        }
-        if (resultView != null)
-            resultView.setText(text);
-        if (micButton != null) {
-            micButton.setImageDrawable(AppCompatResources.getDrawable(this, icon));
-            micButton.setEnabled(enabled);
-        }
-        currentState = state;
-    }
-
-    private void setErrorState(String message) {
-        setUiState(STATE_ERROR);
-        if (resultView != null)
-            resultView.setText(message);
-        currentErrorMessage = message;
-    }
-
-    private void recognizeMicrophone() {
-        if (speechService != null) {
-            setUiState(STATE_DONE);
-            speechService.stop();
-            speechService = null;
-        } else {
-            setUiState(STATE_MIC);
-            try {
-                Recognizer rec = new Recognizer(model, 16000.0f);
-                speechService = new SpeechService(rec, 16000.0f);
-                speechService.startListening(this);
-            } catch (IOException e) {
-                setErrorState(e.getMessage());
-            }
-        }
+        viewManager.setUiState(ViewManager.STATE_DONE);
     }
 
 
     private void pause(boolean checked) {
-        if (speechService != null) {
-            speechService.setPause(checked);
-        }
-    }
-
-
-    public int convertDpToPixel(float dp) {
-        return (int) (dp * (getResources().getDisplayMetrics().densityDpi / 160f));
+        modelManager.pause(checked);
     }
 }

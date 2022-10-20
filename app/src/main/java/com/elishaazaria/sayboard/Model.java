@@ -2,6 +2,7 @@ package com.elishaazaria.sayboard;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Model implements Serializable {
     public final String path;
@@ -62,5 +63,25 @@ public class Model implements Serializable {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Model model = (Model) o;
+
+        if (!Objects.equals(path, model.path)) return false;
+        if (!Objects.equals(locale, model.locale)) return false;
+        return Objects.equals(filename, model.filename);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = path != null ? path.hashCode() : 0;
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        result = 31 * result + (filename != null ? filename.hashCode() : 0);
+        return result;
     }
 }

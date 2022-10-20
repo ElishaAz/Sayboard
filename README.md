@@ -1,3 +1,6 @@
+<img align="left" width="80" height="80"
+src="app/src/main/ic_launcher-playstore.png" alt="App icon">
+
 ## Sayboard
 
 This project provides a voice keyboard using [Vosk](https://alphacephei.com/vosk/android).
