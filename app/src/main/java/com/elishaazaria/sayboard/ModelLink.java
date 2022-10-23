@@ -17,7 +17,7 @@ public enum ModelLink {
     CHINESE("https://alphacephei.com/vosk/models/vosk-model-small-cn-0.22.zip", Locale.CHINESE, R.string.model_cn),
     RUSSIAN("https://alphacephei.com/vosk/models/vosk-model-small-ru-0.22.zip", new Locale("ru"), R.string.model_ru),
     FRENCH("https://alphacephei.com/vosk/models/vosk-model-small-fr-0.22.zip", Locale.FRENCH, R.string.model_fr),
-    GERMAN("https://alphacephei.com/vosk/models/vosk-model-de-0.21.zip", Locale.GERMAN, R.string.model_de),
+    GERMAN("https://alphacephei.com/vosk/models/vosk-model-small-de-0.15.zip", Locale.GERMAN, R.string.model_de),
     SPANISH("https://alphacephei.com/vosk/models/vosk-model-small-es-0.42.zip", new Locale("es"), R.string.model_es),
     PORTUGUESE("https://alphacephei.com/vosk/models/vosk-model-small-pt-0.3.zip", new Locale("pt"), R.string.model_pt),
     TURKISH("https://alphacephei.com/vosk/models/vosk-model-small-tr-0.3.zip", new Locale("tr"), R.string.model_tr),
