@@ -43,7 +43,9 @@
     <string name="themes_header">Theme</string>
 
     <!-- Theme Preferences -->
-    <string name="signature_title">Your signature</string>
+    <string name="theme_foreground_color_title">Foreground color</string>
+    <string name="theme_background_color_title">Background color</string>
+    <string name="theme_reset_color">Reset</string>
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>

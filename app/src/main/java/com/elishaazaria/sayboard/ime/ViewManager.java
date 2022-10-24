@@ -1,6 +1,10 @@
 package com.elishaazaria.sayboard.ime;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -9,8 +13,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.TextViewCompat;
 
 import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.preferences.ThemePreferences;
 
 public class ViewManager {
     private final IME ime;
@@ -56,17 +62,14 @@ public class ViewManager {
         resultView.setMovementMethod(new ScrollingMovementMethod());
 
         micButton.setOnClickListener(v -> {
-            if (listener != null)
-                listener.micClick();
+            if (listener != null) listener.micClick();
         });
         micButton.setOnLongClickListener(v -> listener != null && listener.micLongClick());
         backButton.setOnClickListener(v -> {
-            if (listener != null)
-                listener.backClicked();
+            if (listener != null) listener.backClicked();
         });
         backspaceButton.setOnClickListener(v -> {
-            if (listener != null)
-                listener.backspaceClicked();
+            if (listener != null) listener.backspaceClicked();
         });
         backspaceButton.setOnTouchListener((v, event) -> {
             if (listener == null) {
@@ -76,12 +79,10 @@ public class ViewManager {
             return listener.backspaceTouched(v, event);
         });
         returnButton.setOnClickListener(v -> {
-            if (listener != null)
-                listener.returnClicked();
+            if (listener != null) listener.returnClicked();
         });
         modelButton.setOnClickListener(v -> {
-            if (listener != null)
-                listener.modelClicked();
+            if (listener != null) listener.modelClicked();
         });
 
 
@@ -89,10 +90,39 @@ public class ViewManager {
 
         if (currentState == STATE_ERROR && !currentErrorMessage.isEmpty())
             setErrorState(currentErrorMessage);
-        else
-            setUiState(currentState);
+        else setUiState(currentState);
 
         setModelName(modelName);
+
+        setUpTheme();
+    }
+
+    private int currentForeground = Integer.MAX_VALUE;
+    private int currentBackground = Integer.MAX_VALUE;
+
+    private void setUpTheme() {
+        int foreground = ThemePreferences.getForegroundColor();
+        int background = ThemePreferences.getBackgroundColor();
+
+        if (currentForeground == foreground && currentBackground == background) return;
+
+        currentForeground = foreground;
+        currentBackground = background;
+
+        overlayView.setBackgroundColor(background);
+
+        ColorStateList foregroundTint = ColorStateList.valueOf(foreground);
+        micButton.setImageTintList(foregroundTint);
+        backButton.setImageTintList(foregroundTint);
+        backspaceButton.setImageTintList(foregroundTint);
+        returnButton.setImageTintList(foregroundTint);
+        TextViewCompat.setCompoundDrawableTintList(modelButton, foregroundTint);
+        modelButton.setTextColor(foreground);
+        resultView.setTextColor(foreground);
+    }
+
+    public void refresh() {
+        setUpTheme();
     }
 
     public void setUiState(int state) {
@@ -134,15 +164,13 @@ public class ViewManager {
 
     public void setErrorState(String message) {
         setUiState(STATE_ERROR);
-        if (initialized)
-            resultView.setText(message);
+        if (initialized) resultView.setText(message);
         currentErrorMessage = message;
     }
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
-        if (initialized)
-            modelButton.setText(modelName);
+        if (initialized) modelButton.setText(modelName);
     }
 
     public ConstraintLayout getRoot() {

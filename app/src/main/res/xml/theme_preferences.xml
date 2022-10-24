@@ -1,11 +1,25 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/themes_header">
 
-<!--        <EditTextPreference-->
-<!--            app:key="signature"-->
-<!--            app:title="@string/signature_title"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
+        <!--        <EditTextPreference-->
+        <!--            app:key="signature"-->
+        <!--            app:title="@string/signature_title"-->
+        <!--            app:useSimpleSummaryProvider="true" />-->
+
+        <com.rarepebble.colorpicker.ColorPreference
+            android:defaultValue="@integer/pref_foreground_color_default"
+            android:key="@string/pref_theme_foreground_c"
+            android:title="@string/theme_foreground_color_title"
+            app:colorpicker_selectNoneButtonText="@string/theme_reset_color"/>
+
+        <com.rarepebble.colorpicker.ColorPreference
+            android:defaultValue="@integer/pref_background_color_default"
+            android:key="@string/pref_theme_background_c"
+            android:title="@string/theme_background_color_title"
+            app:colorpicker_selectNoneButtonText="@string/theme_reset_color"/>
+
 
     </PreferenceCategory>
 

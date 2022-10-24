@@ -138,6 +138,7 @@ public class IME extends InputMethodService implements
         }
 
         modelManager.reloadModels();
+        viewManager.refresh();
     }
 
     @Override

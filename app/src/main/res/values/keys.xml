@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_shared_pref" translatable="false">main_shared_pref</string>
+    <string name="pref_theme_foreground_c" translatable="false">c_foreground</string>
+    <string name="pref_theme_background_c" translatable="false">c_background</string>
+
+</resources>
