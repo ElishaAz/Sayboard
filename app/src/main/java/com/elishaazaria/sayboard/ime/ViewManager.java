@@ -1,13 +1,14 @@
 package com.elishaazaria.sayboard.ime;
 
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.content.res.Configuration;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.TextViewCompat;
 
 import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.preferences.OtherPreferences;
 import com.elishaazaria.sayboard.preferences.ThemePreferences;
 
 public class ViewManager {
@@ -57,9 +59,9 @@ public class ViewManager {
         modelButton = overlayView.findViewById(R.id.model_button);
         returnButton = overlayView.findViewById(R.id.return_button);
 
-        overlayView.setMinHeight(convertDpToPixel(300));
-
         resultView.setMovementMethod(new ScrollingMovementMethod());
+
+        reloadOrientation();
 
         micButton.setOnClickListener(v -> {
             if (listener != null) listener.micClick();
@@ -94,6 +96,8 @@ public class ViewManager {
 
         setModelName(modelName);
 
+        currentForeground = Integer.MAX_VALUE;
+        currentBackground = Integer.MAX_VALUE;
         setUpTheme();
     }
 
@@ -121,8 +125,39 @@ public class ViewManager {
         resultView.setTextColor(foreground);
     }
 
+    private void reloadOrientation() {
+        boolean landscape = ime.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        Window window = ime.getMyWindow();
+        if (window == null)
+            return;
+
+        int screenHeight = ime.getResources().getDisplayMetrics().heightPixels;
+
+        float percent;
+        if (landscape) {
+            percent = OtherPreferences.getScreenHeightLandscape();
+        } else {
+            percent = OtherPreferences.getScreenHeightPortrait();
+        }
+        int height = (int) (percent * screenHeight);
+
+
+        Log.d("ViewManager", "Screen height: " + screenHeight + ", height: " + height);
+
+//        WindowManager.LayoutParams params = window.getAttributes();
+//        params.height = height;
+//        window.setAttributes(params);
+//
+        overlayView.setMinHeight(height);
+        overlayView.setMaxHeight(height);
+//        overlayView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height));
+    }
+
     public void refresh() {
         setUpTheme();
+
+        reloadOrientation();
     }
 
     public void setUiState(int state) {

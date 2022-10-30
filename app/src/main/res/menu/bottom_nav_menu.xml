@@ -15,4 +15,9 @@
         android:icon="@drawable/ic_baseline_color_lens_24"
         android:title="@string/title_theme" />
 
+    <item
+        android:id="@+id/navigation_other_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/title_other_settings" />
+
 </menu>

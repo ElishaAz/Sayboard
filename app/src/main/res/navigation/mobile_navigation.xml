@@ -9,7 +9,7 @@
         android:id="@+id/navigation_setup"
         android:name="com.elishaazaria.sayboard.settingsfragments.SetupFragment"
         android:label="@string/title_setup"
-        tools:layout="@layout/fragment_setup" >
+        tools:layout="@layout/fragment_setup">
         <action
             android:id="@+id/action_navigation_setup_to_navigation_models"
             app:destination="@id/navigation_models" />
@@ -24,6 +24,10 @@
     <fragment
         android:id="@+id/navigation_theme"
         android:name="com.elishaazaria.sayboard.settingsfragments.ThemeFragment"
-        android:label="@string/title_theme"
-        tools:layout="@layout/fragment_theme" />
+        android:label="@string/title_theme" />
+
+    <fragment
+        android:id="@+id/navigation_other_settings"
+        android:name="com.elishaazaria.sayboard.settingsfragments.OtherSettingsFragment"
+        android:label="@string/title_other_settings" />
 </navigation>

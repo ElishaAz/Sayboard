@@ -44,7 +44,8 @@ public class SettingsActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
 //                R.id.navigation_setup,
                 R.id.navigation_models,
-                R.id.navigation_theme)
+                R.id.navigation_theme,
+                R.id.navigation_other_settings)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);

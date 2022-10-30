@@ -6,7 +6,7 @@
     <string name="mic_info_error">Error\n</string>
     <string name="mic_info_preparing">Preparing the recognizer\n</string>
     <string name="mic_info_ready">Ready\n</string>
-    <string name="mic_info_error_failed">Failed to init recognizer %s\n</string>
+    <string name="mic_info_error_failed">Failed to initialize recognizer %s\n</string>
     <string name="mic_info_recording">Say something\n</string>
     <!--    <string name="pause">Pause</string>-->
     <!--    <string name="continueRecognition">Continue</string>-->
@@ -38,14 +38,22 @@
     <string name="title_setup">Setup</string>
     <string name="title_models">Models</string>
     <string name="title_theme">Theme</string>
+    <string name="title_other_settings">Settings</string>
 
     <!-- Preference Titles -->
     <string name="themes_header">Theme</string>
+    <string name="keyboard_logic_header">Keyboard Logic</string>
+    <string name="other_settings_header">Other Settings</string>
 
     <!-- Theme Preferences -->
     <string name="theme_foreground_color_title">Foreground color</string>
     <string name="theme_background_color_title">Background color</string>
     <string name="theme_reset_color">Reset</string>
+
+    <!--  Other settings Preferences  -->
+    <string name="other_keep_screen_awake_title">Keep screen awake</string>
+    <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
+    <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>

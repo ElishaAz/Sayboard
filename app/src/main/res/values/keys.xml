@@ -4,4 +4,7 @@
     <string name="pref_theme_foreground_c" translatable="false">c_foreground</string>
     <string name="pref_theme_background_c" translatable="false">c_background</string>
 
+    <string name="pref_other_keyboard_height_portrait_i" translatable="false">i_keyboard_height_portrait</string>
+    <string name="pref_other_keyboard_height_landscape_i" translatable="false">i_keyboard_height_landscape</string>
+    <string name="pref_other_keep_screen_awake_l" translatable="false">l_keep_screen_awake</string>
 </resources>

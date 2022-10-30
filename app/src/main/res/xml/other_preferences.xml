@@ -1,0 +1,33 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/other_settings_header">
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="@bool/pref_keep_screen_awake_default"-->
+<!--            android:key="@string/pref_other_keep_screen_awake_b"-->
+<!--            android:summary="@string/other_keep_screen_awake_summery"-->
+<!--            android:title="@string/other_keep_screen_awake_title" />-->
+        <ListPreference
+            android:defaultValue="@string/pref_keep_awake_default"
+            android:entries="@array/keep_screen_awake_entries"
+            android:entryValues="@array/keep_screen_awake_values"
+            android:key="@string/pref_other_keep_screen_awake_l"
+            android:title="@string/other_keep_screen_awake_title"
+            app:useSimpleSummaryProvider="true"/>
+        <SeekBarPreference
+            android:defaultValue="@integer/pref_keyboard_height_portrait_default"
+            android:key="@string/pref_other_keyboard_height_portrait_i"
+            android:max="@integer/keyboard_height_max"
+            android:title="@string/other_keyboard_height_portrait_title"
+            app:min="@integer/keyboard_height_min"
+            app:showSeekBarValue="true" />
+        <SeekBarPreference
+            android:defaultValue="@integer/pref_keyboard_height_landscape_default"
+            android:key="@string/pref_other_keyboard_height_landscape_i"
+            android:max="@integer/keyboard_height_max"
+            android:title="@string/other_keyboard_height_landscape_title"
+            app:min="@integer/keyboard_height_min"
+            app:showSeekBarValue="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

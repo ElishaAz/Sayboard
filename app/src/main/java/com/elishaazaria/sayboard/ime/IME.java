@@ -18,6 +18,7 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -51,6 +53,7 @@ import org.vosk.android.SpeechStreamService;
 
 import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.Tools;
+import com.elishaazaria.sayboard.preferences.OtherPreferences;
 
 import java.io.IOException;
 import java.util.List;
@@ -139,11 +142,14 @@ public class IME extends InputMethodService implements
 
         modelManager.reloadModels();
         viewManager.refresh();
+
+        setKeepScreenOn(OtherPreferences.getKeepScreenAwake() == OtherPreferences.KEEP_SCREEN_AWAKE_WHEN_OPEN);
     }
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
         // text input has ended
+        setKeepScreenOn(false);
     }
 
     @Override
@@ -156,8 +162,13 @@ public class IME extends InputMethodService implements
                 if (modelManager.isRunning()) {
                     modelManager.stop();
                     viewManager.setUiState(ViewManager.STATE_DONE);
+
+                    if (OtherPreferences.getKeepScreenAwake() == OtherPreferences.KEEP_SCREEN_AWAKE_WHEN_LISTENING)
+                        setKeepScreenOn(false);
                 } else {
                     modelManager.start();
+                    if (OtherPreferences.getKeepScreenAwake() == OtherPreferences.KEEP_SCREEN_AWAKE_WHEN_LISTENING)
+                        setKeepScreenOn(true);
                 }
             }
 
@@ -256,6 +267,12 @@ public class IME extends InputMethodService implements
         Log.d("VoskIME", "selection update: " + selectionStart + ", " + selectionEnd);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+//        viewManager.orientationChanged(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
+    }
 
     private int selectionStart = 0;
     private int selectionEnd = 0;
@@ -330,12 +347,22 @@ public class IME extends InputMethodService implements
         return window.getAttributes().token;
     }
 
-    private Window getMyWindow() {
+    public Window getMyWindow() {
         final Dialog dialog = getWindow();
         if (dialog == null) {
             return null;
         }
         return dialog.getWindow();
+    }
+
+    private void setKeepScreenOn(boolean keepScreenOn) {
+        Window window = getMyWindow();
+        if (window == null) return;
+
+        if (keepScreenOn)
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 
