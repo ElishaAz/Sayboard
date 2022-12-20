@@ -11,13 +11,13 @@
         android:title="@string/title_models" />
 
     <item
-        android:id="@+id/navigation_theme"
+        android:id="@+id/navigation_ui"
         android:icon="@drawable/ic_baseline_color_lens_24"
-        android:title="@string/title_theme" />
+        android:title="@string/title_ui" />
 
     <item
-        android:id="@+id/navigation_other_settings"
+        android:id="@+id/navigation_logic"
         android:icon="@drawable/ic_settings"
-        android:title="@string/title_other_settings" />
+        android:title="@string/title_logic" />
 
 </menu>

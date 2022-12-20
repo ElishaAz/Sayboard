@@ -22,12 +22,12 @@
         tools:layout="@layout/fragment_models" />
 
     <fragment
-        android:id="@+id/navigation_theme"
-        android:name="com.elishaazaria.sayboard.settingsfragments.ThemeFragment"
-        android:label="@string/title_theme" />
+        android:id="@+id/navigation_ui"
+        android:name="com.elishaazaria.sayboard.settingsfragments.UIFragment"
+        android:label="@string/title_ui" />
 
     <fragment
-        android:id="@+id/navigation_other_settings"
-        android:name="com.elishaazaria.sayboard.settingsfragments.OtherSettingsFragment"
-        android:label="@string/title_other_settings" />
+        android:id="@+id/navigation_logic"
+        android:name="com.elishaazaria.sayboard.settingsfragments.LogicSettingsFragment"
+        android:label="@string/title_logic" />
 </navigation>

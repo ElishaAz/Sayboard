@@ -1,18 +1,16 @@
 package com.elishaazaria.sayboard.preferences;
 
-import android.util.Log;
-
 import com.elishaazaria.sayboard.AppCtx;
 import com.elishaazaria.sayboard.R;
 
-public class OtherPreferences {
+public class LogicPreferences {
     public static final int KEEP_SCREEN_AWAKE_NEVER = 0;
     public static final int KEEP_SCREEN_AWAKE_WHEN_LISTENING = 1;
     public static final int KEEP_SCREEN_AWAKE_WHEN_OPEN = 2;
 
     public static int getKeepScreenAwake() {
         String val = MyPreferences.getSharedPref()
-                .getString(AppCtx.getStringRes(R.string.pref_other_keep_screen_awake_l),
+                .getString(AppCtx.getStringRes(R.string.pref_logic_keep_screen_awake_l),
                         AppCtx.getStringRes(R.string.pref_keep_awake_default));
 
         if (val.equals(AppCtx.getStringRes(R.string.value_keep_awake_never)))
@@ -25,13 +23,18 @@ public class OtherPreferences {
         return -1;
     }
 
-    public static float getScreenHeightPortrait() {
-        return MyPreferences.getSharedPref().getInt(AppCtx.getStringRes(R.string.pref_other_keyboard_height_portrait_i),
-                AppCtx.getIntegerRes(R.integer.pref_keyboard_height_portrait_default)) / (float) AppCtx.getIntegerRes(R.integer.keyboard_height_max);
+    public static boolean isListenImmediately() {
+        return MyPreferences.getSharedPref().getBoolean(AppCtx.getStringRes(R.string.pref_logic_listen_immediately_b),
+                AppCtx.getBoolRes(R.bool.pref_listen_immediately_default));
     }
 
-    public static float getScreenHeightLandscape() {
-        return MyPreferences.getSharedPref().getInt(AppCtx.getStringRes(R.string.pref_other_keyboard_height_landscape_i),
-                AppCtx.getIntegerRes(R.integer.pref_keyboard_height_landscape_default)) / (float) AppCtx.getIntegerRes(R.integer.keyboard_height_max);
+    public static boolean isAutoSwitchBack() {
+        return MyPreferences.getSharedPref().getBoolean(AppCtx.getStringRes(R.string.pref_logic_auto_switch_back_b),
+                AppCtx.getBoolRes(R.bool.pref_auto_switch_back_default));
+    }
+
+    public static boolean isWeakRefModel() {
+        return MyPreferences.getSharedPref().getBoolean(AppCtx.getStringRes(R.string.pref_logic_weak_ref_model_b),
+                AppCtx.getBoolRes(R.bool.pref_weak_ref_model_default));
     }
 }

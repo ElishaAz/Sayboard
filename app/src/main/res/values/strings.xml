@@ -37,23 +37,29 @@
 
     <string name="title_setup">Setup</string>
     <string name="title_models">Models</string>
-    <string name="title_theme">Theme</string>
-    <string name="title_other_settings">Settings</string>
+    <string name="title_ui">User Interface</string>
+    <string name="title_logic">Logic</string>
 
     <!-- Preference Titles -->
-    <string name="themes_header">Theme</string>
-    <string name="keyboard_logic_header">Keyboard Logic</string>
-    <string name="other_settings_header">Other Settings</string>
+    <string name="ui_themes_header">Theme</string>
+    <string name="ui_keyboard_header">Keyboard</string>
+    <string name="logic_logic_header">Logic</string>
 
     <!-- Theme Preferences -->
     <string name="theme_foreground_color_title">Foreground color</string>
     <string name="theme_background_color_title">Background color</string>
     <string name="theme_reset_color">Reset</string>
 
-    <!--  Other settings Preferences  -->
+    <!--  Logic Preferences  -->
     <string name="other_keep_screen_awake_title">Keep screen awake</string>
     <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
     <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
+    <string name="other_listen_immediately_title">Listen immediately</string>
+    <string name="other_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
+    <string name="other_auto_switch_back_title">Auto switch back</string>
+    <string name="other_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
+    <string name="other_quick_reload_title">Weak ref to model (when closed)</string>
+    <string name="other_quick_reload_summery">Allows the system to delete the model from RAM when the keyboard is closed if low on memory.</string>
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>

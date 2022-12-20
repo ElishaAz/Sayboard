@@ -9,7 +9,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.databinding.ActivitySettingsBinding;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -44,8 +43,8 @@ public class SettingsActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
 //                R.id.navigation_setup,
                 R.id.navigation_models,
-                R.id.navigation_theme,
-                R.id.navigation_other_settings)
+                R.id.navigation_ui,
+                R.id.navigation_logic)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);

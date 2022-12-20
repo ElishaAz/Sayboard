@@ -8,7 +8,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,17 +16,17 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.TextViewCompat;
 
 import com.elishaazaria.sayboard.R;
-import com.elishaazaria.sayboard.preferences.OtherPreferences;
-import com.elishaazaria.sayboard.preferences.ThemePreferences;
+import com.elishaazaria.sayboard.preferences.UIPreferences;
 
 public class ViewManager {
     private final IME ime;
 
-    public static final int STATE_PREPARE = 0;
-    public static final int STATE_READY = 1;
-    public static final int STATE_DONE = 2;
-    public static final int STATE_ERROR = 3;
-    public static final int STATE_MIC = 4;
+    public static final int STATE_INITIAL = 0;
+    public static final int STATE_LOADING = 1;
+    public static final int STATE_READY = 2; // model loaded, ready to start
+    public static final int STATE_LISTENING = 3;
+    public static final int STATE_PAUSED = 4;
+    public static final int STATE_ERROR = 5;
 
     private ConstraintLayout overlayView;
     private ImageButton micButton;
@@ -39,7 +38,7 @@ public class ViewManager {
 
     private boolean initialized;
 
-    private int currentState = ViewManager.STATE_PREPARE;
+    private int currentState = ViewManager.STATE_INITIAL;
     private String currentErrorMessage = "";
     private String modelName = "";
 
@@ -105,8 +104,8 @@ public class ViewManager {
     private int currentBackground = Integer.MAX_VALUE;
 
     private void setUpTheme() {
-        int foreground = ThemePreferences.getForegroundColor();
-        int background = ThemePreferences.getBackgroundColor();
+        int foreground = UIPreferences.getForegroundColor();
+        int background = UIPreferences.getBackgroundColor();
 
         if (currentForeground == foreground && currentBackground == background) return;
 
@@ -136,9 +135,9 @@ public class ViewManager {
 
         float percent;
         if (landscape) {
-            percent = OtherPreferences.getScreenHeightLandscape();
+            percent = UIPreferences.getScreenHeightLandscape();
         } else {
-            percent = OtherPreferences.getScreenHeightPortrait();
+            percent = UIPreferences.getScreenHeightPortrait();
         }
         int height = (int) (percent * screenHeight);
 
@@ -165,18 +164,19 @@ public class ViewManager {
         int text;
         int icon;
         switch (state) {
-            case STATE_PREPARE:
+            case STATE_INITIAL:
+            case STATE_LOADING:
                 text = R.string.mic_info_preparing;
                 icon = R.drawable.ic_settings_voice;
                 enabled = false;
                 break;
             case STATE_READY:
-            case STATE_DONE:
+            case STATE_PAUSED:
                 text = R.string.mic_info_ready;
                 icon = R.drawable.ic_mic_none;
                 enabled = true;
                 break;
-            case STATE_MIC:
+            case STATE_LISTENING:
                 text = R.string.mic_info_recording;
                 icon = R.drawable.ic_mic;
                 enabled = true;
