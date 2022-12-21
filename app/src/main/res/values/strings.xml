@@ -41,19 +41,27 @@
     <string name="title_logic">Logic</string>
 
     <!-- Preference Titles -->
-    <string name="ui_themes_header">Theme</string>
+    <string name="ui_light_theme_header">Light Theme</string>
+    <string name="ui_dark_theme_header">Dark Theme</string>
     <string name="ui_keyboard_header">Keyboard</string>
     <string name="logic_logic_header">Logic</string>
 
-    <!-- Theme Preferences -->
-    <string name="theme_foreground_color_title">Foreground color</string>
-    <string name="theme_background_color_title">Background color</string>
-    <string name="theme_reset_color">Reset</string>
+    <!-- UI Preferences -->
+    <string name="ui_light_theme_foreground_material_you_title">Use Material You foreground color</string>
+    <string name="ui_light_theme_foreground_color_title">Foreground color</string>
+    <string name="ui_light_theme_background_color_title">Background color</string>
+
+    <string name="ui_dark_theme_foreground_material_you_title">Use Material You foreground color</string>
+    <string name="ui_dark_theme_foreground_color_title">Foreground color</string>
+    <string name="ui_dark_theme_background_color_title">Background color</string>
+
+    <string name="ui_theme_reset_color">Reset</string>
+
+    <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
+    <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
 
     <!--  Logic Preferences  -->
     <string name="other_keep_screen_awake_title">Keep screen awake</string>
-    <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
-    <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
     <string name="other_listen_immediately_title">Listen immediately</string>
     <string name="other_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
     <string name="other_auto_switch_back_title">Auto switch back</string>

@@ -6,4 +6,8 @@
     <!--    <color name="colorAccentDark">#F57C00</color>&lt;!&ndash; Orange 700 &ndash;&gt;-->
 
     <color name="colorOnPrimary">#377A00</color>
+
+    <color name="materialYouForegroundLight">@color/colorOnPrimary</color>
+    <color name="materialYouForegroundDark">@color/colorOnPrimary</color>
+    <color name="materialYouForeground">@color/materialYouForegroundLight</color>
 </resources>

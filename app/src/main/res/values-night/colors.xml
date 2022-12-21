@@ -5,5 +5,7 @@
     <!--    <color name="colorAccent">#FF9800</color>&lt;!&ndash; Orange 500 &ndash;&gt;-->
     <color name="colorAccent">#F57C00</color><!-- Orange 700 -->
 
-    <color name="colorOnPrimary">#9CCC65</color>
+    <color name="colorOnPrimary">#66BB6A</color> <!-- Teal 400 -->
+
+    <color name="materialYouForeground">@color/materialYouForegroundDark</color>
 </resources>

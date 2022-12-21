@@ -1,21 +1,52 @@
 package com.elishaazaria.sayboard.preferences;
 
+import android.content.Context;
+import android.os.Build;
+
+import androidx.core.content.ContextCompat;
+
 import com.elishaazaria.sayboard.AppCtx;
 import com.elishaazaria.sayboard.R;
 
 public class UIPreferences {
-    public static int getForegroundColor() {
-        // TODO: if min-api 26, switch to Color objects
-        return MyPreferences.getSharedPref()
-                .getInt(AppCtx.getStringRes(R.string.pref_ui_foreground_c),
-                        AppCtx.getIntegerRes(R.integer.pref_foreground_color_default));
+    public static boolean isForegroundMaterialYou(boolean dark) {
+        if (!dark) {
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MyPreferences.getSharedPref()
+                    .getBoolean(AppCtx.getStringRes(R.string.pref_ui_light_foreground_material_you),
+                            AppCtx.getBoolRes(R.bool.pref_light_foreground_material_you_default));
+        } else {
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MyPreferences.getSharedPref()
+                    .getBoolean(AppCtx.getStringRes(R.string.pref_ui_dark_foreground_material_you),
+                            AppCtx.getBoolRes(R.bool.pref_dark_foreground_material_you_default));
+        }
     }
 
-    public static int getBackgroundColor() {
-        // TODO: if min-api 26, switch to Color objects
-        return MyPreferences.getSharedPref()
-                .getInt(AppCtx.getStringRes(R.string.pref_ui_background_c),
-                        AppCtx.getIntegerRes(R.integer.pref_background_color_default));
+    public static int getForegroundColor(boolean dark, Context ctx) {
+        if (isForegroundMaterialYou(dark)) {
+            return ContextCompat.getColor(ctx, R.color.materialYouForeground);
+        }
+
+        if (!dark) {
+            return MyPreferences.getSharedPref()
+                    .getInt(AppCtx.getStringRes(R.string.pref_ui_light_foreground_c),
+                            AppCtx.getIntegerRes(R.integer.pref_light_foreground_color_default));
+        } else {
+            return MyPreferences.getSharedPref()
+                    .getInt(AppCtx.getStringRes(R.string.pref_ui_dark_foreground_c),
+                            AppCtx.getIntegerRes(R.integer.pref_dark_foreground_color_default));
+        }
+    }
+
+    public static int getBackgroundColor(boolean dark) {
+        if (!dark) {
+            return MyPreferences.getSharedPref()
+                    .getInt(AppCtx.getStringRes(R.string.pref_ui_light_background_c),
+                            AppCtx.getIntegerRes(R.integer.pref_light_background_color_default));
+        } else {
+            return MyPreferences.getSharedPref()
+                    .getInt(AppCtx.getStringRes(R.string.pref_ui_dark_background_c),
+                            AppCtx.getIntegerRes(R.integer.pref_dark_background_color_default));
+        }
     }
 
     public static float getScreenHeightLandscape() {

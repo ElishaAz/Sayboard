@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="pref_foreground_color_default">0xFF377A00</integer>
-    <integer name="pref_background_color_default">0xFFFFFFFF</integer>
+    <bool name="pref_light_foreground_material_you_default">false</bool>
+    <integer name="pref_light_foreground_color_default">0xFF377A00</integer>
+    <integer name="pref_light_background_color_default">0xFFFFFFFF</integer>
+
+    <bool name="pref_dark_foreground_material_you_default">false</bool>
+    <integer name="pref_dark_foreground_color_default">0xFF66BB6A</integer>
+    <integer name="pref_dark_background_color_default">0xFF000000</integer>
+
     <integer name="pref_keyboard_height_portrait_default">30</integer>
     <integer name="pref_keyboard_height_landscape_default">50</integer>
 

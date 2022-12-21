@@ -2,6 +2,7 @@ package com.elishaazaria.sayboard.ime;
 
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.elishaazaria.sayboard.R;
@@ -104,8 +106,10 @@ public class ViewManager {
     private int currentBackground = Integer.MAX_VALUE;
 
     private void setUpTheme() {
-        int foreground = UIPreferences.getForegroundColor();
-        int background = UIPreferences.getBackgroundColor();
+        boolean dark = (ime.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+
+        int foreground = UIPreferences.getForegroundColor(dark, ime);
+        int background = UIPreferences.getBackgroundColor(dark);
 
         if (currentForeground == foreground && currentBackground == background) return;
 
@@ -128,8 +132,7 @@ public class ViewManager {
         boolean landscape = ime.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         Window window = ime.getMyWindow();
-        if (window == null)
-            return;
+        if (window == null) return;
 
         int screenHeight = ime.getResources().getDisplayMetrics().heightPixels;
 

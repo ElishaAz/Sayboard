@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_shared_pref" translatable="false">main_shared_pref</string>
-    <string name="pref_ui_foreground_c" translatable="false">c_foreground</string>
-    <string name="pref_ui_background_c" translatable="false">c_background</string>
+    <string name="pref_ui_light_foreground_material_you" translatable="false">b_light_foreground_material_you</string>
+    <string name="pref_ui_light_foreground_c" translatable="false">c_light_foreground</string>
+    <string name="pref_ui_light_background_c" translatable="false">c_light_background</string>
+
+    <string name="pref_ui_dark_foreground_material_you" translatable="false">b_dark_foreground_material_you</string>
+    <string name="pref_ui_dark_foreground_c" translatable="false">c_dark_foreground</string>
+    <string name="pref_ui_dark_background_c" translatable="false">c_dark_background</string>
+
     <string name="pref_ui_keyboard_height_portrait_i" translatable="false">i_keyboard_height_portrait</string>
     <string name="pref_ui_keyboard_height_landscape_i" translatable="false">i_keyboard_height_landscape</string>
 

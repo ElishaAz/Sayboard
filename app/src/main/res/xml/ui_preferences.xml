@@ -1,26 +1,46 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/ui_themes_header">
-
-        <!--        <EditTextPreference-->
-        <!--            app:key="signature"-->
-        <!--            app:title="@string/signature_title"-->
-        <!--            app:useSimpleSummaryProvider="true" />-->
-
-        <com.rarepebble.colorpicker.ColorPreference
-            android:defaultValue="@integer/pref_foreground_color_default"
-            android:key="@string/pref_ui_foreground_c"
-            android:title="@string/theme_foreground_color_title"
-            app:colorpicker_selectNoneButtonText="@string/theme_reset_color" />
+    <PreferenceCategory app:title="@string/ui_light_theme_header">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_light_foreground_material_you_default"
+            android:disableDependentsState="true"
+            android:key="@string/pref_ui_light_foreground_material_you"
+            android:title="@string/ui_light_theme_foreground_material_you_title" />
 
         <com.rarepebble.colorpicker.ColorPreference
-            android:defaultValue="@integer/pref_background_color_default"
-            android:key="@string/pref_ui_background_c"
-            android:title="@string/theme_background_color_title"
-            app:colorpicker_selectNoneButtonText="@string/theme_reset_color" />
+            android:defaultValue="@integer/pref_light_foreground_color_default"
+            android:dependency="@string/pref_ui_light_foreground_material_you"
+            android:key="@string/pref_ui_light_foreground_c"
+            android:title="@string/ui_light_theme_foreground_color_title"
+            app:colorpicker_selectNoneButtonText="@string/ui_theme_reset_color" />
 
+        <com.rarepebble.colorpicker.ColorPreference
+            android:defaultValue="@integer/pref_light_background_color_default"
+            android:key="@string/pref_ui_light_background_c"
+            android:title="@string/ui_light_theme_background_color_title"
+            app:colorpicker_selectNoneButtonText="@string/ui_theme_reset_color" />
+    </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/ui_dark_theme_header">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_dark_foreground_material_you_default"
+            android:disableDependentsState="true"
+            android:key="@string/pref_ui_dark_foreground_material_you"
+            android:title="@string/ui_dark_theme_foreground_material_you_title" />
+
+        <com.rarepebble.colorpicker.ColorPreference
+            android:defaultValue="@integer/pref_dark_foreground_color_default"
+            android:dependency="@string/pref_ui_dark_foreground_material_you"
+            android:key="@string/pref_ui_dark_foreground_c"
+            android:title="@string/ui_dark_theme_foreground_color_title"
+            app:colorpicker_selectNoneButtonText="@string/ui_theme_reset_color" />
+
+        <com.rarepebble.colorpicker.ColorPreference
+            android:defaultValue="@integer/pref_dark_background_color_default"
+            android:key="@string/pref_ui_dark_background_c"
+            android:title="@string/ui_dark_theme_background_color_title"
+            app:colorpicker_selectNoneButtonText="@string/ui_theme_reset_color" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/ui_keyboard_header">
