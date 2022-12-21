@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#4CAF50</color><!-- Green 500 -->
-<!--    <color name="colorPrimaryDark">#388E3C</color>&lt;!&ndash; Green 700 &ndash;&gt;-->
+    <!--    <color name="colorPrimaryDark">#388E3C</color>&lt;!&ndash; Green 700 &ndash;&gt;-->
     <color name="colorAccent">#FF9800</color><!-- Orange 500 -->
-<!--    <color name="colorAccentDark">#F57C00</color>&lt;!&ndash; Orange 700 &ndash;&gt;-->
+    <!--    <color name="colorAccentDark">#F57C00</color>&lt;!&ndash; Orange 700 &ndash;&gt;-->
 
     <color name="colorOnPrimary">#377A00</color>
-
-    <color name="candidate_normal">#FF000000</color>
-    <color name="candidate_recommended">#000000</color>
-    <color name="candidate_other">#ff808080</color>
-    <color name="candidate_background">#bbffffff</color>
-
-    <color name="icon_tint">#202020</color>
 </resources>

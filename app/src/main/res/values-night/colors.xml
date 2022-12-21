@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#4CAF50</color>&lt;!&ndash; Green 500 &ndash;&gt;-->
+    <!--    <color name="colorPrimary">#4CAF50</color>&lt;!&ndash; Green 500 &ndash;&gt;-->
     <color name="colorPrimary">#388E3C</color><!-- Green 700 -->
-<!--    <color name="colorAccent">#FF9800</color>&lt;!&ndash; Orange 500 &ndash;&gt;-->
+    <!--    <color name="colorAccent">#FF9800</color>&lt;!&ndash; Orange 500 &ndash;&gt;-->
     <color name="colorAccent">#F57C00</color><!-- Orange 700 -->
 
     <color name="colorOnPrimary">#9CCC65</color>
-    <color name="icon_tint">#EFEFEF</color>
 </resources>
