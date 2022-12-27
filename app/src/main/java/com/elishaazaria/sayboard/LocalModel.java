@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Model implements Serializable {
+public class LocalModel implements Serializable {
     public final String path;
     public final Locale locale;
     public final String filename;
 
-    public Model(String path, Locale locale, String filename) {
+    public LocalModel(String path, Locale locale, String filename) {
         this.path = path;
         this.locale = locale;
         this.filename = filename;
@@ -19,13 +19,13 @@ public class Model implements Serializable {
         return serialize(this);
     }
 
-    public static String serialize(Model model) {
+    public static String serialize(LocalModel model) {
         return "[path:\"" + encode(model.path) +
                 "\", locale:\"" + model.locale +
                 "\", name:\"" + encode(model.filename) + "\"]";
     }
 
-    public static Model deserialize(String serialized) {
+    public static LocalModel deserialize(String serialized) {
         throw new RuntimeException(); // TODO: implement
     }
 
@@ -70,7 +70,7 @@ public class Model implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Model model = (Model) o;
+        LocalModel model = (LocalModel) o;
 
         if (!Objects.equals(path, model.path)) return false;
         if (!Objects.equals(locale, model.locale)) return false;

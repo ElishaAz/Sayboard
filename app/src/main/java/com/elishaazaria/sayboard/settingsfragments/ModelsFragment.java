@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.elishaazaria.sayboard.Model;
+import com.elishaazaria.sayboard.LocalModel;
 import com.elishaazaria.sayboard.Tools;
 import com.elishaazaria.sayboard.databinding.FragmentModelsBinding;
 import com.elishaazaria.sayboard.downloader.FileDownloader;
@@ -99,7 +99,7 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
                 break;
             case FINISHED:
                 progressBar.setVisibility(View.GONE);
-                Model model = Tools.getModelForLink(current.getModelLink(), getContext());
+                LocalModel model = Tools.getModelForLink(current.getModelLink(), getContext());
                 if (model != null) current.wasInstalled(model);
                 adapter.changed(current);
                 break;

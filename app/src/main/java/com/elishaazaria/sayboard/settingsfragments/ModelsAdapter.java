@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.elishaazaria.sayboard.Model;
+import com.elishaazaria.sayboard.LocalModel;
 import com.elishaazaria.sayboard.ModelLink;
 
 import com.elishaazaria.sayboard.R;
@@ -26,7 +26,7 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
 
     public static class Data {
         private ModelLink modelLink;
-        private Model model;
+        private LocalModel model;
         private DataState state;
 
         public Data(ModelLink modelLink) {
@@ -35,13 +35,13 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
             state = DataState.CLOUD;
         }
 
-        public Data(Model model) {
+        public Data(LocalModel model) {
             this.modelLink = null;
             this.model = model;
             state = DataState.INSTALLED;
         }
 
-        public Data(ModelLink modelLink, Model model) {
+        public Data(ModelLink modelLink, LocalModel model) {
             this.modelLink = modelLink;
             this.model = model;
             state = DataState.INSTALLED;
@@ -65,7 +65,7 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
             } else return Locale.forLanguageTag("und");
         }
 
-        public void wasInstalled(Model model) {
+        public void wasInstalled(LocalModel model) {
             this.model = model;
             state = DataState.INSTALLED;
         }
@@ -97,7 +97,7 @@ public class ModelsAdapter extends RecyclerView.Adapter<ModelsAdapter.ViewHolder
             return modelLink;
         }
 
-        public Model getModel() {
+        public LocalModel getModel() {
             return model;
         }
     }

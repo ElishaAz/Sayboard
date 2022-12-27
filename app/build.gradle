@@ -48,4 +48,5 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
+    implementation 'dev.gustavoavila:java-android-websocket-client:2.0.1'
 }

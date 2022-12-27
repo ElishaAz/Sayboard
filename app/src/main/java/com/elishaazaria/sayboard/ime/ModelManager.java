@@ -3,6 +3,7 @@ package com.elishaazaria.sayboard.ime;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.elishaazaria.sayboard.LocalModel;
 import com.elishaazaria.sayboard.Tools;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
 
@@ -27,7 +28,7 @@ public class ModelManager {
 
     private boolean running = false;
 
-    private List<com.elishaazaria.sayboard.Model> models;
+    private List<LocalModel> models;
     private int currentModelIndex = 0;
 
     public ModelManager(IME ime, ViewManager viewManager) {
@@ -59,11 +60,11 @@ public class ModelManager {
             }
         }
         modelWeakReference = null;
-        com.elishaazaria.sayboard.Model currentModel = models.get(currentModelIndex);
+        LocalModel currentModel = models.get(currentModelIndex);
         loadModel(currentModel);
     }
 
-    private void loadModel(com.elishaazaria.sayboard.Model myModel) {
+    private void loadModel(LocalModel myModel) {
         stop();
         viewManager.setModelName(myModel.locale.getDisplayName());
         viewManager.setUiState(ViewManager.STATE_LOADING);
@@ -164,10 +165,10 @@ public class ModelManager {
     }
 
     public void reloadModels() {
-        List<com.elishaazaria.sayboard.Model> newModels = Tools.getInstalledModelsList(ime);
+        List<LocalModel> newModels = Tools.getInstalledModelsList(ime);
         if (newModels.size() == 0) return; // Or crash loudly
 
-        com.elishaazaria.sayboard.Model currentModel = models.get(currentModelIndex);
+        LocalModel currentModel = models.get(currentModelIndex);
         models = newModels;
         currentModelIndex = newModels.indexOf(currentModel);
         if (currentModelIndex == -1) {

@@ -69,7 +69,7 @@ public class Tools {
 //        downloader.download(downloadRequest, context);
 //    }
 
-    public static void deleteModel(Model model, Context context) {
+    public static void deleteModel(LocalModel model, Context context) {
         File modelFile = new File(model.path);
 
         if (modelFile.exists())
@@ -84,8 +84,8 @@ public class Tools {
         fileOrDirectory.delete();
     }
 
-    public static Map<Locale, List<Model>> getInstalledModelsMap(Context context) {
-        Map<Locale, List<Model>> localeMap = new HashMap<>();
+    public static Map<Locale, List<LocalModel>> getInstalledModelsMap(Context context) {
+        Map<Locale, List<LocalModel>> localeMap = new HashMap<>();
 
         File modelsDir = Constants.getModelsDirectory(context);
 
@@ -94,11 +94,11 @@ public class Tools {
         for (File localeFolder : modelsDir.listFiles()) {
             if (!localeFolder.isDirectory()) continue;
             Locale locale = Locale.forLanguageTag(localeFolder.getName());
-            List<Model> models = new ArrayList<>();
+            List<LocalModel> models = new ArrayList<>();
             for (File modelFolder : localeFolder.listFiles()) {
                 if (!modelFolder.isDirectory()) continue;
                 String name = modelFolder.getName();
-                Model model = new Model(modelFolder.getAbsolutePath(), locale, name);
+                LocalModel model = new LocalModel(modelFolder.getAbsolutePath(), locale, name);
                 models.add(model);
             }
             localeMap.put(locale, models);
@@ -106,8 +106,8 @@ public class Tools {
         return localeMap;
     }
 
-    public static List<Model> getInstalledModelsList(Context context) {
-        List<Model> models = new ArrayList<>();
+    public static List<LocalModel> getInstalledModelsList(Context context) {
+        List<LocalModel> models = new ArrayList<>();
 
         File modelsDir = Constants.getModelsDirectory(context);
 
@@ -119,7 +119,7 @@ public class Tools {
             for (File modelFolder : localeFolder.listFiles()) {
                 if (!modelFolder.isDirectory()) continue;
                 String name = modelFolder.getName();
-                Model model = new Model(modelFolder.getAbsolutePath(), locale, name);
+                LocalModel model = new LocalModel(modelFolder.getAbsolutePath(), locale, name);
                 models.add(model);
             }
         }
@@ -128,13 +128,13 @@ public class Tools {
 
     public static List<ModelsAdapter.Data> getModelsData(Context context) {
         List<ModelsAdapter.Data> data = new ArrayList<>();
-        Map<Locale, List<Model>> installedModels = getInstalledModelsMap(context);
+        Map<Locale, List<LocalModel>> installedModels = getInstalledModelsMap(context);
         for (ModelLink link : ModelLink.values()) {
             boolean found = false;
             if (installedModels.containsKey(link.locale)) {
-                List<Model> localeModels = installedModels.get(link.locale);
+                List<LocalModel> localeModels = installedModels.get(link.locale);
                 for (int i = 0; i < localeModels.size(); i++) {
-                    Model model = localeModels.get(i);
+                    LocalModel model = localeModels.get(i);
                     if (model.filename.equals(link.getFilename())) {
                         data.add(new ModelsAdapter.Data(link, model));
                         localeModels.remove(i);
@@ -146,8 +146,8 @@ public class Tools {
             if (!found)
                 data.add(new ModelsAdapter.Data(link));
         }
-        for (List<Model> models : installedModels.values()) {
-            for (Model model : models) {
+        for (List<LocalModel> models : installedModels.values()) {
+            for (LocalModel model : models) {
                 data.add(new ModelsAdapter.Data(model));
             }
         }
@@ -155,14 +155,14 @@ public class Tools {
         return data;
     }
 
-    public static Model getModelForLink(ModelLink modelLink, Context context) {
+    public static LocalModel getModelForLink(ModelLink modelLink, Context context) {
         File modelsDir = Constants.getModelsDirectory(context);
         File localeDir = new File(modelsDir, modelLink.locale.toLanguageTag());
         File modelDir = new File(localeDir, modelLink.getFilename());
         if (!localeDir.exists() || !modelDir.exists() || !modelDir.isDirectory()) {
             return null;
         }
-        return new Model(modelDir.getAbsolutePath(), modelLink.locale, modelLink.getFilename());
+        return new LocalModel(modelDir.getAbsolutePath(), modelLink.locale, modelLink.getFilename());
     }
 
     public static void createNotificationChannel(Context context) {
