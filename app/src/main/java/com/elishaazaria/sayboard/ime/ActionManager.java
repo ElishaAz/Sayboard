@@ -11,6 +11,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
+import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.SettingsActivity;
 
 public class ActionManager {
@@ -113,7 +114,8 @@ public class ActionManager {
             result = mInputMethodManager.switchToLastInputMethod(ime.getToken());
         }
         if (!result && showError) {
-            viewManager.setErrorState("No previous IME!");
+            viewManager.errorMessageLD.postValue(R.string.mic_error_no_previous_ime);
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR);
         }
     }
 

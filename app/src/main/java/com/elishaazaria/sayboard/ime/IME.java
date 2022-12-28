@@ -30,17 +30,16 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import org.json.JSONObject;
 import org.vosk.LibVosk;
 import org.vosk.LogLevel;
 import org.vosk.android.RecognitionListener;
 
 import com.elishaazaria.sayboard.BuildConfig;
+import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
@@ -268,6 +267,9 @@ public class IME extends InputMethodService implements RecognitionListener, Life
     @Override
     public void onResult(String text) {
         Log.d("VoskIME", "Result: " + text);
+
+        if (text.isEmpty()) return;
+
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) ic.commitText(" " + text, 1);
     }
@@ -275,6 +277,9 @@ public class IME extends InputMethodService implements RecognitionListener, Life
     @Override
     public void onFinalResult(String text) {
         Log.d("VoskIME", "Final result: " + text);
+
+        if (text.isEmpty()) return;
+
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) ic.commitText(" " + text, 1);
     }
@@ -297,12 +302,13 @@ public class IME extends InputMethodService implements RecognitionListener, Life
 
     @Override
     public void onError(Exception e) {
-        viewManager.setErrorState(e.getMessage());
+        viewManager.errorMessageLD.postValue(R.string.mic_error_recognizer_error);
+        viewManager.stateLD.postValue(ViewManager.STATE_ERROR);
     }
 
     @Override
     public void onTimeout() {
-        viewManager.setUiState(ViewManager.STATE_PAUSED);
+        viewManager.stateLD.postValue(ViewManager.STATE_PAUSED);
     }
 
     @NonNull

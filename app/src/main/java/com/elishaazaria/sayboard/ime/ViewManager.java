@@ -15,7 +15,6 @@ import android.widget.TextView;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.TextViewCompat;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -41,24 +40,35 @@ public class ViewManager implements Observer<RecognizerState> {
     private Button modelButton;
     private TextView resultView;
 
-    private boolean initialized;
-
-    private final MutableLiveData<Integer> currentStateLD = new MutableLiveData<>(STATE_INITIAL);
-
-    private String currentErrorMessage = "";
-    private String modelName = "";
+    public final MutableLiveData<Integer> stateLD = new MutableLiveData<>(STATE_INITIAL);
+    public final MutableLiveData<Integer> errorMessageLD = new MutableLiveData<>(0);
+    public final MutableLiveData<String> recognizerNameLD = new MutableLiveData<>("");
 
     private Listener listener;
 
     public ViewManager(IME ime) {
         this.ime = ime;
-        initialized = false;
 
-        currentStateLD.observe(ime, this::observeState);
+        stateLD.observe(ime, this::observeState);
+        errorMessageLD.observe(ime, this::observeError);
+        recognizerNameLD.observe(ime, this::observeRecognizerName);
+    }
+
+    public void init() {
+        initializeVariables();
+
+        reloadOrientation();
+
+        setUpListeners();
+
+
+        currentForeground = Integer.MAX_VALUE;
+        currentBackground = Integer.MAX_VALUE;
+        setUpTheme();
     }
 
     @SuppressLint("InflateParams")
-    public void init() {
+    private void initializeVariables() {
         overlayView = (ConstraintLayout) ime.getLayoutInflater().inflate(R.layout.ime, null);
         resultView = overlayView.findViewById(R.id.result_text);
         micButton = overlayView.findViewById(R.id.mic_button);
@@ -68,9 +78,9 @@ public class ViewManager implements Observer<RecognizerState> {
         returnButton = overlayView.findViewById(R.id.return_button);
 
         resultView.setMovementMethod(new ScrollingMovementMethod());
+    }
 
-        reloadOrientation();
-
+    private void setUpListeners() {
         micButton.setOnClickListener(v -> {
             if (listener != null) listener.micClick();
         });
@@ -94,15 +104,6 @@ public class ViewManager implements Observer<RecognizerState> {
         modelButton.setOnClickListener(v -> {
             if (listener != null) listener.modelClicked();
         });
-
-
-        initialized = true;
-
-        setRecognizerName(modelName);
-
-        currentForeground = Integer.MAX_VALUE;
-        currentBackground = Integer.MAX_VALUE;
-        setUpTheme();
     }
 
     private int currentForeground = Integer.MAX_VALUE;
@@ -200,27 +201,17 @@ public class ViewManager implements Observer<RecognizerState> {
         micButton.setEnabled(enabled);
     }
 
-    public void setUiState(int state) {
-        currentStateLD.postValue(state);
+    private void observeError(int messageId) {
+        if (messageId == 0) return;
+        resultView.setText(ime.getText(messageId));
     }
 
-    public void setErrorState(String message) {
-        setUiState(STATE_ERROR);
-        if (initialized) resultView.setText(message);
-        currentErrorMessage = message;
-    }
-
-    public void setRecognizerName(String modelName) {
-        this.modelName = modelName;
-        if (initialized) modelButton.setText(modelName);
+    public void observeRecognizerName(String name) {
+        modelButton.setText(name);
     }
 
     public ConstraintLayout getRoot() {
         return overlayView;
-    }
-
-    public int getCurrentState() {
-        return currentStateLD.getValue();
     }
 
     public void setListener(Listener listener) {
@@ -248,23 +239,22 @@ public class ViewManager implements Observer<RecognizerState> {
         switch (recognizerState) {
             case CLOSED:
             case NONE:
-                setUiState(STATE_INITIAL);
+                stateLD.setValue(STATE_INITIAL);
                 break;
             case LOADING:
-                setUiState(STATE_LOADING);
+                stateLD.setValue(STATE_LOADING);
                 break;
             case READY:
-                setUiState(STATE_READY);
+                stateLD.setValue(STATE_READY);
                 break;
             case IN_RAM:
-                setUiState(STATE_PAUSED);
+                stateLD.setValue(STATE_PAUSED);
                 break;
             case ERROR:
-                setUiState(STATE_ERROR);
+                stateLD.setValue(STATE_ERROR);
                 break;
         }
     }
-
 
     private int convertDpToPixel(float dp) {
         return (int) (dp * (ime.getResources().getDisplayMetrics().densityDpi / 160f));

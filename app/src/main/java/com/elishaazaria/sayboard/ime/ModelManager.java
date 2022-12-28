@@ -3,11 +3,11 @@ package com.elishaazaria.sayboard.ime;
 import android.Manifest;
 import android.content.pm.PackageManager;
 
-import androidx.annotation.RequiresPermission;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 
 import com.elishaazaria.sayboard.LocalModel;
+import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.Tools;
 import com.elishaazaria.sayboard.ime.recognizers.Recognizer;
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource;
@@ -40,7 +40,8 @@ public class ModelManager {
         }
 
         if (recognizerSources.size() == 0) {
-            viewManager.setErrorState("No Recognizers installed!");
+            viewManager.errorMessageLD.postValue(R.string.mic_error_no_recognizers);
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR);
         } else {
             currentRecognizerSourceIndex = 0;
             initializeRecognizer();
@@ -50,6 +51,8 @@ public class ModelManager {
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public void initializeRecognizer() {
+        if (recognizerSources.size() == 0) return;
+
         Observer<RecognizerSource> onLoaded = (r) -> {
             if (LogicPreferences.isListenImmediately()) {
                 this.start(); // execute after initialize
@@ -57,7 +60,7 @@ public class ModelManager {
         };
 
         currentRecognizerSource = recognizerSources.get(currentRecognizerSourceIndex);
-        viewManager.setRecognizerName(currentRecognizerSource.getName());
+        viewManager.recognizerNameLD.postValue(currentRecognizerSource.getName());
         currentRecognizerSource.getStateLD().observe(ime, viewManager);
         currentRecognizerSource.initialize(executor, onLoaded);
     }
@@ -68,6 +71,8 @@ public class ModelManager {
     }
 
     public void switchToNextRecognizer() {
+        if (recognizerSources.size() == 0) return;
+
         stopRecognizerSource();
         currentRecognizerSourceIndex++;
         if (currentRecognizerSourceIndex >= recognizerSources.size()) {
@@ -81,7 +86,7 @@ public class ModelManager {
             speechService.stop();
         }
 
-        viewManager.setUiState(ViewManager.STATE_LISTENING);
+        viewManager.stateLD.postValue(ViewManager.STATE_LISTENING);
         try {
             Recognizer recognizer = currentRecognizerSource.getRecognizer();
             if (ActivityCompat.checkSelfPermission(ime, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -90,7 +95,8 @@ public class ModelManager {
             speechService = new MySpeechService(recognizer, recognizer.getSampleRate());
             speechService.startListening(ime);
         } catch (IOException e) {
-            viewManager.setErrorState(e.getMessage());
+            viewManager.errorMessageLD.postValue(R.string.mic_error_mic_in_use);
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR);
         }
         running = true;
     }
@@ -102,9 +108,9 @@ public class ModelManager {
             speechService.setPause(checked);
             pausedState = checked;
             if (checked) {
-                viewManager.setUiState(ViewManager.STATE_PAUSED);
+                viewManager.stateLD.postValue(ViewManager.STATE_PAUSED);
             } else {
-                viewManager.setUiState(ViewManager.STATE_LISTENING);
+                viewManager.stateLD.postValue(ViewManager.STATE_LISTENING);
             }
         } else {
             pausedState = false;
