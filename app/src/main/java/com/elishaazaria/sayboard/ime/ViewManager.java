@@ -1,8 +1,8 @@
 package com.elishaazaria.sayboard.ime;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,13 +14,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.elishaazaria.sayboard.R;
+import com.elishaazaria.sayboard.ime.recognizers.RecognizerState;
 import com.elishaazaria.sayboard.preferences.UIPreferences;
 
-public class ViewManager {
+public class ViewManager implements Observer<RecognizerState> {
     private final IME ime;
 
     public static final int STATE_INITIAL = 0;
@@ -40,7 +43,8 @@ public class ViewManager {
 
     private boolean initialized;
 
-    private int currentState = ViewManager.STATE_INITIAL;
+    private final MutableLiveData<Integer> currentStateLD = new MutableLiveData<>(STATE_INITIAL);
+
     private String currentErrorMessage = "";
     private String modelName = "";
 
@@ -49,8 +53,11 @@ public class ViewManager {
     public ViewManager(IME ime) {
         this.ime = ime;
         initialized = false;
+
+        currentStateLD.observe(ime, this::observeState);
     }
 
+    @SuppressLint("InflateParams")
     public void init() {
         overlayView = (ConstraintLayout) ime.getLayoutInflater().inflate(R.layout.ime, null);
         resultView = overlayView.findViewById(R.id.result_text);
@@ -91,11 +98,7 @@ public class ViewManager {
 
         initialized = true;
 
-        if (currentState == STATE_ERROR && !currentErrorMessage.isEmpty())
-            setErrorState(currentErrorMessage);
-        else setUiState(currentState);
-
-        setModelName(modelName);
+        setRecognizerName(modelName);
 
         currentForeground = Integer.MAX_VALUE;
         currentBackground = Integer.MAX_VALUE;
@@ -162,7 +165,7 @@ public class ViewManager {
         reloadOrientation();
     }
 
-    public void setUiState(int state) {
+    private void observeState(int state) {
         boolean enabled;
         int text;
         int icon;
@@ -192,12 +195,13 @@ public class ViewManager {
             default:
                 return;
         }
-        if (initialized) {
-            resultView.setText(text);
-            micButton.setImageDrawable(AppCompatResources.getDrawable(ime, icon));
-            micButton.setEnabled(enabled);
-        }
-        currentState = state;
+        resultView.setText(text);
+        micButton.setImageDrawable(AppCompatResources.getDrawable(ime, icon));
+        micButton.setEnabled(enabled);
+    }
+
+    public void setUiState(int state) {
+        currentStateLD.postValue(state);
     }
 
     public void setErrorState(String message) {
@@ -206,7 +210,7 @@ public class ViewManager {
         currentErrorMessage = message;
     }
 
-    public void setModelName(String modelName) {
+    public void setRecognizerName(String modelName) {
         this.modelName = modelName;
         if (initialized) modelButton.setText(modelName);
     }
@@ -216,7 +220,7 @@ public class ViewManager {
     }
 
     public int getCurrentState() {
-        return currentState;
+        return currentStateLD.getValue();
     }
 
     public void setListener(Listener listener) {
@@ -237,6 +241,28 @@ public class ViewManager {
         void returnClicked();
 
         void modelClicked();
+    }
+
+    @Override
+    public void onChanged(RecognizerState recognizerState) {
+        switch (recognizerState) {
+            case CLOSED:
+            case NONE:
+                setUiState(STATE_INITIAL);
+                break;
+            case LOADING:
+                setUiState(STATE_LOADING);
+                break;
+            case READY:
+                setUiState(STATE_READY);
+                break;
+            case IN_RAM:
+                setUiState(STATE_PAUSED);
+                break;
+            case ERROR:
+                setUiState(STATE_ERROR);
+                break;
+        }
     }
 
 

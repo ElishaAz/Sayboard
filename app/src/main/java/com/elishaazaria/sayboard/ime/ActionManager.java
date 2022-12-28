@@ -119,6 +119,7 @@ public class ActionManager {
 
     public void openSettings() {
         Intent myIntent = new Intent(ime, SettingsActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ime.startActivity(myIntent);
     }
 }

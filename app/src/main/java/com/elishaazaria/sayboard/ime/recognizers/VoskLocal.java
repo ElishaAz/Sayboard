@@ -5,9 +5,12 @@ import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.elishaazaria.sayboard.LocalModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.vosk.Model;
 
 import java.lang.ref.WeakReference;
@@ -26,7 +29,7 @@ public class VoskLocal implements RecognizerSource {
     }
 
     @Override
-    public void initialize(Executor executor) {
+    public void initialize(Executor executor, Observer<RecognizerSource> onLoaded) {
         stateLD.postValue(RecognizerState.LOADING);
 
         if (modelWeakReference != null) {
@@ -41,6 +44,7 @@ public class VoskLocal implements RecognizerSource {
             Model model = new Model(localModel.path);
             handler.post(() -> {
                 modelLoaded(model);
+                onLoaded.onChanged(this);
             });
         });
     }
@@ -58,11 +62,45 @@ public class VoskLocal implements RecognizerSource {
         public MyRecognizer(Model model, float sampleRate) {
             super(model, sampleRate);
             this.sampleRate = sampleRate;
+//            setMaxAlternatives(3); // TODO: implement
         }
 
         @Override
         public float getSampleRate() {
             return sampleRate;
+        }
+
+        @Override
+        public String getResult() {
+            try {
+                JSONObject result = new JSONObject(super.getResult());
+                return result.getString("text").trim();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        @Override
+        public String getPartialResult() {
+            try {
+                JSONObject result = new JSONObject(super.getPartialResult());
+                return result.getString("partial").trim();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        @Override
+        public String getFinalResult() {
+            try {
+                JSONObject result = new JSONObject(super.getFinalResult());
+                return result.getString("text").trim();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return "";
         }
     }
 
@@ -73,11 +111,11 @@ public class VoskLocal implements RecognizerSource {
 
     @Override
     public void close(boolean freeRAM) {
-        recognizer.close();
+        if (recognizer != null) recognizer.close();
         recognizer = null;
 
         if (freeRAM) {
-            modelWeakReference = new WeakReference<>(this.model);
+            if (model != null) modelWeakReference = new WeakReference<>(this.model);
             this.model = null;
             stateLD.postValue(RecognizerState.CLOSED);
         } else {
@@ -88,6 +126,11 @@ public class VoskLocal implements RecognizerSource {
     @Override
     public LiveData<RecognizerState> getStateLD() {
         return stateLD;
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return 0;
     }
 
     @Override

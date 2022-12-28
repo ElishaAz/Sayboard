@@ -28,6 +28,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 import org.vosk.LibVosk;
@@ -37,9 +38,16 @@ import org.vosk.android.RecognitionListener;
 import com.elishaazaria.sayboard.BuildConfig;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
 
-public class IME extends InputMethodService implements RecognitionListener {
+public class IME extends InputMethodService implements RecognitionListener, LifecycleOwner {
+    private final LifecycleRegistry lifecycleRegistry = new LifecycleRegistry(this);
+
     private EditorInfo editorInfo;
 
     private ViewManager viewManager;
@@ -50,22 +58,21 @@ public class IME extends InputMethodService implements RecognitionListener {
     @Override
     public void onCreate() {
         super.onCreate();
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
         LibVosk.setLogLevel(BuildConfig.DEBUG ? LogLevel.INFO : LogLevel.WARNINGS);
 
         viewManager = new ViewManager(this);
 
-        modelManager = new ModelManager(this, viewManager);
-
         actionManager = new ActionManager(this, viewManager);
+
+        checkMicrophonePermission();
+
+        modelManager = new ModelManager(this, viewManager);
     }
 
     @Override
     public void onInitializeInterface() {
-        // Check if user has given permission to record audio
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            actionManager.openSettings();
-        }
+        checkMicrophonePermission();
     }
 
     @Override
@@ -77,6 +84,9 @@ public class IME extends InputMethodService implements RecognitionListener {
 
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        checkMicrophonePermission();
+
         // text input has started
         this.editorInfo = info;
 
@@ -89,29 +99,17 @@ public class IME extends InputMethodService implements RecognitionListener {
             }
         }
 
-        modelManager.reloadModels();
-
-        if (modelManager.modelLoaded()) {
-            if (LogicPreferences.isListenImmediately()) {
-                modelManager.start();
-            }
-        } else {
-            modelManager.loadModel();
-        }
-
+        modelManager.initializeRecognizer();
         viewManager.refresh();
         setKeepScreenOn(LogicPreferences.getKeepScreenAwake() == LogicPreferences.KEEP_SCREEN_AWAKE_WHEN_OPEN);
     }
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
         // text input has ended
         setKeepScreenOn(false);
         modelManager.stop();
-
-        if (LogicPreferences.isWeakRefModel()) {
-            modelManager.unloadModel();
-        }
 
         if (LogicPreferences.isAutoSwitchBack()) {
             // switch back
@@ -206,7 +204,7 @@ public class IME extends InputMethodService implements RecognitionListener {
 
             @Override
             public void modelClicked() {
-                modelManager.loadNextModel();
+                modelManager.switchToNextRecognizer();
             }
         });
 
@@ -226,6 +224,13 @@ public class IME extends InputMethodService implements RecognitionListener {
         super.onConfigurationChanged(newConfig);
 
 //        viewManager.orientationChanged(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+        modelManager.onDestroy();
     }
 
 
@@ -253,57 +258,41 @@ public class IME extends InputMethodService implements RecognitionListener {
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        modelManager.onDestroy();
-    }
-
-    @Override
-    public void onResult(String hypothesis) {
-        Log.d("VoskIME", "Result: " + hypothesis);
-//        resultView.append(hypothesis + "\n");
-        try {
-            JSONObject result = new JSONObject(hypothesis);
-            String text = result.getString("text").trim();
-            String finalText = text;
-            if (finalText.equals("")) return;
-            if ("punkt".equals(text)) {
-                finalText = ".";
-            }
-//            resultView.setText(finalText);
-            InputConnection ic = getCurrentInputConnection();
-            if (ic != null) ic.commitText(" " + finalText, 1);
-        } catch (Exception e) {
-            System.out.println("ERROR: Json parse exception");
+    private void checkMicrophonePermission() {
+        if (ActivityCompat.checkSelfPermission(IME.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(IME.this, "Microphone permission is required!", Toast.LENGTH_SHORT).show();
+            actionManager.openSettings();
         }
     }
 
     @Override
-    public void onFinalResult(String hypothesis) {
-        onResult(hypothesis);
+    public void onResult(String text) {
+        Log.d("VoskIME", "Result: " + text);
+        InputConnection ic = getCurrentInputConnection();
+        if (ic != null) ic.commitText(" " + text, 1);
     }
 
     @Override
-    public void onPartialResult(String hypothesis) {
-        Log.d("VoskIME", "Partial result: " + hypothesis);
-        try {
-            JSONObject partialResult = new JSONObject(hypothesis);
-            String partialText = partialResult.getString("partial").trim();
-            if (partialText.equals("") || partialText.equals("nun")) return;
+    public void onFinalResult(String text) {
+        Log.d("VoskIME", "Final result: " + text);
+        InputConnection ic = getCurrentInputConnection();
+        if (ic != null) ic.commitText(" " + text, 1);
+    }
+
+    @Override
+    public void onPartialResult(String partialText) {
+        Log.d("VoskIME", "Partial result: " + partialText);
+        if (partialText.equals("") || partialText.equals("nun")) return;
 //            resultView.setText(partialText);
-            InputConnection ic = getCurrentInputConnection();
-            if (ic == null) return;
-            String lastChar = ic.getTextBeforeCursor(1, 0).toString();
-            if (lastChar.length() == 1) { // do not append two words without space
-                if (!lastChar.equals(" ")) {
-                    partialText = " " + partialText;
-                }
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        String lastChar = ic.getTextBeforeCursor(1, 0).toString();
+        if (lastChar.length() == 1) { // do not append two words without space
+            if (!lastChar.equals(" ")) {
+                partialText = " " + partialText;
             }
-            ic.setComposingText(partialText, 1);
-        } catch (Exception e) {
-            System.out.println("ERROR: Json parse exception");
         }
+        ic.setComposingText(partialText, 1);
     }
 
     @Override
@@ -314,5 +303,11 @@ public class IME extends InputMethodService implements RecognitionListener {
     @Override
     public void onTimeout() {
         viewManager.setUiState(ViewManager.STATE_PAUSED);
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return lifecycleRegistry;
     }
 }

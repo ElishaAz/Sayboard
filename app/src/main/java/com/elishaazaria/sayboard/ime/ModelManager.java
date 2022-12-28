@@ -1,18 +1,21 @@
 package com.elishaazaria.sayboard.ime;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.Manifest;
+import android.content.pm.PackageManager;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 
 import com.elishaazaria.sayboard.LocalModel;
 import com.elishaazaria.sayboard.Tools;
+import com.elishaazaria.sayboard.ime.recognizers.Recognizer;
+import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource;
+import com.elishaazaria.sayboard.ime.recognizers.VoskLocal;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
 
-import org.vosk.Model;
-import org.vosk.Recognizer;
-import org.vosk.android.SpeechService;
-
 import java.io.IOException;
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -21,99 +24,70 @@ public class ModelManager {
     private final IME ime;
     private final ViewManager viewManager;
 
-    private WeakReference<Model> modelWeakReference;
-    private Model model;
-    private SpeechService speechService;
-    private Recognizer recognizer;
+    private MySpeechService speechService;
 
     private boolean running = false;
 
-    private List<LocalModel> models;
-    private int currentModelIndex = 0;
+    private final List<RecognizerSource> recognizerSources = new ArrayList<>();
+    private int currentRecognizerSourceIndex = 0;
+    private RecognizerSource currentRecognizerSource;
 
     public ModelManager(IME ime, ViewManager viewManager) {
         this.ime = ime;
         this.viewManager = viewManager;
+        for (LocalModel localModel : Tools.getInstalledModelsList(ime)) {
+            recognizerSources.add(new VoskLocal(localModel));
+        }
 
-        models = Tools.getInstalledModelsList(ime);
-
-        if (models.size() == 0) {
-            viewManager.setErrorState("No Models installed!");
+        if (recognizerSources.size() == 0) {
+            viewManager.setErrorState("No Recognizers installed!");
         } else {
-            currentModelIndex = 0;
-            loadModel(models.get(0));
+            currentRecognizerSourceIndex = 0;
+            initializeRecognizer();
         }
     }
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 
-    public void loadModel() {
-        if (modelWeakReference != null) {
-            Model oldModel = modelWeakReference.get();
-            if (oldModel != null) {
-                // equivalent to loading the model
-                this.model = oldModel;
-                if (LogicPreferences.isListenImmediately()) {
-                    start();
-                }
-                return;
+    public void initializeRecognizer() {
+        Observer<RecognizerSource> onLoaded = (r) -> {
+            if (LogicPreferences.isListenImmediately()) {
+                this.start(); // execute after initialize
             }
+        };
+
+        currentRecognizerSource = recognizerSources.get(currentRecognizerSourceIndex);
+        viewManager.setRecognizerName(currentRecognizerSource.getName());
+        currentRecognizerSource.getStateLD().observe(ime, viewManager);
+        currentRecognizerSource.initialize(executor, onLoaded);
+    }
+
+    private void stopRecognizerSource() {
+        currentRecognizerSource.close(LogicPreferences.isWeakRefModel());
+        currentRecognizerSource.getStateLD().removeObserver(viewManager);
+    }
+
+    public void switchToNextRecognizer() {
+        stopRecognizerSource();
+        currentRecognizerSourceIndex++;
+        if (currentRecognizerSourceIndex >= recognizerSources.size()) {
+            currentRecognizerSourceIndex = 0;
         }
-        modelWeakReference = null;
-        LocalModel currentModel = models.get(currentModelIndex);
-        loadModel(currentModel);
-    }
-
-    private void loadModel(LocalModel myModel) {
-        stop();
-        viewManager.setModelName(myModel.locale.getDisplayName());
-        viewManager.setUiState(ViewManager.STATE_LOADING);
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        executor.execute(() -> {
-            Model model = new Model(myModel.path);
-            handler.post(() -> {
-                this.model = model;
-                modelWeakReference = null;
-                stop();
-                viewManager.setModelName(myModel.locale.getDisplayName());
-                viewManager.setUiState(ViewManager.STATE_READY);
-
-                if (LogicPreferences.isListenImmediately()) {
-                    start();
-                }
-            });
-        });
-    }
-
-    public void unloadModel() {
-        modelWeakReference = new WeakReference<>(this.model);
-        this.model = null;
-    }
-
-    public void loadNextModel() {
-        if (models.size() <= 1) return; // Don't reload if there is only one
-
-        currentModelIndex++;
-        if (currentModelIndex >= models.size()) currentModelIndex = 0;
-        loadModel(models.get(currentModelIndex));
-    }
-
-    public boolean modelLoaded() {
-        return model != null;
+        initializeRecognizer();
     }
 
     public void start() {
-        if (model == null) return;
-
         if (running || speechService != null) {
             speechService.stop();
         }
 
         viewManager.setUiState(ViewManager.STATE_LISTENING);
         try {
-            recognizer = new Recognizer(model, 16000.0f);
-            speechService = new SpeechService(recognizer, 16000.0f);
+            Recognizer recognizer = currentRecognizerSource.getRecognizer();
+            if (ActivityCompat.checkSelfPermission(ime, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            speechService = new MySpeechService(recognizer, recognizer.getSampleRate());
             speechService.startListening(ime);
         } catch (IOException e) {
             viewManager.setErrorState(e.getMessage());
@@ -147,32 +121,29 @@ public class ModelManager {
             speechService.shutdown();
         }
         speechService = null;
-        if (recognizer != null) {
-            recognizer.close();
-        }
-        recognizer = null;
         running = false;
-        viewManager.setUiState(ViewManager.STATE_INITIAL);
+        stopRecognizerSource();
     }
 
     public void onDestroy() {
         stop();
-        unloadModel();
     }
 
     public boolean isRunning() {
         return running;
     }
 
-    public void reloadModels() {
-        List<LocalModel> newModels = Tools.getInstalledModelsList(ime);
-        if (newModels.size() == 0) return; // Or crash loudly
-
-        LocalModel currentModel = models.get(currentModelIndex);
-        models = newModels;
-        currentModelIndex = newModels.indexOf(currentModel);
-        if (currentModelIndex == -1) {
-            currentModelIndex = 0;
-        }
-    }
+//    public void reloadModels() {
+//        List<LocalModel> newModels = Tools.getInstalledModelsList(ime);
+//        if (newModels.size() == 0) {
+//            return;
+//        }
+//
+//        LocalModel currentModel = recognizerSources.get(currentRecognizerSourceIndex);
+//        recognizerSources = newModels;
+//        currentRecognizerSourceIndex = newModels.indexOf(currentModel);
+//        if (currentRecognizerSourceIndex == -1) {
+//            currentRecognizerSourceIndex = 0;
+//        }
+//    }
 }

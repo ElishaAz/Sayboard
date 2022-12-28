@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
@@ -24,10 +25,11 @@ public class VoskServer implements RecognizerSource {
     }
 
     @Override
-    public void initialize(Executor executor) {
+    public void initialize(Executor executor, Observer<RecognizerSource> onLoaded) {
         stateLD.postValue(RecognizerState.LOADING);
         recognizer = new MyRecognizer(uri);
         stateLD.postValue(RecognizerState.READY);
+        onLoaded.onChanged(this);
     }
 
     @Override
@@ -43,6 +45,11 @@ public class VoskServer implements RecognizerSource {
     @Override
     public LiveData<RecognizerState> getStateLD() {
         return null;
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return 0;
     }
 
     @Override
