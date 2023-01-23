@@ -7,27 +7,36 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.elishaazaria.sayboard.data.VoskServerData;
+import com.google.protobuf.ByteString;
+
 import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
+import vosk.stt.v1.SttServiceGrpc;
+
 import dev.gustavoavila.websocketclient.WebSocketClient;
+import vosk.stt.v1.SttServiceOuterClass;
 
 public class VoskServer implements RecognizerSource {
     private final MutableLiveData<RecognizerState> stateLD = new MutableLiveData<>(RecognizerState.NONE);
 
-    private final URI uri;
-    private MyRecognizer recognizer;
+    private final VoskServerData data;
 
-    public VoskServer(URI uri) {
+    private MyRecognizerGRPC recognizer;
 
-        this.uri = uri;
+    public VoskServer(VoskServerData data) {
+        this.data = data;
     }
 
     @Override
     public void initialize(Executor executor, Observer<RecognizerSource> onLoaded) {
         stateLD.postValue(RecognizerState.LOADING);
-        recognizer = new MyRecognizer(uri);
+        recognizer = new MyRecognizerGRPC(data.uri, 16000);
         stateLD.postValue(RecognizerState.READY);
         onLoaded.onChanged(this);
     }
@@ -44,7 +53,7 @@ public class VoskServer implements RecognizerSource {
 
     @Override
     public LiveData<RecognizerState> getStateLD() {
-        return null;
+        return stateLD;
     }
 
     @Override
@@ -54,114 +63,127 @@ public class VoskServer implements RecognizerSource {
 
     @Override
     public String getName() {
-        return String.format("%s:%s", uri.getHost(), uri.getPort());
+        return String.format("%s:%s", data.uri.getHost(), data.uri.getPort());
     }
 
-    private class MyRecognizer extends WebSocketClient implements Recognizer {
-        private CountDownLatch receiveLatch;
-        private boolean isCompleteResult = false;
-        private String lastResult;
-        private String lastPartialResult;
-        private String lastFinalResult;
-        private boolean closing = false;
+    private static class MyRecognizerGRPC implements Recognizer, StreamObserver<SttServiceOuterClass.StreamingRecognitionResponse> {
+        private final SttServiceGrpc.SttServiceBlockingStub blockingStub;
+        private final SttServiceGrpc.SttServiceStub asyncStub;
+        private final StreamObserver<SttServiceOuterClass.StreamingRecognitionRequest> requestStream;
 
-        /**
-         * Initialize all the variables
-         *
-         * @param uri URI of the WebSocket server
-         */
-        public MyRecognizer(URI uri) {
-            super(uri);
+        private final SttServiceOuterClass.RecognitionConfig config;
+        private final int sampleRate;
+
+        private CountDownLatch latch;
+
+        private String result;
+        private String finalResult;
+        private String partialResult;
+        private boolean isPartialResult;
+
+        private boolean closed = false;
+
+        public MyRecognizerGRPC(URI uri, int sampleRate) {
+            this.sampleRate = sampleRate;
+            ManagedChannel channel = ManagedChannelBuilder.forAddress(uri.getHost(), uri.getPort()).build();
+            blockingStub = SttServiceGrpc.newBlockingStub(channel);
+            asyncStub = SttServiceGrpc.newStub(channel);
+
+            requestStream = asyncStub.streamingRecognize(this);
+
+            config = SttServiceOuterClass.RecognitionConfig.newBuilder()
+                    .setSpecification(SttServiceOuterClass.RecognitionSpec.newBuilder()
+                            .setAudioEncoding(SttServiceOuterClass.RecognitionSpec.AudioEncoding.LINEAR16_PCM)
+                            .setSampleRateHertz(sampleRate)
+                            .setMaxAlternatives(1)
+                            .setPartialResults(true)
+                            .build())
+                    .build();
+
+            latch = new CountDownLatch(1);
         }
 
-        /************************** Recognizer **********************************/
 
         @Override
         public void reset() {
-
+            throw new UnsupportedOperationException("Reset was not yet implemented");
         }
 
         @Override
         public boolean acceptWaveForm(short[] buffer, int nread) {
+            if (closed) return false;
+
             java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(nread * 2);
             bb.asShortBuffer().put(buffer, 0, nread);
-            send(bb.array());
-            receiveLatch = new CountDownLatch(1);
+            requestStream.onNext(SttServiceOuterClass.StreamingRecognitionRequest.newBuilder()
+                    .setAudioContent(ByteString.copyFrom(bb))
+                    .setConfig(config)
+                    .build());
             try {
-                receiveLatch.await();
+                latch.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return isCompleteResult;
+            return isPartialResult;
         }
 
         @Override
         public String getResult() {
-            return lastResult;
+            return result;
         }
 
         @Override
         public String getPartialResult() {
-            return lastPartialResult;
+            return partialResult;
         }
 
         @Override
         public String getFinalResult() {
-            return lastFinalResult;
+            return finalResult;
         }
 
         @Override
         public float getSampleRate() {
-            return 16000.0f;
+            return sampleRate;
         }
 
-        @Override
         public void close() {
-//            closing = true;
-//            send("{\"eof\" : 1}");
-            super.close();
+            requestStream.onCompleted();
+            closed = true;
+            latch.countDown();
+            result = partialResult = "";
         }
 
-        /************************** WebSocket **********************************/
+        /*************************** gRPC *********************************/
 
         @Override
-        public void onOpen() {
+        public void onNext(SttServiceOuterClass.StreamingRecognitionResponse value) {
+            Log.d("VoskServer", "Message received: " + value);
+            for (SttServiceOuterClass.SpeechRecognitionChunk chunk : value.getChunksList()) {
+                if (chunk.getEndOfUtterance()) {
+                    finalResult = chunk.getAlternatives(0).getText();
+                    isPartialResult = false;
+                } else if (chunk.getFinal()) {
+                    result = chunk.getAlternatives(0).getText();
+                    isPartialResult = false;
+                } else {
+                    partialResult = chunk.getAlternatives(0).getText();
+                    isPartialResult = true;
+                }
 
-        }
-
-        @Override
-        public void onTextReceived(String message) {
-            Log.d("VoskServer", message);
-//            lastResult = message;
-            receiveLatch.countDown();
-
-//            if (closing) {
-//                super.close();
-//            }
-        }
-
-        @Override
-        public void onBinaryReceived(byte[] data) {
-
-        }
-
-        @Override
-        public void onPingReceived(byte[] data) {
-
+                CountDownLatch oldLatch = latch;
+                latch = new CountDownLatch(1);
+                oldLatch.countDown();
+            }
         }
 
         @Override
-        public void onPongReceived(byte[] data) {
+        public void onError(Throwable t) {
 
         }
 
         @Override
-        public void onException(Exception e) {
-
-        }
-
-        @Override
-        public void onCloseReceived() {
+        public void onCompleted() {
 
         }
     }

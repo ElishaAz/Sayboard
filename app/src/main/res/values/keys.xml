@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_shared_pref" translatable="false">main_shared_pref</string>
-    <string name="pref_ui_light_foreground_material_you" translatable="false">b_light_foreground_material_you</string>
+
+    <string name="pref_models_vosk_servers_set">set_vosk_servers</string>
+
+    <string name="pref_ui_light_foreground_material_you_b" translatable="false">b_light_foreground_material_you</string>
     <string name="pref_ui_light_foreground_c" translatable="false">c_light_foreground</string>
     <string name="pref_ui_light_background_c" translatable="false">c_light_background</string>
 

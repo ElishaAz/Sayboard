@@ -1,4 +1,4 @@
-package com.elishaazaria.sayboard;
+package com.elishaazaria.sayboard.data;
 
 import androidx.annotation.StringRes;
 

@@ -12,7 +12,7 @@ public class UIPreferences {
     public static boolean isForegroundMaterialYou(boolean dark) {
         if (!dark) {
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MyPreferences.getSharedPref()
-                    .getBoolean(AppCtx.getStringRes(R.string.pref_ui_light_foreground_material_you),
+                    .getBoolean(AppCtx.getStringRes(R.string.pref_ui_light_foreground_material_you_b),
                             AppCtx.getBoolRes(R.bool.pref_light_foreground_material_you_default));
         } else {
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MyPreferences.getSharedPref()

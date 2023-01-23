@@ -6,13 +6,16 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 
-import com.elishaazaria.sayboard.LocalModel;
+import com.elishaazaria.sayboard.data.LocalModel;
 import com.elishaazaria.sayboard.R;
 import com.elishaazaria.sayboard.Tools;
+import com.elishaazaria.sayboard.data.VoskServerData;
 import com.elishaazaria.sayboard.ime.recognizers.Recognizer;
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource;
 import com.elishaazaria.sayboard.ime.recognizers.VoskLocal;
+import com.elishaazaria.sayboard.ime.recognizers.VoskServer;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
+import com.elishaazaria.sayboard.preferences.ModelPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,6 +40,9 @@ public class ModelManager {
         this.viewManager = viewManager;
         for (LocalModel localModel : Tools.getInstalledModelsList(ime)) {
             recognizerSources.add(new VoskLocal(localModel));
+        }
+        for (VoskServerData voskServer : ModelPreferences.getVoskServers()) {
+            recognizerSources.add(new VoskServer(voskServer));
         }
 
         if (recognizerSources.size() == 0) {

@@ -5,12 +5,12 @@
         <SwitchPreference
             android:defaultValue="@bool/pref_light_foreground_material_you_default"
             android:disableDependentsState="true"
-            android:key="@string/pref_ui_light_foreground_material_you"
+            android:key="@string/pref_ui_light_foreground_material_you_b"
             android:title="@string/ui_light_theme_foreground_material_you_title" />
 
         <com.rarepebble.colorpicker.ColorPreference
             android:defaultValue="@integer/pref_light_foreground_color_default"
-            android:dependency="@string/pref_ui_light_foreground_material_you"
+            android:dependency="@string/pref_ui_light_foreground_material_you_b"
             android:key="@string/pref_ui_light_foreground_c"
             android:title="@string/ui_light_theme_foreground_color_title"
             app:colorpicker_selectNoneButtonText="@string/ui_theme_reset_color" />

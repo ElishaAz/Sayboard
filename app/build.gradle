@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
 
 repositories {
     google()
@@ -34,6 +35,27 @@ android {
     namespace 'com.elishaazaria.sayboard'
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.21.7"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.52.0'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'net.java.dev.jna:jna:5.9.0@aar'
@@ -49,4 +71,9 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation 'dev.gustavoavila:java-android-websocket-client:2.0.1'
+
+    implementation 'io.grpc:grpc-okhttp:1.52.0'
+    implementation 'io.grpc:grpc-protobuf-lite:1.52.0'
+    implementation 'io.grpc:grpc-stub:1.52.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
-import com.elishaazaria.sayboard.ModelLink;
+import com.elishaazaria.sayboard.data.ModelLink;
 import com.elishaazaria.sayboard.downloader.messages.ModelInfo;
 
 import java.util.Locale;

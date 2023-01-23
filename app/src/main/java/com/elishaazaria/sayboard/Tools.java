@@ -12,7 +12,9 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.core.content.ContextCompat;
 
-import com.elishaazaria.sayboard.settingsfragments.ModelsAdapter;
+import com.elishaazaria.sayboard.data.LocalModel;
+import com.elishaazaria.sayboard.data.ModelLink;
+import com.elishaazaria.sayboard.settingsfragments.modelsfragment.ModelsAdapterLocalData;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,8 +128,8 @@ public class Tools {
         return models;
     }
 
-    public static List<ModelsAdapter.Data> getModelsData(Context context) {
-        List<ModelsAdapter.Data> data = new ArrayList<>();
+    public static List<ModelsAdapterLocalData> getModelsData(Context context) {
+        List<ModelsAdapterLocalData> data = new ArrayList<>();
         Map<Locale, List<LocalModel>> installedModels = getInstalledModelsMap(context);
         for (ModelLink link : ModelLink.values()) {
             boolean found = false;
@@ -136,7 +138,7 @@ public class Tools {
                 for (int i = 0; i < localeModels.size(); i++) {
                     LocalModel model = localeModels.get(i);
                     if (model.filename.equals(link.getFilename())) {
-                        data.add(new ModelsAdapter.Data(link, model));
+                        data.add(new ModelsAdapterLocalData(link, model));
                         localeModels.remove(i);
                         found = true;
                         break;
@@ -144,11 +146,11 @@ public class Tools {
                 }
             }
             if (!found)
-                data.add(new ModelsAdapter.Data(link));
+                data.add(new ModelsAdapterLocalData(link));
         }
         for (List<LocalModel> models : installedModels.values()) {
             for (LocalModel model : models) {
-                data.add(new ModelsAdapter.Data(model));
+                data.add(new ModelsAdapterLocalData(model));
             }
         }
 

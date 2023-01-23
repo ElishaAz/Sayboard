@@ -52,6 +52,14 @@
     <string name="ui_keyboard_header">Keyboard</string>
     <string name="logic_logic_header">Logic</string>
 
+    <!--  Models Preferences  -->
+    <string name="menu_models_add_server">Add Vosk Server</string>
+    <string name="dialog_add_vosk_server_title">Add Vosk Server</string>
+    <string name="dialog_add_vosk_server_hostname">Hostname</string>
+    <string name="dialog_add_vosk_server_port">Port</string>
+    <string name="dialog_add_vosk_server_add">Add</string>
+    <string name="dialog_add_vosk_server_cancel">Cancel</string>
+
     <!-- UI Preferences -->
     <string name="ui_light_theme_foreground_material_you_title">Use Material You foreground color</string>
     <string name="ui_light_theme_foreground_color_title">Foreground color</string>

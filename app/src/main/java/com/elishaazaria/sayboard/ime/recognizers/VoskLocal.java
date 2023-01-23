@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.elishaazaria.sayboard.LocalModel;
+import com.elishaazaria.sayboard.data.LocalModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;

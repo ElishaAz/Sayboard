@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pref_vosk_servers_default" translatable="false">{}</string>
+
     <bool name="pref_light_foreground_material_you_default">false</bool>
     <integer name="pref_light_foreground_color_default">0xFF377A00</integer>
     <integer name="pref_light_background_color_default">0xFFFFFFFF</integer>
