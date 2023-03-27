@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 public class ModelPreferences {
+    public static final boolean VOSK_SERVER_ENABLED = false;
+
     public static List<VoskServerData> getVoskServers() {
         Set<String> set = MyPreferences.getSharedPref().getStringSet(AppCtx.getStringRes(R.string.pref_models_vosk_servers_set),
                 null);

@@ -24,6 +24,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class ModelManager {
+
     private final IME ime;
     private final ViewManager viewManager;
 
@@ -41,8 +42,10 @@ public class ModelManager {
         for (LocalModel localModel : Tools.getInstalledModelsList(ime)) {
             recognizerSources.add(new VoskLocal(localModel));
         }
-        for (VoskServerData voskServer : ModelPreferences.getVoskServers()) {
-            recognizerSources.add(new VoskServer(voskServer));
+        if (ModelPreferences.VOSK_SERVER_ENABLED) {
+            for (VoskServerData voskServer : ModelPreferences.getVoskServers()) {
+                recognizerSources.add(new VoskServer(voskServer));
+            }
         }
 
         if (recognizerSources.size() == 0) {

@@ -69,8 +69,10 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
             @Override
             public List<ModelsAdapterData> getData() {
                 ArrayList<ModelsAdapterData> list = new ArrayList<>();
-                for (VoskServerData data : ModelPreferences.getVoskServers()) {
-                    list.add(new ModelsAdapterServerData(data));
+                if (ModelPreferences.VOSK_SERVER_ENABLED) {
+                    for (VoskServerData data : ModelPreferences.getVoskServers()) {
+                        list.add(new ModelsAdapterServerData(data));
+                    }
                 }
                 list.addAll(Tools.getModelsData(getContext()));
                 return list;
@@ -198,21 +200,25 @@ public class ModelsFragment extends Fragment implements ModelsAdapter.ItemClickL
 
     @Override
     public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.models_fragment_menu, menu);
+        if (ModelPreferences.VOSK_SERVER_ENABLED) {
+            menuInflater.inflate(R.menu.models_fragment_menu, menu);
+        }
     }
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-        if (menuItem.getTitle() == getString(R.string.menu_models_add_server)) {
-            new AddVoskServerDialogFragment(new AddVoskServerDialogFragment.Callback() {
-                @Override
-                public void callback(boolean add, URI uri) {
-                    if (add && uri != null) {
-                        ModelPreferences.addToVoskServers(new VoskServerData(uri, null));
-                        adapter.reload();
+        if (ModelPreferences.VOSK_SERVER_ENABLED) {
+            if (menuItem.getTitle() == getString(R.string.menu_models_add_server)) {
+                new AddVoskServerDialogFragment(new AddVoskServerDialogFragment.Callback() {
+                    @Override
+                    public void callback(boolean add, URI uri) {
+                        if (add && uri != null) {
+                            ModelPreferences.addToVoskServers(new VoskServerData(uri, null));
+                            adapter.reload();
+                        }
                     }
-                }
-            }).show(requireActivity().getSupportFragmentManager(), "AddVoskServerDialogFragment");
+                }).show(requireActivity().getSupportFragmentManager(), "AddVoskServerDialogFragment");
+            }
         }
 
         return false;
