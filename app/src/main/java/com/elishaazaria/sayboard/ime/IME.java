@@ -52,6 +52,7 @@ public class IME extends InputMethodService implements RecognitionListener, Life
     private ViewManager viewManager;
     private ModelManager modelManager;
     private ActionManager actionManager;
+    private TextManager textManager;
 
 
     @Override
@@ -67,6 +68,8 @@ public class IME extends InputMethodService implements RecognitionListener, Life
         checkMicrophonePermission();
 
         modelManager = new ModelManager(this, viewManager);
+
+        textManager = new TextManager(this);
     }
 
     @Override
@@ -270,8 +273,7 @@ public class IME extends InputMethodService implements RecognitionListener, Life
 
         if (text.isEmpty()) return;
 
-        InputConnection ic = getCurrentInputConnection();
-        if (ic != null) ic.commitText(" " + text, 1);
+        textManager.onText(text, TextManager.Mode.STANDARD);
     }
 
     @Override
@@ -280,24 +282,27 @@ public class IME extends InputMethodService implements RecognitionListener, Life
 
         if (text.isEmpty()) return;
 
-        InputConnection ic = getCurrentInputConnection();
-        if (ic != null) ic.commitText(" " + text, 1);
+
+        textManager.onText(text, TextManager.Mode.FINAL);
     }
 
     @Override
     public void onPartialResult(String partialText) {
         Log.d("VoskIME", "Partial result: " + partialText);
-        if (partialText.equals("") || partialText.equals("nun")) return;
+        if (partialText.equals("")) return;
 //            resultView.setText(partialText);
-        InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        String lastChar = ic.getTextBeforeCursor(1, 0).toString();
-        if (lastChar.length() == 1) { // do not append two words without space
-            if (!lastChar.equals(" ")) {
-                partialText = " " + partialText;
-            }
-        }
-        ic.setComposingText(partialText, 1);
+
+        textManager.onText(partialText, TextManager.Mode.PARTIAL);
+//
+//        InputConnection ic = getCurrentInputConnection();
+//        if (ic == null) return;
+//        String lastChar = ic.getTextBeforeCursor(1, 0).toString();
+//        if (lastChar.length() == 1) { // do not append two words without space
+//            if (!lastChar.equals(" ")) {
+//                partialText = " " + partialText;
+//            }
+//        }
+//        ic.setComposingText(partialText, 1);
     }
 
     @Override
