@@ -6,14 +6,12 @@ import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 
-import com.elishaazaria.sayboard.data.LocalModel;
 import com.elishaazaria.sayboard.R;
-import com.elishaazaria.sayboard.Tools;
-import com.elishaazaria.sayboard.data.VoskServerData;
 import com.elishaazaria.sayboard.ime.recognizers.Recognizer;
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource;
-import com.elishaazaria.sayboard.ime.recognizers.VoskLocal;
-import com.elishaazaria.sayboard.ime.recognizers.VoskServer;
+import com.elishaazaria.sayboard.ime.recognizers.providers.RecognizerSourceProvider;
+import com.elishaazaria.sayboard.ime.recognizers.providers.VoskLocalProvider;
+import com.elishaazaria.sayboard.ime.recognizers.providers.VoskServerProvider;
 import com.elishaazaria.sayboard.preferences.LogicPreferences;
 import com.elishaazaria.sayboard.preferences.ModelPreferences;
 
@@ -32,20 +30,22 @@ public class ModelManager {
 
     private boolean running = false;
 
-    private final List<RecognizerSource> recognizerSources = new ArrayList<>();
+    private final List<RecognizerSourceProvider> sourceProviders = new ArrayList<>();
+    private List<RecognizerSource> recognizerSources = new ArrayList<>();
     private int currentRecognizerSourceIndex = 0;
     private RecognizerSource currentRecognizerSource;
 
     public ModelManager(IME ime, ViewManager viewManager) {
         this.ime = ime;
         this.viewManager = viewManager;
-        for (LocalModel localModel : Tools.getInstalledModelsList(ime)) {
-            recognizerSources.add(new VoskLocal(localModel));
-        }
+
+        sourceProviders.add(new VoskLocalProvider(ime));
         if (ModelPreferences.VOSK_SERVER_ENABLED) {
-            for (VoskServerData voskServer : ModelPreferences.getVoskServers()) {
-                recognizerSources.add(new VoskServer(voskServer));
-            }
+            sourceProviders.add(new VoskServerProvider());
+        }
+
+        for (RecognizerSourceProvider provider : sourceProviders) {
+            provider.loadSources(recognizerSources);
         }
 
         if (recognizerSources.size() == 0) {
@@ -148,17 +148,18 @@ public class ModelManager {
         return running;
     }
 
-//    public void reloadModels() {
-//        List<LocalModel> newModels = Tools.getInstalledModelsList(ime);
-//        if (newModels.size() == 0) {
-//            return;
-//        }
-//
-//        LocalModel currentModel = recognizerSources.get(currentRecognizerSourceIndex);
-//        recognizerSources = newModels;
-//        currentRecognizerSourceIndex = newModels.indexOf(currentModel);
-//        if (currentRecognizerSourceIndex == -1) {
-//            currentRecognizerSourceIndex = 0;
-//        }
-//    }
+    public void reloadModels() {
+        List<RecognizerSource> newModels = new ArrayList<>();
+
+        for (RecognizerSourceProvider provider : sourceProviders) {
+            provider.loadSources(newModels);
+        }
+
+        RecognizerSource currentModel = recognizerSources.get(currentRecognizerSourceIndex);
+        recognizerSources = newModels;
+        currentRecognizerSourceIndex = newModels.indexOf(currentModel);
+        if (currentRecognizerSourceIndex == -1) {
+            currentRecognizerSourceIndex = 0;
+        }
+    }
 }
