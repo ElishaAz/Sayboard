@@ -1,20 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
-
-repositories {
-    google()
-    mavenCentral()
-    maven { url "https://jitpack.io" }
-}
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.elishaazaria.sayboard"
-        minSdkVersion 21
-        targetSdkVersion 32
+        minSdkVersion 23
+        targetSdkVersion 33
         versionCode 3
-        versionName "v2.0.1"
+        versionName "v3.0.0"
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'
         }
@@ -29,10 +24,25 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
     buildFeatures {
         viewBinding true
     }
     namespace 'com.elishaazaria.sayboard'
+
+    ndkVersion "25.1.8937393"
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/whisper/Android.mk'
+        }
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
 }
 
 protobuf {
@@ -76,4 +86,7 @@ dependencies {
     implementation 'io.grpc:grpc-protobuf-lite:1.52.0'
     implementation 'io.grpc:grpc-stub:1.52.0'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53' // necessary for Java 9+
+
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
 }
