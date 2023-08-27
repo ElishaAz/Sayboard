@@ -10,9 +10,6 @@ android {
         targetSdkVersion 33
         versionCode 3
         versionName "v3.0.0"
-        ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86_64', 'x86'
-        }
     }
     buildTypes {
         release {
@@ -32,12 +29,6 @@ android {
     }
     namespace 'com.elishaazaria.sayboard'
 
-    ndkVersion "25.1.8937393"
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/whisper/Android.mk'
-        }
-    }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
