@@ -149,6 +149,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
                         initY = event.y
                         swiping = false
                     }
+
                     MotionEvent.ACTION_MOVE -> {
                         if (x < -threshold) {
                             swiping = true
@@ -159,6 +160,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
                             actionManager.selectCharsBack(amount)
                         }
                     }
+
                     MotionEvent.ACTION_UP -> if (swiping) {
                         actionManager.deleteSelection()
                     } else {
@@ -286,10 +288,6 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
         viewManager.stateLD.postValue(ViewManager.Companion.STATE_PAUSED)
     }
 
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
-
     companion object {
         private val editorActions = intArrayOf(
             EditorInfo.IME_ACTION_UNSPECIFIED,
@@ -302,4 +300,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             EditorInfo.IME_ACTION_PREVIOUS
         )
     }
+
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
 }

@@ -3,7 +3,7 @@ apply plugin: 'com.google.protobuf'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.elishaazaria.sayboard"
         minSdkVersion 23
@@ -58,16 +58,16 @@ protobuf {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'net.java.dev.jna:jna:5.9.0@aar'
     implementation group: 'com.alphacephei', name: 'vosk-android', version: '0.3.32'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.6.1'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'androidx.navigation:navigation-fragment:2.5.2'
-    implementation 'androidx.navigation:navigation-ui:2.5.2'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.navigation:navigation-fragment:2.7.1'
+    implementation 'androidx.navigation:navigation-ui:2.7.1'
+    implementation 'androidx.preference:preference:1.2.1'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
