@@ -22,19 +22,19 @@ public fun GrantPermissionUi(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize(),
     ) {
-        Button(onClick = requestMic, enabled = mic.value) {
+        Button(onClick = requestMic, enabled = !mic.value) {
             if (mic.value) {
-                Text(text = "Grant Microphone Permission")
-            } else {
                 Text(text = "Microphone Permission Granted")
+            } else {
+                Text(text = "Grant Microphone Permission")
             }
 
         }
-        Button(onClick = requestIme, enabled = ime.value) {
+        Button(onClick = requestIme, enabled = !ime.value) {
             if (ime.value) {
-                Text(text = "Enable IME")
-            } else {
                 Text(text = "IME enabled")
+            } else {
+                Text(text = "Enable IME")
             }
         }
     }

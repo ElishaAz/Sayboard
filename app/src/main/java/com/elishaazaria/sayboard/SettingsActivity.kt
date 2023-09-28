@@ -145,6 +145,7 @@ class SettingsActivity : ComponentActivity() {
     companion object {
         /* Used to handle permission request */
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
+        public const val PERMISSION_REQUEST_POST_NOTIFICATIONS = 1
     }
 
     @Preview

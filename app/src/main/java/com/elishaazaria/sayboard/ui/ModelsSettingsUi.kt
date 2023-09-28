@@ -1,6 +1,10 @@
 package com.elishaazaria.sayboard.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +42,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.elishaazaria.sayboard.SettingsActivity
 import com.elishaazaria.sayboard.Tools
@@ -188,6 +195,25 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         ) {
             FloatingActionButton(onClick = {
                 showDownloadDialog = true
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val permissionCheck = ContextCompat.checkSelfPermission(
+                        activity.applicationContext,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                    if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(
+                            activity, arrayOf(
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ), SettingsActivity.PERMISSION_REQUEST_POST_NOTIFICATIONS
+                        )
+                        Toast.makeText(
+                            activity,
+                            "Notifications recommended for downloader to work properly",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }) {
                 Icon(imageVector = Icons.Default.Download, contentDescription = null)
             }
