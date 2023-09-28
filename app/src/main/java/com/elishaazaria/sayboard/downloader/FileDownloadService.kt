@@ -1,9 +1,12 @@
 package com.elishaazaria.sayboard.downloader
 
+import android.Manifest
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.IBinder
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.elishaazaria.sayboard.Constants
@@ -11,9 +14,11 @@ import com.elishaazaria.sayboard.Constants.getDirectoryForModel
 import com.elishaazaria.sayboard.Constants.getTemporaryDownloadLocation
 import com.elishaazaria.sayboard.Constants.getTemporaryUnzipLocation
 import com.elishaazaria.sayboard.R
+import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.downloader.messages.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.*
 import java.net.URL
 import java.util.*
@@ -27,8 +32,11 @@ class FileDownloadService : Service() {
     private var currentModel: ModelInfo? = null
     private val queuedModels: Queue<ModelInfo> = LinkedList()
     private var currentState = State.NONE
-    private var downloadProgress = 0
-    private var unzipProgress = 0
+    private var downloadProgress = 0f
+    private var unzipProgress = 0f
+
+    private var interrupt = false
+
     override fun onCreate() {
         super.onCreate()
         EventBus.getDefault().register(this)
@@ -47,8 +55,8 @@ class FileDownloadService : Service() {
             ?: return START_NOT_STICKY
         Log.d(TAG, "Got message $modelInfo")
         queuedModels.add(modelInfo)
-        executor.execute { main() }
         sendEnqueued(modelInfo)
+        executor.execute { main() }
         startForeground(notificationId, notificationBuilder.build())
         return START_NOT_STICKY
     }
@@ -57,8 +65,8 @@ class FileDownloadService : Service() {
         currentModel = queuedModels.poll()
         val currentModelS = currentModel ?: return
         Log.d(TAG, "Started processing $currentModelS")
-        downloadProgress = 0
-        unzipProgress = 0
+        downloadProgress = 0f
+        unzipProgress = 0f
         setState(State.NONE)
         val downloadLocation = getTemporaryDownloadLocation(
             applicationContext, currentModelS.filename
@@ -74,6 +82,10 @@ class FileDownloadService : Service() {
             mainEnd()
             return
         }
+        if (interrupt) {
+            interrupted(downloadLocation)
+            return
+        }
         Log.d(TAG, "Finished downloading")
         try {
             unzipFile(downloadLocation)
@@ -83,6 +95,9 @@ class FileDownloadService : Service() {
             mainEnd()
             return
         }
+        if (interrupt) {
+            interrupted(downloadLocation)
+        }
         Log.d(TAG, "Finished unzipping")
         downloadLocation.delete()
         setState(State.FINISHED)
@@ -90,9 +105,29 @@ class FileDownloadService : Service() {
         mainEnd()
     }
 
+    private fun interrupted(downloadLocation: File) {
+        if (downloadLocation.exists()) {
+            downloadLocation.delete()
+        }
+        val unzipFolder = getTemporaryUnzipLocation(this)
+        if (unzipFolder.exists()) {
+            Tools.deleteRecursive(unzipFolder)
+        }
+
+        Log.d(TAG, "Download Canceled")
+        EventBus.getDefault()
+            .post(
+                CancelFinished(currentModel!!)
+            )
+        updateNotification()
+
+        interrupt = false
+        mainEnd()
+    }
+
     private fun mainEnd() {
-        downloadProgress = 0
-        unzipProgress = 0
+        downloadProgress = 0f
+        unzipProgress = 0f
         currentState = State.NONE
         currentModel = null
         if (queuedModels.isEmpty()) stopForeground(false)
@@ -106,22 +141,24 @@ class FileDownloadService : Service() {
         urlConnection.connect()
         val lengthOfFile = urlConnection.contentLength
         Log.d("TAG", "Length of file: $lengthOfFile")
-        setDownloadProgress(0)
+        setDownloadProgress(0f)
         val input: InputStream = BufferedInputStream(url.openStream())
         val output: OutputStream = FileOutputStream(downloadLocation)
         val data = ByteArray(1024) // 1mb
-        var total: Long = 0
+        var total: Float = 0f
         var count: Int
-        while (input.read(data).also { count = it } != -1) {
-            total += count.toLong()
-            setDownloadProgress((total * PROGRESS_MAX / lengthOfFile).toInt())
+        while (input.read(data).also { count = it } != -1 && !interrupt) {
+            total += count
+            setDownloadProgress(total / lengthOfFile)
             output.write(data, 0, count)
         }
         output.flush()
         output.close()
         input.close()
-        setDownloadProgress(PROGRESS_MAX)
-        setState(State.DOWNLOAD_FINISHED)
+        if (!interrupt) {
+            setDownloadProgress(1f)
+            setState(State.DOWNLOAD_FINISHED)
+        }
     }
 
     @Throws(IOException::class)
@@ -139,13 +176,13 @@ class FileDownloadService : Service() {
             downloadLocation,
             currentUnzipFolder,
             unzipDestination
-        ) { d: Double -> setUnzipProgress((d * PROGRESS_MAX).toInt()) }
-        setUnzipProgress(PROGRESS_MAX)
+        ) { d: Double -> setUnzipProgress(d.toFloat()) }
+        setUnzipProgress(1f)
         setState(State.UNZIP_FINISHED)
     }
 
-    private var lastDownloadProgress = 0
-    private var lastUnzipProgress = 0
+    private var lastDownloadProgress = 0f
+    private var lastUnzipProgress = 0f
     private var lastState: State = State.NONE
     private var lastUpdateTime: Long = 0
     private fun updateNotification() {
@@ -154,8 +191,8 @@ class FileDownloadService : Service() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastUpdateTime < minUpdateTime) {
             if (lastState == currentState) { // it's a progress update
-                if (!(downloadProgress == PROGRESS_MAX && unzipProgress == 0) &&
-                    unzipProgress != PROGRESS_MAX
+                if (!(downloadProgress == 1f && unzipProgress == 0f) &&
+                    unzipProgress != 1f
                 ) { // it's not the last progress update
                     lastUpdateTime = currentTime
                     return
@@ -166,21 +203,36 @@ class FileDownloadService : Service() {
         when (currentState) {
             State.NONE -> notificationBuilder.setContentText(getString(R.string.notification_download_content_unknown))
                 .setProgress(0, 0, true)
+
             State.DOWNLOAD_STARTED, State.DOWNLOAD_FINISHED -> notificationBuilder.setContentText(
                 getString(R.string.notification_download_content_downloading)
             )
-                .setProgress(PROGRESS_MAX, downloadProgress, false)
+                .setProgress(PROGRESS_MAX, (downloadProgress * PROGRESS_MAX).toInt(), false)
+
             State.UNZIP_STARTED, State.UNZIP_FINISHED -> notificationBuilder.setContentText(
                 getString(R.string.notification_download_content_unzipping)
             )
-                .setProgress(PROGRESS_MAX, unzipProgress, false)
+                .setProgress(PROGRESS_MAX, (unzipProgress * PROGRESS_MAX).toInt(), false)
+
             State.FINISHED -> notificationBuilder.setContentText(getString(R.string.notification_download_content_finished))
                 .setProgress(0, 0, false)
+
             State.ERROR -> notificationBuilder.setContentText(getString(R.string.notification_download_content_error))
                 .setProgress(0, 0, false)
-            State.QUEUED -> TODO()
+
+            State.CANCELED -> notificationBuilder.setContentText("Downloading Canceled")
+                .setProgress(0, 0, false)
+
+            else -> {}
         }
-        notificationManager.notify(notificationId, notificationBuilder.build())
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(notificationId, notificationBuilder.build())
+        }
         lastDownloadProgress = downloadProgress
         lastUnzipProgress = unzipProgress
         lastState = currentState
@@ -192,13 +244,13 @@ class FileDownloadService : Service() {
         updateNotification()
     }
 
-    private fun setDownloadProgress(progress: Int) {
+    private fun setDownloadProgress(progress: Float) {
         downloadProgress = progress
         EventBus.getDefault().post(DownloadProgress(currentModel!!, downloadProgress))
         updateNotification()
     }
 
-    private fun setUnzipProgress(progress: Int) {
+    private fun setUnzipProgress(progress: Float) {
         unzipProgress = progress
         EventBus.getDefault().post(UnzipProgress(currentModel!!, unzipProgress))
         updateNotification()
@@ -214,10 +266,34 @@ class FileDownloadService : Service() {
         EventBus.getDefault().post(DownloadState(modelInfo, State.QUEUED))
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun handleStatusQuery(event: StatusQuery?) {
         EventBus.getDefault()
-            .post(Status(currentModel!!, queuedModels, downloadProgress, unzipProgress, currentState))
+            .post(Status(currentModel, queuedModels, downloadProgress, unzipProgress, currentState))
+    }
+
+    @Subscribe
+    fun handleCancelPending(event: CancelPending) {
+        if (queuedModels.remove(event.info)) {
+            EventBus.getDefault()
+                .post(
+                    Status(
+                        currentModel,
+                        queuedModels,
+                        downloadProgress,
+                        unzipProgress,
+                        currentState
+                    )
+                )
+        }
+    }
+
+    @Subscribe
+    fun handleCancelCurrent(event: CancelCurrent) {
+        if (currentModel == event.info) {
+            interrupt = true
+            setState(State.CANCELED)
+        }
     }
 
     override fun onBind(intent: Intent): IBinder? {

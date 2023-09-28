@@ -1,48 +1,156 @@
 package com.elishaazaria.sayboard
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
-import androidx.navigation.ui.NavigationUI.setupWithNavController
-import com.elishaazaria.sayboard.databinding.ActivitySettingsBinding
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.MutableLiveData
+import com.elishaazaria.sayboard.data.LocalModel
+import com.elishaazaria.sayboard.ui.GrantPermissionUi
+import com.elishaazaria.sayboard.ui.LogicSettingsUi
+import com.elishaazaria.sayboard.ui.ModelsSettingsUi
+import com.elishaazaria.sayboard.ui.UISettingsUi
+import java.util.Locale
 
-class SettingsActivity : AppCompatActivity() {
-    private var binding: ActivitySettingsBinding? = null
-    private var navController: NavController? = null
+class SettingsActivity : ComponentActivity() {
+
+    private val micGranted = MutableLiveData<Boolean>(true)
+    private val imeGranted = MutableLiveData<Boolean>(true)
+
+    private val modelSettingsUi = ModelsSettingsUi(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Tools.createNotificationChannel(this)
-        binding = ActivitySettingsBinding.inflate(
-            layoutInflater
-        )
-        setContentView(binding!!.root)
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_settings) as NavHostFragment?
-        navController = navHostFragment!!.navController
-        if (Tools.isMicrophonePermissionGranted(this) && Tools.isIMEEnabled(this)) {
-            permissionsGranted()
-        } else {
-            navController!!.navigate(R.id.navigation_setup)
-            binding!!.navView.visibility = View.GONE
+
+        checkPermissions()
+
+        modelSettingsUi.onCreate()
+
+        setContent {
+            val micGrantedState = micGranted.observeAsState(true)
+            val imeGrantedState = imeGranted.observeAsState(true)
+            if (micGrantedState.value && imeGrantedState.value) {
+
+                MainUi()
+            } else {
+                GrantPermissionUi(mic = micGrantedState, ime = imeGrantedState, requestMic = {
+                    ActivityCompat.requestPermissions(
+                        this, arrayOf(
+                            Manifest.permission.RECORD_AUDIO
+                        ), PERMISSIONS_REQUEST_RECORD_AUDIO
+                    )
+                }) {
+                    startActivity(Intent("android.settings.INPUT_METHOD_SETTINGS"))
+                }
+            }
         }
     }
 
-    fun permissionsGranted() {
-        binding!!.navView.visibility = View.VISIBLE
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration: AppBarConfiguration = AppBarConfiguration.Builder( //                R.id.navigation_setup,
-                R.id.navigation_models,
-                R.id.navigation_ui,
-                R.id.navigation_logic
-            )
-                .build()
-        setupActionBarWithNavController(this, navController!!, appBarConfiguration)
-        setupWithNavController(binding!!.navView, navController!!)
-        navController!!.navigate(R.id.navigation_models)
+    @Composable
+    private fun MainUi() {
+        val tabs = listOf<String>("Models", "UI", "Logic")
+        var selectedIndex by remember {
+            mutableIntStateOf(0)
+        }
+
+        Scaffold(bottomBar = {
+            NavigationBar() {
+                tabs.forEachIndexed { index, tab ->
+                    NavigationBarItem(
+                        selected = index == selectedIndex,
+                        onClick = { selectedIndex = index },
+                        icon = {
+                            when (index) {
+                                0 -> Icon(
+                                    imageVector = Icons.Default.Home,
+                                    contentDescription = null
+                                )
+
+                                1 -> Icon(
+                                    painter = painterResource(id = R.drawable.ic_baseline_color_lens_24),
+                                    contentDescription = null
+                                )
+
+                                2 -> Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
+                        }, label = {
+                            Text(text = tab)
+                        })
+                }
+            }
+        }, floatingActionButton = {
+            if (selectedIndex == 0) {
+                modelSettingsUi.Fab()
+            }
+        }) {
+            Box(modifier = Modifier
+                .padding(it)
+                .padding(10.dp)) {
+                when (selectedIndex) {
+                    0 -> modelSettingsUi.Content()
+                    1 -> UISettingsUi()
+                    2 -> LogicSettingsUi()
+                }
+            }
+        }
+    }
+
+    private fun checkPermissions() {
+        micGranted.postValue(Tools.isMicrophonePermissionGranted(this))
+        imeGranted.postValue(Tools.isIMEEnabled(this))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        modelSettingsUi.onStart()
+    }
+
+    override fun onStop() {
+        modelSettingsUi.onStop()
+        super.onStop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkPermissions()
+        modelSettingsUi.onResume()
+    }
+
+    companion object {
+        /* Used to handle permission request */
+        private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
+    }
+
+    @Preview
+    @Composable
+    fun DefaultPreview() {
+        modelSettingsUi.models.postValue(listOf(LocalModel("abc/def", Locale.ENGLISH, "english")))
+        MainUi()
     }
 }

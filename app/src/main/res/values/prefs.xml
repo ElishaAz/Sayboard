@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="p_keep_screen_awake_mode_never">Never</string>
+    <string name="p_keep_screen_awake_mode_when_listening">When Listening</string>
+    <string name="p_keep_screen_awake_mode_when_open">When Open</string>
+</resources>

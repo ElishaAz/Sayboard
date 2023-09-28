@@ -5,18 +5,18 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.R
+import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource
 import com.elishaazaria.sayboard.ime.recognizers.providers.RecognizerSourceProvider
 import com.elishaazaria.sayboard.ime.recognizers.providers.VoskLocalProvider
 import com.elishaazaria.sayboard.ime.recognizers.providers.VoskServerProvider
-import com.elishaazaria.sayboard.preferences.LogicPreferences.isListenImmediately
-import com.elishaazaria.sayboard.preferences.LogicPreferences.isWeakRefModel
-import com.elishaazaria.sayboard.preferences.ModelPreferences
+import com.elishaazaria.sayboard.sayboardPreferenceModel
 import java.io.IOException
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
+    private val prefs by sayboardPreferenceModel()
     private var speechService: MySpeechService? = null
     var isRunning = false
         private set
@@ -28,7 +28,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     fun initializeRecognizer() {
         if (recognizerSources.size == 0) return
         val onLoaded = Observer { r: RecognizerSource? ->
-            if (isListenImmediately) {
+            if (prefs.logicListenImmediately.get()) {
                 start() // execute after initialize
             }
         }
@@ -39,7 +39,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     }
 
     private fun stopRecognizerSource() {
-        currentRecognizerSource.close(isWeakRefModel)
+        currentRecognizerSource.close(prefs.logicWeakRefToModel.get())
         currentRecognizerSource.stateLD.removeObserver(viewManager)
     }
 
@@ -57,7 +57,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         if (isRunning || speechService != null) {
             speechService!!.stop()
         }
-        viewManager.stateLD.postValue(ViewManager.Companion.STATE_LISTENING)
+        viewManager.stateLD.postValue(ViewManager.STATE_LISTENING)
         try {
             val recognizer = currentRecognizerSource.recognizer
             if (ActivityCompat.checkSelfPermission(
@@ -71,7 +71,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
             speechService!!.startListening(ime)
         } catch (e: IOException) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_mic_in_use)
-            viewManager.stateLD.postValue(ViewManager.Companion.STATE_ERROR)
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
         }
         isRunning = true
     }
@@ -80,7 +80,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
 
     init {
         sourceProviders.add(VoskLocalProvider(ime))
-        if (ModelPreferences.VOSK_SERVER_ENABLED) {
+        if (Tools.VOSK_SERVER_ENABLED) {
             sourceProviders.add(VoskServerProvider())
         }
         for (provider in sourceProviders) {
@@ -88,7 +88,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         }
         if (recognizerSources.size == 0) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_no_recognizers)
-            viewManager.stateLD.postValue(ViewManager.Companion.STATE_ERROR)
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
         } else {
             currentRecognizerSourceIndex = 0
             initializeRecognizer()
@@ -100,9 +100,9 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
             speechService!!.setPause(checked)
             pausedState = checked
             if (checked) {
-                viewManager.stateLD.postValue(ViewManager.Companion.STATE_PAUSED)
+                viewManager.stateLD.postValue(ViewManager.STATE_PAUSED)
             } else {
-                viewManager.stateLD.postValue(ViewManager.Companion.STATE_LISTENING)
+                viewManager.stateLD.postValue(ViewManager.STATE_LISTENING)
             }
         } else {
             pausedState = false

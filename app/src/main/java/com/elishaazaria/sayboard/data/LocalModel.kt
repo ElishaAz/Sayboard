@@ -3,21 +3,7 @@ package com.elishaazaria.sayboard.data
 import java.io.Serializable
 import java.util.*
 
-class LocalModel(val path: String?, val locale: Locale?, val filename: String?) : Serializable {
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val model = o as LocalModel
-        if (path != model.path) return false
-        return if (locale != model.locale) false else filename == model.filename
-    }
-
-    override fun hashCode(): Int {
-        var result = path?.hashCode() ?: 0
-        result = 31 * result + (locale?.hashCode() ?: 0)
-        result = 31 * result + (filename?.hashCode() ?: 0)
-        return result
-    }
+data class LocalModel(val path: String, val locale: Locale, val filename: String) : Serializable {
 
     companion object {
         fun serialize(model: LocalModel): String {

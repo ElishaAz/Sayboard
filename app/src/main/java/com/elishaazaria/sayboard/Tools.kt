@@ -12,11 +12,12 @@ import androidx.core.content.ContextCompat
 import com.elishaazaria.sayboard.Constants.getModelsDirectory
 import com.elishaazaria.sayboard.data.LocalModel
 import com.elishaazaria.sayboard.data.ModelLink
-import com.elishaazaria.sayboard.settingsfragments.modelsfragment.ModelsAdapterLocalData
 import java.io.File
 import java.util.*
 
 object Tools {
+    const val VOSK_SERVER_ENABLED = false
+
     @JvmStatic
     fun isMicrophonePermissionGranted(activity: Activity): Boolean {
         val permissionCheck = ContextCompat.checkSelfPermission(
@@ -38,35 +39,6 @@ object Tools {
         return false
     }
 
-    //    public static void downloadModelFromLink(ModelLink model, OnDownloadStatusListener listener, Context context) {
-    //        String serverFilePath = model.link;
-    //
-    //        File tempFolder = Constants.getTemporaryDownloadLocation(context);
-    //        if (!tempFolder.exists()) {
-    //            tempFolder.mkdirs();
-    //        }
-    //
-    //        String fileName = model.link.substring(model.link.lastIndexOf('/') + 1); // file name
-    //        File tempFile = new File(tempFolder, fileName);
-    //
-    //        String localPath = tempFile.getAbsolutePath();
-    //
-    //        File modelFolder = Constants.getDirectoryForModel(context, model.locale);
-    //
-    //        if (!modelFolder.exists()) {
-    //            modelFolder.mkdirs();
-    //        }
-    //
-    //        String unzipPath = modelFolder.getAbsolutePath();
-    //
-    //        DownloadRequest downloadRequest = new DownloadRequest(serverFilePath, localPath, true);
-    //        downloadRequest.setRequiresUnzip(true);
-    //        downloadRequest.setDeleteZipAfterExtract(true);
-    //        downloadRequest.setUnzipAtFilePath(unzipPath);
-    //
-    //        FileDownloader downloader = FileDownloader.getInstance(listener);
-    //        downloader.download(downloadRequest, context);
-    //    }
     @JvmStatic
     fun deleteModel(model: LocalModel, context: Context?) {
         val modelFile = File(model.path)
@@ -75,7 +47,7 @@ object Tools {
 
     @JvmStatic
     fun deleteRecursive(fileOrDirectory: File) {
-        if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()) deleteRecursive(
+        if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()!!) deleteRecursive(
             child
         )
         fileOrDirectory.delete()
@@ -85,11 +57,11 @@ object Tools {
         val localeMap: MutableMap<Locale, MutableList<LocalModel>> = HashMap()
         val modelsDir = getModelsDirectory(context!!)
         if (!modelsDir.exists()) return localeMap
-        for (localeFolder in modelsDir.listFiles()) {
+        for (localeFolder in modelsDir.listFiles()!!) {
             if (!localeFolder.isDirectory) continue
             val locale = Locale.forLanguageTag(localeFolder.name)
             val models: MutableList<LocalModel> = ArrayList()
-            for (modelFolder in localeFolder.listFiles()) {
+            for (modelFolder in localeFolder.listFiles()!!) {
                 if (!modelFolder.isDirectory) continue
                 val name = modelFolder.name
                 val model = LocalModel(modelFolder.absolutePath, locale, name)
@@ -105,10 +77,10 @@ object Tools {
         val models: MutableList<LocalModel> = ArrayList()
         val modelsDir = getModelsDirectory(context!!)
         if (!modelsDir.exists()) return models
-        for (localeFolder in modelsDir.listFiles()) {
+        for (localeFolder in modelsDir.listFiles()!!) {
             if (!localeFolder.isDirectory) continue
             val locale = Locale.forLanguageTag(localeFolder.name)
-            for (modelFolder in localeFolder.listFiles()) {
+            for (modelFolder in localeFolder.listFiles()!!) {
                 if (!modelFolder.isDirectory) continue
                 val name = modelFolder.name
                 val model = LocalModel(modelFolder.absolutePath, locale, name)
@@ -116,34 +88,6 @@ object Tools {
             }
         }
         return models
-    }
-
-    @JvmStatic
-    fun getModelsData(context: Context?): List<ModelsAdapterLocalData> {
-        val data: MutableList<ModelsAdapterLocalData> = ArrayList()
-        val installedModels = getInstalledModelsMap(context)
-        for (link in ModelLink.values()) {
-            var found = false
-            if (installedModels.containsKey(link.locale)) {
-                val localeModels = installedModels[link.locale]!!
-                for (i in localeModels.indices) {
-                    val model = localeModels[i]
-                    if (model.filename == link.filename) {
-                        data.add(ModelsAdapterLocalData(link, model))
-                        localeModels.removeAt(i)
-                        found = true
-                        break
-                    }
-                }
-            }
-            if (!found) data.add(ModelsAdapterLocalData(link))
-        }
-        for (models in installedModels.values) {
-            for (model in models) {
-                data.add(ModelsAdapterLocalData(model))
-            }
-        }
-        return data
     }
 
     @JvmStatic

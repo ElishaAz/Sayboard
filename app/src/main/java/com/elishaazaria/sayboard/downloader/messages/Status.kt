@@ -2,10 +2,10 @@ package com.elishaazaria.sayboard.downloader.messages
 
 import java.util.*
 
-class Status(
-    val current: ModelInfo,
+data class Status(
+    val current: ModelInfo?,
     val queued: Queue<ModelInfo>,
-    val downloadProgress: Int,
-    val unzipProgress: Int,
+    val downloadProgress: Float,
+    val unzipProgress: Float,
     val state: State
 )

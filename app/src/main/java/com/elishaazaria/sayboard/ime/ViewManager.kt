@@ -12,17 +12,16 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerState
-import com.elishaazaria.sayboard.preferences.UIPreferences.getBackgroundColor
-import com.elishaazaria.sayboard.preferences.UIPreferences.getForegroundColor
-import com.elishaazaria.sayboard.preferences.UIPreferences.screenHeightLandscape
-import com.elishaazaria.sayboard.preferences.UIPreferences.screenHeightPortrait
+import com.elishaazaria.sayboard.sayboardPreferenceModel
 
 class ViewManager(private val ime: IME) : Observer<RecognizerState> {
+    private val prefs by sayboardPreferenceModel()
     lateinit var root: ConstraintLayout
         private set
     private lateinit var micButton: ImageButton
@@ -84,8 +83,26 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
     private fun setUpTheme() {
         val dark =
             ime.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        val foreground = getForegroundColor(dark, ime)
-        val background = getBackgroundColor(dark)
+
+        val foreground = if (dark) {
+            if (prefs.uiNightForegroundMaterialYou.get()) {
+                ContextCompat.getColor(ime, R.color.materialYouForeground)
+            } else {
+                prefs.uiNightForeground.get()
+            }
+        } else {
+            if (prefs.uiDayForegroundMaterialYou.get()) {
+                ContextCompat.getColor(ime, R.color.materialYouForeground)
+            } else {
+                prefs.uiDayForeground.get()
+            }
+        }
+        val background = if (dark) {
+            prefs.uiNightBackground.get()
+        } else {
+            prefs.uiDayBackground.get()
+        }
+
         if (currentForeground == foreground && currentBackground == background) return
         currentForeground = foreground
         currentBackground = background
@@ -107,9 +124,9 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
         val screenHeight = ime.resources.displayMetrics.heightPixels
         val percent: Float
         percent = if (landscape) {
-            screenHeightLandscape
+            prefs.uiKeyboardHeightLandscape.get()
         } else {
-            screenHeightPortrait
+            prefs.uiKeyboardHeightPortrait.get()
         }
         val height = (percent * screenHeight).toInt()
         Log.d("ViewManager", "Screen height: $screenHeight, height: $height")
@@ -138,21 +155,25 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
                 icon = R.drawable.ic_settings_voice
                 enabled = false
             }
+
             STATE_READY, STATE_PAUSED -> {
                 text = R.string.mic_info_ready
                 icon = R.drawable.ic_mic_none
                 enabled = true
             }
+
             STATE_LISTENING -> {
                 text = R.string.mic_info_recording
                 icon = R.drawable.ic_mic
                 enabled = true
             }
+
             STATE_ERROR -> {
                 text = R.string.mic_info_error
                 icon = R.drawable.ic_mic_off
                 enabled = false
             }
+
             else -> return
         }
         resultView.setText(text)
@@ -188,6 +209,7 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
             RecognizerState.CLOSED, RecognizerState.NONE -> stateLD.setValue(
                 STATE_INITIAL
             )
+
             RecognizerState.LOADING -> stateLD.setValue(STATE_LOADING)
             RecognizerState.READY -> stateLD.setValue(STATE_READY)
             RecognizerState.IN_RAM -> stateLD.setValue(STATE_PAUSED)

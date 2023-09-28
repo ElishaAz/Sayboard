@@ -21,7 +21,7 @@
         <SwitchPreference
             android:defaultValue="@bool/pref_weak_ref_model_default"
             android:key="@string/pref_logic_weak_ref_model_b"
-            android:summary="@string/other_quick_reload_summery"
-            android:title="@string/other_quick_reload_title" />
+            android:summary="@string/other_weak_ref_to_model_summery"
+            android:title="@string/other_weak_ref_to_model_title" />
     </PreferenceCategory>
 </PreferenceScreen>

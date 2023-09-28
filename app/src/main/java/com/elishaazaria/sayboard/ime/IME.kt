@@ -32,14 +32,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import com.elishaazaria.sayboard.BuildConfig
 import com.elishaazaria.sayboard.R
-import com.elishaazaria.sayboard.preferences.LogicPreferences
-import com.elishaazaria.sayboard.preferences.LogicPreferences.isAutoSwitchBack
-import com.elishaazaria.sayboard.preferences.LogicPreferences.keepScreenAwake
+import com.elishaazaria.sayboard.data.KeepScreenAwakeMode
+import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
 import org.vosk.android.RecognitionListener
 
 class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
+    private val prefs by sayboardPreferenceModel()
+
     private val lifecycleRegistry = LifecycleRegistry(this)
     private lateinit var editorInfo: EditorInfo
     private lateinit var viewManager: ViewManager
@@ -82,7 +83,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
         }
         modelManager.initializeRecognizer()
         viewManager.refresh()
-        setKeepScreenOn(keepScreenAwake == LogicPreferences.KEEP_SCREEN_AWAKE_WHEN_OPEN)
+        setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -90,7 +91,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
         // text input has ended
         setKeepScreenOn(false)
         modelManager.stop()
-        if (isAutoSwitchBack) {
+        if (prefs.logicAutoSwitchBack.get()) {
             // switch back
             actionManager.switchToLastIme(false)
         }
@@ -103,20 +104,17 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
                 if (modelManager.isRunning) {
                     if (modelManager.isPaused) {
                         modelManager.pause(false)
-                        if (keepScreenAwake == LogicPreferences.KEEP_SCREEN_AWAKE_WHEN_LISTENING) setKeepScreenOn(
-                            true
-                        )
+                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                            setKeepScreenOn(true)
                     } else {
                         modelManager.pause(true)
-                        if (keepScreenAwake == LogicPreferences.KEEP_SCREEN_AWAKE_WHEN_LISTENING) setKeepScreenOn(
-                            false
-                        )
+                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                            setKeepScreenOn(false)
                     }
                 } else {
                     modelManager.start()
-                    if (keepScreenAwake == LogicPreferences.KEEP_SCREEN_AWAKE_WHEN_LISTENING) setKeepScreenOn(
-                        true
-                    )
+                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                        setKeepScreenOn(true)
                 }
             }
 
@@ -281,11 +279,11 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
 
     override fun onError(e: Exception) {
         viewManager.errorMessageLD.postValue(R.string.mic_error_recognizer_error)
-        viewManager.stateLD.postValue(ViewManager.Companion.STATE_ERROR)
+        viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
     }
 
     override fun onTimeout() {
-        viewManager.stateLD.postValue(ViewManager.Companion.STATE_PAUSED)
+        viewManager.stateLD.postValue(ViewManager.STATE_PAUSED)
     }
 
     companion object {
