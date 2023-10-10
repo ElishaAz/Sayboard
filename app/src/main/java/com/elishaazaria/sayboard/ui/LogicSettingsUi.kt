@@ -31,10 +31,10 @@ fun LogicSettingsUi() = ScrollablePreferenceLayout(sayboardPreferenceModel()) {
         )
     )
     SwitchPreference(
-        pref = prefs.logicWeakRefToModel,
-        title = stringResource(id = R.string.other_weak_ref_to_model_title),
+        pref = prefs.logicKeepModelInRam,
+        title = stringResource(id = R.string.other_keep_model_in_ram_title),
         summary = stringResource(
-            id = R.string.other_weak_ref_to_model_summery
+            id = R.string.other_keep_model_in_ram_summery
         )
     )
 }

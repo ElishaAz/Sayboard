@@ -9,7 +9,6 @@ import com.elishaazaria.sayboard.data.LocalModel
 import org.json.JSONException
 import org.json.JSONObject
 import org.vosk.Model
-import java.lang.ref.WeakReference
 import java.util.concurrent.Executor
 
 class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
@@ -20,13 +19,8 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     override val recognizer: Recognizer
         get() = myRecognizer!!
     private var model: Model? = null
-    private var modelWeakReference: WeakReference<Model?>? = null
     override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
         stateMLD.postValue(RecognizerState.LOADING)
-        if (modelWeakReference != null) {
-            val oldModel = modelWeakReference!!.get()
-            oldModel?.let { modelLoaded(it) }
-        }
         val handler = Handler(Looper.getMainLooper())
         executor.execute {
             val model = Model(localModel.path)
@@ -39,13 +33,13 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
 
     private fun modelLoaded(model: Model) {
         this.model = model
-        modelWeakReference = null
         stateMLD.postValue(RecognizerState.READY)
         myRecognizer = MyRecognizer(model, 16000.0f)
     }
 
     private class MyRecognizer     //            setMaxAlternatives(3); // TODO: implement
-        (model: Model, override val sampleRate: Float) : org.vosk.Recognizer(model, sampleRate), Recognizer {
+        (model: Model, override val sampleRate: Float) : org.vosk.Recognizer(model, sampleRate),
+        Recognizer {
 
         override fun getResult(): String {
             try {
@@ -79,19 +73,16 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     }
 
     override fun close(freeRAM: Boolean) {
-        if (myRecognizer != null) myRecognizer!!.close()
+        myRecognizer?.close()
         myRecognizer = null
         if (freeRAM) {
-            if (model != null) modelWeakReference = WeakReference(model)
+            model?.close()
             model = null
-            stateMLD.postValue(RecognizerState.CLOSED)
-        } else {
-            stateMLD.postValue(RecognizerState.IN_RAM)
         }
     }
 
     override val errorMessage: Int
         get() = 0
     override val name: String
-        get() = localModel.locale?.displayName ?: ""
+        get() = localModel.locale.displayName ?: ""
 }

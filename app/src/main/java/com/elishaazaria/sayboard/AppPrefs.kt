@@ -29,8 +29,8 @@ class AppPrefs : PreferenceModel("example-app-preferences") {
         default = false
     )
 
-    val logicWeakRefToModel = boolean(
-        key = "b_weak_ref_to_model",
+    val logicKeepModelInRam = boolean(
+        key = "b_keep_model_in_ram",
         default = false
     )
 

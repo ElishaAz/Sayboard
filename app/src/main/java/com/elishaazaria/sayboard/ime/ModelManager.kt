@@ -38,19 +38,22 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         currentRecognizerSource.initialize(executor, onLoaded)
     }
 
-    private fun stopRecognizerSource() {
-        currentRecognizerSource.close(prefs.logicWeakRefToModel.get())
+    private fun stopRecognizerSource(freeRam: Boolean) {
+        currentRecognizerSource.close(freeRam)
         currentRecognizerSource.stateLD.removeObserver(viewManager)
     }
 
     fun switchToNextRecognizer() {
-        if (recognizerSources.size == 0) return
-        stopRecognizerSource()
+        if (recognizerSources.size == 0 || recognizerSources.size == 1) return
+        stop(true)
         currentRecognizerSourceIndex++
         if (currentRecognizerSourceIndex >= recognizerSources.size) {
             currentRecognizerSourceIndex = 0
         }
         initializeRecognizer()
+        if (prefs.logicListenImmediately.get()) {
+            start()
+        }
     }
 
     fun start() {
@@ -112,14 +115,12 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     val isPaused: Boolean
         get() = pausedState && speechService != null
 
-    fun stop() {
-        if (speechService != null) {
-            speechService!!.stop()
-            speechService!!.shutdown()
-        }
+    fun stop(forceFreeRam: Boolean = false) {
+        speechService?.stop()
+        speechService?.shutdown()
         speechService = null
         isRunning = false
-        stopRecognizerSource()
+        stopRecognizerSource(forceFreeRam || !prefs.logicKeepModelInRam.get())
     }
 
     fun onDestroy() {

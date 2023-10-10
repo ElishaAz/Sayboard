@@ -80,8 +80,8 @@
     <string name="other_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
     <string name="other_auto_switch_back_title">Auto switch back</string>
     <string name="other_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
-    <string name="other_weak_ref_to_model_title">Weak ref to model (when closed)</string>
-    <string name="other_weak_ref_to_model_summery">Allows the system to delete the model from RAM when the keyboard is closed.</string>
+    <string name="other_keep_model_in_ram_title">Keep the model in RAM (when closed)</string>
+    <string name="other_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>
