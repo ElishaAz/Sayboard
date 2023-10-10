@@ -46,11 +46,12 @@ object Tools {
     }
 
     @JvmStatic
-    fun deleteRecursive(fileOrDirectory: File) {
-        if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()!!) deleteRecursive(
-            child
-        )
-        fileOrDirectory.delete()
+    fun deleteRecursive(fileOrDirectory: File, deleteStartingFolder: Boolean = true) {
+        if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()!!)
+            deleteRecursive(child, true)
+        if (deleteStartingFolder) {
+            fileOrDirectory.delete()
+        }
     }
 
     fun getInstalledModelsMap(context: Context?): Map<Locale, MutableList<LocalModel>> {

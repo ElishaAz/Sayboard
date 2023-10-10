@@ -8,38 +8,42 @@ import java.util.*
 object Constants {
     @JvmField
     var DOWNLOADER_CHANNEL_ID = "downloader"
-    private fun getCacheDir(context: Context): File? {
+    private fun getCacheDir(context: Context): File {
         return if (Environment.isExternalStorageEmulated() || !Environment.isExternalStorageRemovable()) {
-            context.externalCacheDir
+            context.externalCacheDir!!
         } else {
             context.cacheDir
         }
     }
 
-    private fun getFilesDir(context: Context): File? {
+    private fun getFilesDir(context: Context): File {
         return if (Environment.isExternalStorageEmulated() || !Environment.isExternalStorageRemovable()) {
-            context.getExternalFilesDir(null)
+            context.getExternalFilesDir(null)!!
         } else {
             context.filesDir
         }
     }
 
+    private fun getTempDir(context: Context): File {
+        return File(getFilesDir(context).absolutePath, "Temp")
+    }
+
     @JvmStatic
-    fun getTemporaryDownloadLocation(context: Context, filename: String?): File {
+    fun getTemporaryDownloadLocation(context: Context, filename: String): File {
         val dir = File(
-            getCacheDir(context)!!.absolutePath, "ModelZips"
+            getTempDir(context).absolutePath, "ModelZips"
         )
         return File(dir, filename)
     }
 
     @JvmStatic
     fun getTemporaryUnzipLocation(context: Context): File {
-        return File(getCacheDir(context), "TempUnzip")
+        return File(getTempDir(context), "TempUnzip")
     }
 
     @JvmStatic
     fun getModelsDirectory(context: Context): File {
-        return File(getFilesDir(context)!!.absolutePath, "Models")
+        return File(getFilesDir(context).absolutePath, "Models")
     }
 
     @JvmStatic
