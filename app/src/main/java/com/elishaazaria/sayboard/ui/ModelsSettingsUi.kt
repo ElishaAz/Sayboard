@@ -314,7 +314,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                     }
                     pop()
 
-                    append(", and then choose it in the file picker after pressing import")
+                    append(" - make sure to pick a \"small\" model - and then choose it in the file picker after pressing import")
                 }
 
                 ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyMedium, onClick = { offset ->
