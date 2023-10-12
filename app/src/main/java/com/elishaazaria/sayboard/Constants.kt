@@ -38,7 +38,7 @@ object Constants {
 
     @JvmStatic
     fun getTemporaryUnzipLocation(context: Context): File {
-        return File(getTempDir(context), "TempUnzip")
+        return File(File(getTempDir(context), "TempUnzip"), "Folder")
     }
 
     @JvmStatic

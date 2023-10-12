@@ -1,10 +1,12 @@
 package com.elishaazaria.sayboard
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.elishaazaria.sayboard.data.LocalModel
+import com.elishaazaria.sayboard.downloader.FileDownloader
 import com.elishaazaria.sayboard.ui.GrantPermissionUi
 import com.elishaazaria.sayboard.ui.LogicSettingsUi
 import com.elishaazaria.sayboard.ui.ModelsSettingsUi
@@ -109,15 +112,32 @@ class SettingsActivity : ComponentActivity() {
                 modelSettingsUi.Fab()
             }
         }) {
-            Box(modifier = Modifier
-                .padding(it)
-                .padding(10.dp)) {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .padding(10.dp)
+            ) {
                 when (selectedIndex) {
                     0 -> modelSettingsUi.Content()
                     1 -> UISettingsUi()
                     2 -> LogicSettingsUi()
                 }
             }
+        }
+    }
+    fun importModel() {
+        val intent = Intent()
+        intent.type = "application/zip"
+        intent.action = Intent.ACTION_GET_CONTENT
+        //launch picker screen
+        resultLauncher.launch(intent)
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val intent: Intent = result.data!!
+            FileDownloader.importModel(intent.data!!,this)
         }
     }
 
@@ -146,6 +166,8 @@ class SettingsActivity : ComponentActivity() {
         /* Used to handle permission request */
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
         public const val PERMISSION_REQUEST_POST_NOTIFICATIONS = 1
+
+//        private const val FILE_PICKER_REQUEST_CODE = 1
     }
 
     @Preview

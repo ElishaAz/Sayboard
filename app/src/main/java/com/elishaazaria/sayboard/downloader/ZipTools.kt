@@ -1,20 +1,32 @@
 package com.elishaazaria.sayboard.downloader
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.elishaazaria.sayboard.Constants
 import com.elishaazaria.sayboard.Tools.deleteRecursive
 import java.io.*
+import java.util.Locale
+import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 object ZipTools {
+    private const val TAG = "ZipTools"
+    private val localePattern: Pattern = Pattern.compile("vosk-model-small-(\\w\\w-\\w\\w)-\\d\\.\\d+.*")
+
     @Throws(IOException::class)
     fun unzip(
         archive: File?,
-        tempUnzipLocation: File,
-        unzipFinalDestination: File,
+//        tempUnzipLocation: File,
+//        unzipFinalDestination: File,
+        definedLocale: Locale = Locale.ROOT,
+        context: Context,
         progressObserver: Observer<Double>
     ) {
+        var locale = definedLocale
+        val tempUnzipLocation = Constants.getTemporaryUnzipLocation(context)
+
         if (tempUnzipLocation.exists()) {
             deleteRecursive(tempUnzipLocation)
         }
@@ -25,9 +37,27 @@ object ZipTools {
         while (e.hasMoreElements()) {
             progressObserver.onChanged(i / size)
             val entry = e.nextElement() as ZipEntry
+            if  (locale == Locale.ROOT){
+                Log.d(TAG, "Trying to detect locale: ${entry.name}")
+                val matcher = localePattern.matcher(entry.name)
+                if (matcher.matches()){
+                    locale = Locale.forLanguageTag(matcher.group(1)!!)
+                    Log.d(TAG, "Locale detected: ${locale.toLanguageTag()}")
+                }
+            }
             unzipEntry(zipfile, entry, tempUnzipLocation.absolutePath)
             i++
         }
+
+        val unzipFinalDestination = Constants.getDirectoryForModel(
+            context, locale
+        )
+        if (!unzipFinalDestination.exists()) {
+            unzipFinalDestination.mkdirs()
+        }
+
+        Log.d(TAG, "Unzipping finished. Moving to ${unzipFinalDestination.absolutePath}")
+
         var moveSuccess: Boolean
         if (unzipFinalDestination.exists()) {
             moveSuccess = true

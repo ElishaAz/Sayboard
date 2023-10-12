@@ -4,11 +4,14 @@ import android.Manifest
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toFile
 import com.elishaazaria.sayboard.Constants
 import com.elishaazaria.sayboard.Constants.getDirectoryForModel
 import com.elishaazaria.sayboard.Constants.getTemporaryDownloadLocation
@@ -51,14 +54,46 @@ class FileDownloadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val modelInfo = FileDownloader.getInfoForIntent(intent)
-            ?: return START_NOT_STICKY
-        Log.d(TAG, "Got message $modelInfo")
-        queuedModels.add(modelInfo)
-        sendEnqueued(modelInfo)
-        executor.execute { main() }
+        when (intent.getStringExtra(FileDownloader.ACTION)) {
+            FileDownloader.ACTION_DOWNLOAD -> {
+                val modelInfo = FileDownloader.getInfoForIntent(intent) ?: return START_NOT_STICKY
+                Log.d(TAG, "Got message $modelInfo")
+                queuedModels.add(modelInfo)
+                sendEnqueued(modelInfo)
+                executor.execute { main() }
+            }
+
+            FileDownloader.ACTION_UNZIP -> {
+                val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableExtra(FileDownloader.UNZIP_URI, Uri::class.java)
+                } else {
+                    intent.getParcelableExtra(FileDownloader.UNZIP_URI)
+                }
+//                val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//                    intent.getSerializableExtra(FileDownloader.UNZIP_LOCALE, Locale::class.java)
+//                } else {
+//                    intent.getSerializableExtra(FileDownloader.UNZIP_LOCALE) as Locale
+//                }
+                executor.execute { unzipUri(uri!!) }
+            }
+        }
         startForeground(notificationId, notificationBuilder.build())
         return START_NOT_STICKY
+    }
+
+    private fun unzipUri(uri: Uri) {
+        Log.d(TAG, "Unzipping $uri")
+        val filename = "ImportedFile.zip"
+        val file = getTemporaryDownloadLocation(this, filename)
+        Tools.copyStreamToFile(contentResolver!!.openInputStream(uri)!!, file)
+        unzipProgress = 0f
+        currentModel = ModelInfo(uri.toString(), file.name)
+        setState(State.NONE)
+        unzipFile(file)
+        if (interrupt) {
+            interrupted(file)
+        }
+        mainEnd()
     }
 
     private fun main() {
@@ -105,9 +140,11 @@ class FileDownloadService : Service() {
         mainEnd()
     }
 
-    private fun interrupted(downloadLocation: File) {
-        if (downloadLocation.exists()) {
-            downloadLocation.delete()
+    private fun interrupted(downloadLocation: File?) {
+        downloadLocation?.let {
+            if (it.exists()) {
+                it.delete()
+            }
         }
         val unzipFolder = getTemporaryUnzipLocation(this)
         if (unzipFolder.exists()) {
@@ -115,10 +152,9 @@ class FileDownloadService : Service() {
         }
 
         Log.d(TAG, "Download Canceled")
-        EventBus.getDefault()
-            .post(
-                CancelFinished(currentModel!!)
-            )
+        EventBus.getDefault().post(
+            CancelFinished(currentModel!!)
+        )
         updateNotification()
 
         interrupt = false
@@ -164,18 +200,16 @@ class FileDownloadService : Service() {
     @Throws(IOException::class)
     private fun unzipFile(downloadLocation: File) {
         setState(State.UNZIP_STARTED)
-        val unzipDestination = getDirectoryForModel(
-            applicationContext, currentModel!!.locale
-        )
-        if (!unzipDestination.exists()) {
-            unzipDestination.mkdirs()
-        }
-        val unzipFolder = getTemporaryUnzipLocation(this)
-        val currentUnzipFolder = File(unzipFolder, unzipDestination.name)
+//        val unzipDestination = getDirectoryForModel(
+//            applicationContext, currentModel!!.locale
+//        )
+//        if (!unzipDestination.exists()) {
+//            unzipDestination.mkdirs()
+//        }
+//        val unzipFolder = getTemporaryUnzipLocation(this)
+//        val currentUnzipFolder = File(unzipFolder, unzipDestination.name)
         ZipTools.unzip(
-            downloadLocation,
-            currentUnzipFolder,
-            unzipDestination
+            downloadLocation, currentModel!!.locale, applicationContext
         ) { d: Double -> setUnzipProgress(d.toFloat()) }
         setUnzipProgress(1f)
         setState(State.UNZIP_FINISHED)
@@ -191,9 +225,7 @@ class FileDownloadService : Service() {
         val currentTime = System.currentTimeMillis()
         if (currentTime - lastUpdateTime < minUpdateTime) {
             if (lastState == currentState) { // it's a progress update
-                if (!(downloadProgress == 1f && unzipProgress == 0f) &&
-                    unzipProgress != 1f
-                ) { // it's not the last progress update
+                if (!(downloadProgress == 1f && unzipProgress == 0f) && unzipProgress != 1f) { // it's not the last progress update
                     lastUpdateTime = currentTime
                     return
                 }
@@ -206,13 +238,11 @@ class FileDownloadService : Service() {
 
             State.DOWNLOAD_STARTED, State.DOWNLOAD_FINISHED -> notificationBuilder.setContentText(
                 getString(R.string.notification_download_content_downloading)
-            )
-                .setProgress(PROGRESS_MAX, (downloadProgress * PROGRESS_MAX).toInt(), false)
+            ).setProgress(PROGRESS_MAX, (downloadProgress * PROGRESS_MAX).toInt(), false)
 
             State.UNZIP_STARTED, State.UNZIP_FINISHED -> notificationBuilder.setContentText(
                 getString(R.string.notification_download_content_unzipping)
-            )
-                .setProgress(PROGRESS_MAX, (unzipProgress * PROGRESS_MAX).toInt(), false)
+            ).setProgress(PROGRESS_MAX, (unzipProgress * PROGRESS_MAX).toInt(), false)
 
             State.FINISHED -> notificationBuilder.setContentText(getString(R.string.notification_download_content_finished))
                 .setProgress(0, 0, false)
@@ -227,8 +257,7 @@ class FileDownloadService : Service() {
         }
 
         if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
+                this, Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             notificationManager.notify(notificationId, notificationBuilder.build())
@@ -275,16 +304,11 @@ class FileDownloadService : Service() {
     @Subscribe
     fun handleCancelPending(event: CancelPending) {
         if (queuedModels.remove(event.info)) {
-            EventBus.getDefault()
-                .post(
-                    Status(
-                        currentModel,
-                        queuedModels,
-                        downloadProgress,
-                        unzipProgress,
-                        currentState
-                    )
+            EventBus.getDefault().post(
+                Status(
+                    currentModel, queuedModels, downloadProgress, unzipProgress, currentState
                 )
+            )
         }
     }
 

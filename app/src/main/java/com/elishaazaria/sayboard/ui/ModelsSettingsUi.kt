@@ -18,10 +18,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -189,6 +191,10 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
             mutableStateOf(false)
         }
 
+        var showImportDialog by remember {
+            mutableStateOf(false)
+        }
+
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -216,6 +222,12 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                 }
             }) {
                 Icon(imageVector = Icons.Default.Download, contentDescription = null)
+            }
+
+            FloatingActionButton(onClick = {
+                showImportDialog = true
+            }) {
+                Icon(imageVector = Icons.Default.Folder, contentDescription = null)
             }
         }
 
@@ -259,6 +271,25 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                     }
                 }
             }
+        }
+
+        if (showImportDialog) {
+            AlertDialog(onDismissRequest = {
+
+            }, confirmButton = {
+                Button(onClick = {
+                    showImportDialog = false
+                    activity.importModel()
+                }) {
+                    Text(text = "Import")
+                }
+            }, dismissButton = {
+                Button(onClick = { showImportDialog = false }) {
+                    Text(text = "Cancel")
+                }
+            }, title = {
+                Text(text = "Import Model")
+            })
         }
     }
 

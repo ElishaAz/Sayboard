@@ -13,6 +13,8 @@ import com.elishaazaria.sayboard.Constants.getModelsDirectory
 import com.elishaazaria.sayboard.data.LocalModel
 import com.elishaazaria.sayboard.data.ModelLink
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.*
 
 object Tools {
@@ -116,6 +118,21 @@ object Tools {
                 NotificationManager::class.java
             )
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
+        inputStream.use { input ->
+            val outputStream = FileOutputStream(outputFile)
+            outputStream.use { output ->
+                val buffer = ByteArray(4 * 1024) // buffer size
+                while (true) {
+                    val byteCount = input.read(buffer)
+                    if (byteCount < 0) break
+                    output.write(buffer, 0, byteCount)
+                }
+                output.flush()
+            }
         }
     }
 }
