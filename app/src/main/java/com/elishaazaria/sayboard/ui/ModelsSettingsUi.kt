@@ -228,11 +228,11 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                                 Manifest.permission.POST_NOTIFICATIONS
                             ), SettingsActivity.PERMISSION_REQUEST_POST_NOTIFICATIONS
                         )
-                        Toast.makeText(
-                            activity,
-                            "Notifications recommended for downloader to work properly",
-                            Toast.LENGTH_LONG
-                        ).show()
+//                        Toast.makeText(
+//                            activity,
+//                            "Notifications recommended for downloader to work properly",
+//                            Toast.LENGTH_LONG
+//                        ).show()
                     }
                 }
             }) {
