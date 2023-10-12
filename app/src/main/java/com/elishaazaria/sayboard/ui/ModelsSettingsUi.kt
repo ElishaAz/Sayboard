@@ -1,7 +1,9 @@
 package com.elishaazaria.sayboard.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
@@ -27,6 +30,7 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +44,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -297,6 +304,25 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                 }
             }, title = {
                 Text(text = "Import Model")
+            }, text = {
+                val annotatedString = buildAnnotatedString {
+                    append("Manually download a Vosk model from ")
+
+                    pushStringAnnotation(tag = "vosk-website", annotation = "https://alphacephei.com/vosk/models")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                        append("the Vosk website")
+                    }
+                    pop()
+
+                    append(", and then choose it in the file picker after pressing import")
+                }
+
+                ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyMedium, onClick = { offset ->
+                    annotatedString.getStringAnnotations(tag = "vosk-website", start = offset, end = offset).firstOrNull()?.let {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.item))
+                        activity.startActivity(browserIntent)
+                    }
+                })
             })
         }
     }
@@ -430,9 +456,9 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onDownloadError(error: DownloadError?) {
-//        Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDownloadError(error: DownloadError) {
+        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
     }
 
     fun onStart() {

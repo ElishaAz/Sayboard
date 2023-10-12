@@ -213,7 +213,10 @@ class FileDownloadService : Service() {
 //        val unzipFolder = getTemporaryUnzipLocation(this)
 //        val currentUnzipFolder = File(unzipFolder, unzipDestination.name)
         ZipTools.unzip(
-            downloadLocation, currentModel!!.locale, applicationContext
+            downloadLocation, currentModel!!.locale, applicationContext,
+            errorObserver = {
+                setError(it)
+            }
         ) { d: Double -> setUnzipProgress(d.toFloat()) }
         setUnzipProgress(1f)
         setState(State.UNZIP_FINISHED)
@@ -305,7 +308,7 @@ class FileDownloadService : Service() {
             .post(Status(currentModel, queuedModels, downloadProgress, unzipProgress, currentState))
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun handleCancelPending(event: CancelPending) {
         if (queuedModels.remove(event.info)) {
             EventBus.getDefault().post(
@@ -316,7 +319,7 @@ class FileDownloadService : Service() {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     fun handleCancelCurrent(event: CancelCurrent) {
         if (currentModel == event.info) {
             interrupt = true

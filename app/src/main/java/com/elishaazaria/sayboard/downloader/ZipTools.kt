@@ -2,6 +2,7 @@ package com.elishaazaria.sayboard.downloader
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.Constants
 import com.elishaazaria.sayboard.Tools.deleteRecursive
@@ -13,15 +14,17 @@ import java.util.zip.ZipFile
 
 object ZipTools {
     private const val TAG = "ZipTools"
-    private val localePattern: Pattern = Pattern.compile("vosk-model-small-(\\w\\w-\\w\\w)-\\d\\.\\d+.*")
+    private val localePattern: Pattern =
+        Pattern.compile("vosk-model-small-(\\w\\w-\\w\\w)-\\d\\.\\d+.*")
 
     @Throws(IOException::class)
     fun unzip(
-        archive: File?,
+        archive: File,
 //        tempUnzipLocation: File,
 //        unzipFinalDestination: File,
         definedLocale: Locale = Locale.ROOT,
         context: Context,
+        errorObserver: Observer<String>? = null,
         progressObserver: Observer<Double>
     ) {
         var locale = definedLocale
@@ -33,20 +36,40 @@ object ZipTools {
         val zipfile = ZipFile(archive)
         val e = zipfile.entries()
         val size = zipfile.size().toDouble()
+
+        var foundAmFinalMDL = false
+        var foundConfModel = false
         var i = 0
         while (e.hasMoreElements()) {
             progressObserver.onChanged(i / size)
             val entry = e.nextElement() as ZipEntry
-            if  (locale == Locale.ROOT){
+            if (locale == Locale.ROOT) {
                 Log.d(TAG, "Trying to detect locale: ${entry.name}")
                 val matcher = localePattern.matcher(entry.name)
-                if (matcher.matches()){
+                if (matcher.matches()) {
                     locale = Locale.forLanguageTag(matcher.group(1)!!)
                     Log.d(TAG, "Locale detected: ${locale.toLanguageTag()}")
                 }
             }
+
+            // Some tests to make sure it actually is a Vosk model
+            if (!foundAmFinalMDL && entry.name.endsWith("/am/final.mdl")) {
+                foundAmFinalMDL = true
+            }
+            if (!foundConfModel && entry.name.endsWith("/conf/model.conf")) {
+                foundConfModel = true
+            }
+
             unzipEntry(zipfile, entry, tempUnzipLocation.absolutePath)
             i++
+        }
+
+        if (!foundAmFinalMDL || !foundConfModel) {
+            // Not a Vosk model!
+            Log.e(TAG, "Not a Vosk model: ${archive.absolutePath}")
+            errorObserver?.onChanged("Zip is not a Vosk model!")
+            tempUnzipLocation.delete()
+            return
         }
 
         val unzipFinalDestination = Constants.getDirectoryForModel(
@@ -58,19 +81,23 @@ object ZipTools {
 
         Log.d(TAG, "Unzipping finished. Moving to ${unzipFinalDestination.absolutePath}")
 
-        var moveSuccess: Boolean
-        if (unzipFinalDestination.exists()) {
-            moveSuccess = true
-            for (f in tempUnzipLocation.listFiles()!!) {
-                moveSuccess = f.renameTo(File(unzipFinalDestination, f.name))
-                if (!moveSuccess) break
-            }
-            tempUnzipLocation.delete()
-        } else {
-            moveSuccess = tempUnzipLocation.renameTo(unzipFinalDestination)
-        }
+//        var moveSuccess: Boolean
+//        if (unzipFinalDestination.exists()) {
+//            moveSuccess = true
+//            for (f in tempUnzipLocation.listFiles()!!) {
+//                moveSuccess = f.renameTo(File(unzipFinalDestination, f.name))
+//                if (!moveSuccess) break
+//            }
+//            tempUnzipLocation.delete()
+//        } else {
+//            moveSuccess = tempUnzipLocation.renameTo(unzipFinalDestination)
+//        }
+
+        val moveSuccess = tempUnzipLocation.renameTo(unzipFinalDestination)
         if (!moveSuccess) {
-            throw IOException("Renaming temporary unzip directory failed")
+            Log.e(TAG, "Model exists at ${unzipFinalDestination.absolutePath}")
+            errorObserver?.onChanged("Model exists")
+            tempUnzipLocation.delete()
         }
     }
 
