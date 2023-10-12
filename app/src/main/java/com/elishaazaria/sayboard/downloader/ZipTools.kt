@@ -30,6 +30,10 @@ object ZipTools {
         var locale = definedLocale
         val tempUnzipLocation = Constants.getTemporaryUnzipLocation(context)
 
+        if (!tempUnzipLocation.parentFile!!.exists()){
+            tempUnzipLocation.parentFile!!.mkdirs()
+        }
+
         if (tempUnzipLocation.exists()) {
             deleteRecursive(tempUnzipLocation)
         }

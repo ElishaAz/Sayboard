@@ -122,6 +122,9 @@ object Tools {
     }
 
     fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
+        if (!outputFile.parentFile!!.exists()){
+            outputFile.parentFile!!.mkdirs()
+        }
         inputStream.use { input ->
             val outputStream = FileOutputStream(outputFile)
             outputStream.use { output ->
