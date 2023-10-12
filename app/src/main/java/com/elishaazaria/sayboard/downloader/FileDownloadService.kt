@@ -93,6 +93,10 @@ class FileDownloadService : Service() {
         if (interrupt) {
             interrupted(file)
         }
+        Log.d(TAG, "Finished unzipping")
+        file.delete()
+        setState(State.FINISHED)
+        Log.d(TAG, "Finished processing $currentModel")
         mainEnd()
     }
 

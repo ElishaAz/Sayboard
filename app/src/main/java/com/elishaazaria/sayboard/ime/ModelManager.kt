@@ -60,6 +60,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         if (isRunning || speechService != null) {
             speechService!!.stop()
         }
+        isRunning = true
         viewManager.stateLD.postValue(ViewManager.STATE_LISTENING)
         try {
             val recognizer = currentRecognizerSource.recognizer
@@ -76,7 +77,6 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_mic_in_use)
             viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
         }
-        isRunning = true
     }
 
     private var pausedState = false

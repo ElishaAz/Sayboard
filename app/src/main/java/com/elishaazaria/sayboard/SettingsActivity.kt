@@ -125,6 +125,7 @@ class SettingsActivity : ComponentActivity() {
             }
         }
     }
+
     fun importModel() {
         val intent = Intent()
         intent.type = "application/zip"
@@ -133,13 +134,14 @@ class SettingsActivity : ComponentActivity() {
         resultLauncher.launch(intent)
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // There are no request codes
-            val intent: Intent = result.data!!
-            FileDownloader.importModel(intent.data!!,this)
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // There are no request codes
+                val intent: Intent = result.data ?: return@registerForActivityResult
+                FileDownloader.importModel(intent.data!!, this)
+            }
         }
-    }
 
     private fun checkPermissions() {
         micGranted.postValue(Tools.isMicrophonePermissionGranted(this))

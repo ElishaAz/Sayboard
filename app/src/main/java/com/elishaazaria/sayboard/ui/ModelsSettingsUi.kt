@@ -23,7 +23,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -45,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.elishaazaria.sayboard.SettingsActivity
@@ -71,9 +69,18 @@ import org.greenrobot.eventbus.ThreadMode
 data class DownloadModelProgress(
     val info: ModelInfo,
     var state: State, var progress: Float
-)
+) {
+    fun withProgress(newProgress: Float): DownloadModelProgress {
+        return DownloadModelProgress(info, state, newProgress)
+    }
+
+    fun withState(newState: State): DownloadModelProgress {
+        return DownloadModelProgress(info, newState, progress)
+    }
+}
 
 class ModelsSettingsUi(private val activity: SettingsActivity) {
+
     val models = MutableLiveData<List<LocalModel>>(mutableListOf())
 
     private val modelsPendingDownloadLD = MutableLiveData<List<ModelInfo>>(mutableListOf())
@@ -86,6 +93,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
     }
 
     private fun reloadModels() {
+        Log.d(TAG, "Reloading Models")
         models.postValue(Tools.getInstalledModelsList(activity))
     }
 
@@ -293,19 +301,19 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         }
     }
 
-    private fun updateCurrentDownloading(info: ModelInfo) {
-        val currentModel = currentDownloadingModel.value
+    private fun updateCurrentDownloading(info: ModelInfo): DownloadModelProgress {
+        var currentModel = currentDownloadingModel.value
 
         if (currentModel == null) {
-            currentDownloadingModel.value = DownloadModelProgress(
+            currentModel = DownloadModelProgress(
                 info,
                 State.NONE,
                 0f
             )
         } else if (currentModel.info != info) {
-            val newCurrent = modelsPendingDownload.find { it == currentModel.info }
+            val newCurrent = modelsPendingDownload.find { it == currentModel!!.info }
             if (newCurrent == null) {
-                currentDownloadingModel.value = DownloadModelProgress(
+                currentModel = DownloadModelProgress(
                     info,
                     State.NONE,
                     0f
@@ -313,16 +321,18 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
             } else {
                 modelsPendingDownload.remove(newCurrent)
                 modelsPendingDownloadLD.postValue(modelsPendingDownload.toList())
-                currentDownloadingModel.value = DownloadModelProgress(
+                currentModel = DownloadModelProgress(
                     newCurrent,
                     State.NONE,
                     0f
                 )
             }
         }
+        currentDownloadingModel.postValue(currentModel)
+        return currentModel
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onAddToDownload(info: ModelInfo) {
         Log.d(TAG, "onAddToDownload($info)")
 
@@ -331,7 +341,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         modelsPendingDownloadLD.postValue(modelsPendingDownload.toList())
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onState(state: DownloadState) {
         Log.d(TAG, "onState($state)")
         when (state.state) {
@@ -339,27 +349,29 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
             State.DOWNLOAD_STARTED, State.NONE -> {
                 modelsPendingDownload.remove(state.info)
                 modelsPendingDownloadLD.postValue(modelsPendingDownload.toList())
-                updateCurrentDownloading(state.info)
-                val current = currentDownloadingModel.value!!
-                current.state = state.state
-                currentDownloadingModel.value = current
+                currentDownloadingModel.postValue(
+                    updateCurrentDownloading(state.info).withState(
+                        state.state
+                    )
+                )
             }
 
             State.FINISHED -> {
-                currentDownloadingModel.value = null
+                currentDownloadingModel.postValue(null)
                 reloadModels()
             }
 
             else -> {
-                updateCurrentDownloading(state.info)
-                val current = currentDownloadingModel.value!!
-                current.state = state.state
-                currentDownloadingModel.value = current
+                currentDownloadingModel.postValue(
+                    updateCurrentDownloading(state.info).withState(
+                        state.state
+                    )
+                )
             }
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onStatus(status: Status) {
         Log.d(TAG, "onStatus($status)")
         if (status.current != null) {
@@ -381,39 +393,44 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
 
                 else -> {}
             }
+        } else {
+            currentDownloadingModel.postValue(null)
         }
+        modelsPendingDownload.clear()
         for (modelInfo in status.queued) {
             onState(DownloadState(modelInfo, State.QUEUED))
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onDownloadProgress(progress: DownloadProgress) {
 //        Log.d(TAG, "onDownloadProgress($progress)")
-        updateCurrentDownloading(progress.info)
-        val current = currentDownloadingModel.value!!
-        current.progress = progress.progress
-        currentDownloadingModel.postValue(current)
+        // CG wasteful, but works
+        currentDownloadingModel.postValue(
+            updateCurrentDownloading(progress.info).withProgress(
+                progress.progress
+            )
+        )
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onUnzipProgress(progress: UnzipProgress) {
 //        Log.d(TAG, "onUnzipProgress($progress)")
-        updateCurrentDownloading(progress.info)
-
-        val current = currentDownloadingModel.value!!
-        current.progress = progress.progress
-        currentDownloadingModel.postValue(current)
+        currentDownloadingModel.postValue(
+            updateCurrentDownloading(progress.info).withProgress(
+                progress.progress
+            )
+        )
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onCancelFinished(event: CancelFinished) {
         if (currentDownloadingModel.value?.info == event.info) {
-            currentDownloadingModel.value = null
+            currentDownloadingModel.postValue(null)
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onDownloadError(error: DownloadError?) {
 //        Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
     }
@@ -429,10 +446,10 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
 
     fun onResume() {
         reloadModels()
-//        EventBus.getDefault().post(StatusQuery())
+        EventBus.getDefault().post(StatusQuery())
     }
 
     companion object {
-        private val TAG = "ModelsSettingUi"
+        private const val TAG = "ModelsSettingUi"
     }
 }
