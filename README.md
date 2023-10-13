@@ -19,7 +19,9 @@ Sayboard uses for the following permissions:
 
 ## Screenshot
 
-https://raw.githubusercontent.com/ElishaAz/Sayboard/master/.readme/screen.mp4
+Screenshot of Sayboard:
+
+https://github.com/ElishaAz/Sayboard/assets/26592879/58f1421e-0e10-488f-a7fa-4aa702f1cee2
 
 Note: prior to commit [Multiple language support!](https://github.com/ElishaAz/Sayboard/commit/9d61c774e6eb623c2b8603a85a5bd73d98ab9af1),
 this repository had another gradle model named `models`. As it is large and not needed anymore, I removed it from git history.
