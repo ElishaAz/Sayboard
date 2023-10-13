@@ -18,7 +18,8 @@ Sayboard uses for the following permissions:
 - FOREGROUND_SERVICE - to download and import models in the background.
 
 ## Screenshot
-![Screenshot of Sayboard](.readme/screen.mp4)
+
+https://raw.githubusercontent.com/ElishaAz/Sayboard/master/.readme/screen.mp4
 
 Note: prior to commit [Multiple language support!](https://github.com/ElishaAz/Sayboard/commit/9d61c774e6eb623c2b8603a85a5bd73d98ab9af1),
 this repository had another gradle model named `models`. As it is large and not needed anymore, I removed it from git history.
