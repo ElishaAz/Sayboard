@@ -20,6 +20,7 @@ import java.net.URI
 import java.nio.ByteBuffer
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executor
+import java.util.Locale
 
 class VoskServer(private val data: VoskServerData) : RecognizerSource {
     private val stateMLD = MutableLiveData(RecognizerState.NONE)
@@ -34,6 +35,9 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
         stateMLD.postValue(RecognizerState.READY)
         onLoaded.onChanged(this)
     }
+
+    override val locale: Locale?
+    get() = data.locale
 
     override fun close(freeRAM: Boolean) {
         myRecognizerGRPC!!.close()

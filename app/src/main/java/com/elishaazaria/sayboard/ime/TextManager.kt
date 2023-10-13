@@ -15,6 +15,9 @@ class TextManager(private val ime: IME) {
             isFirstCall = false
             addSpace = shouldAddSpace(ic)
         }
+        if (shouldRemoveSpace()) {
+            text = text.replace("\\s".toRegex(), "")
+        }
         if (addSpace) {
             text = " $text"
         }
@@ -29,9 +32,17 @@ class TextManager(private val ime: IME) {
         }
     }
 
+    private fun shouldRemoveSpace(): Boolean {
+        val locale = ime.currentRecognizerSourceLocale
+        return listOf("ja", "zh").contains(locale?.language?:"")
+    }
+
     private fun shouldAddSpace(ic: InputConnection): Boolean {
         val cs = ic.getTextBeforeCursor(1, 0)
         Log.d("TextManager", "Standard, Text: $cs")
+        if (shouldRemoveSpace()) {
+            return false
+        }
         return if (cs != null) {
             !(cs.length == 0 // if we're at the start of the text
                     || cs == " ") // or there's a space already, then don't add.

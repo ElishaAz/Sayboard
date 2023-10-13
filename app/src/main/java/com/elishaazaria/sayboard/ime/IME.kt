@@ -37,6 +37,7 @@ import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
 import org.vosk.android.RecognitionListener
+import java.util.Locale
 
 class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     private val prefs by sayboardPreferenceModel()
@@ -285,6 +286,9 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     override fun onTimeout() {
         viewManager.stateLD.postValue(ViewManager.STATE_PAUSED)
     }
+
+    val currentRecognizerSourceLocale: Locale?
+        get() = modelManager.currentRecognizerSourceLocale
 
     companion object {
         private val editorActions = intArrayOf(

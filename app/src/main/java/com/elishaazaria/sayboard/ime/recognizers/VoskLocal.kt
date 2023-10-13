@@ -10,6 +10,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.vosk.Model
 import java.util.concurrent.Executor
+import java.util.Locale
 
 class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     private val stateMLD = MutableLiveData(RecognizerState.NONE)
@@ -30,6 +31,9 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
             }
         }
     }
+
+    override val locale: Locale?
+        get() = localModel.locale
 
     private fun modelLoaded(model: Model) {
         this.model = model

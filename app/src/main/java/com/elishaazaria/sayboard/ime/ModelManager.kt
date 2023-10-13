@@ -14,6 +14,7 @@ import com.elishaazaria.sayboard.sayboardPreferenceModel
 import java.io.IOException
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.Locale
 
 class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     private val prefs by sayboardPreferenceModel()
@@ -37,6 +38,9 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         currentRecognizerSource.stateLD.observe(ime, viewManager)
         currentRecognizerSource.initialize(executor, onLoaded)
     }
+
+    val currentRecognizerSourceLocale: Locale?
+        get() = currentRecognizerSource.locale
 
     private fun stopRecognizerSource(freeRam: Boolean) {
         currentRecognizerSource.close(freeRam)
