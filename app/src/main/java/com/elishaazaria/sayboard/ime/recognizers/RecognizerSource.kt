@@ -4,12 +4,14 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.Executor
+import java.util.*
 
 interface RecognizerSource {
     fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>)
     val recognizer: Recognizer
     fun close(freeRAM: Boolean)
     val stateLD: LiveData<RecognizerState>
+    val locale: Locale?
 
     @get:StringRes
     val errorMessage: Int

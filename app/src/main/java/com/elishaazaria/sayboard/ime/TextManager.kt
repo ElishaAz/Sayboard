@@ -29,7 +29,14 @@ class TextManager(private val ime: IME) {
         }
     }
 
+    private fun localeAddsSpace(): Boolean {
+        val locale = ime.currentRecognizerSourceLocale
+        return !listOf("ja", "zh").contains(locale?.language?:"")
+    }
+
     private fun shouldAddSpace(ic: InputConnection): Boolean {
+        if (!localeAddsSpace())
+            return false
         val cs = ic.getTextBeforeCursor(1, 0)
         Log.d("TextManager", "Standard, Text: $cs")
         return if (cs != null) {

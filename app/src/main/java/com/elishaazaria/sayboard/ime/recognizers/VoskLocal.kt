@@ -10,6 +10,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.vosk.Model
 import java.util.concurrent.Executor
+import java.util.Locale
 
 class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     private val stateMLD = MutableLiveData(RecognizerState.NONE)
@@ -31,20 +32,23 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         }
     }
 
+    override val locale: Locale?
+        get() = localModel.locale
+
     private fun modelLoaded(model: Model) {
         this.model = model
         stateMLD.postValue(RecognizerState.READY)
-        myRecognizer = MyRecognizer(model, 16000.0f)
+        myRecognizer = MyRecognizer(model, 16000.0f, locale)
     }
 
     private class MyRecognizer     //            setMaxAlternatives(3); // TODO: implement
-        (model: Model, override val sampleRate: Float) : org.vosk.Recognizer(model, sampleRate),
+        (model: Model, override val sampleRate: Float, override val locale: Locale?) : org.vosk.Recognizer(model, sampleRate),
         Recognizer {
 
         override fun getResult(): String {
             try {
                 val result = JSONObject(super.getResult())
-                return result.getString("text").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("text").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -54,7 +58,7 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         override fun getPartialResult(): String {
             try {
                 val result = JSONObject(super.getPartialResult())
-                return result.getString("partial").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("partial").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -64,7 +68,7 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         override fun getFinalResult(): String {
             try {
                 val result = JSONObject(super.getFinalResult())
-                return result.getString("text").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("text").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
