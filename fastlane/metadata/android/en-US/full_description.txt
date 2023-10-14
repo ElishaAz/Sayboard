@@ -3,8 +3,10 @@
 <br/>
 <p>Sayboard uses for the following permissions:</p>
 <ul>
-  <li>INTERNET - to download the models. This permission is not required, and can be revoked through the device settings on supported ROMs. <strong>Sayboard does not, and never will, send any of your information over the internet!</strong>.</li>
+  <li>INTERNET - to download the models. This permission is not required, and can be revoked through the device settings in compatible ROMs. <strong>Sayboard does not, and never will, send any of your information over the internet!</strong>.</li>
   <li>RECORD_AUDIO - well, this is a voice keyboard after all.</li>
   <li>POST_NOTIFICATIONS - to show download and import progress.</li>
   <li>FOREGROUND_SERVICE - to download and import models in the background.</li>
 </ul>
+<br/>
+<p>Due to file size limits, only the ARMv8 architecture is included here. APKs for other devices can be downloaded from the project's <a href="https://github.com/ElishaAz/Sayboard/releases">Github page</a>.
