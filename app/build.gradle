@@ -7,13 +7,14 @@ android {
     defaultConfig {
         applicationId "com.elishaazaria.sayboard"
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 4001
         versionName "v4.0.1"
     }
     buildTypes {
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -67,15 +68,14 @@ dependencies {
     implementation 'net.java.dev.jna:jna:5.9.0@aar'
     implementation group: 'com.alphacephei', name: 'vosk-android', version: '0.3.32'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
-    implementation 'androidx.navigation:navigation-fragment:2.7.2'
-    implementation 'androidx.navigation:navigation-ui:2.7.2'
-    implementation 'androidx.preference:preference:1.2.1'
+//    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+//    implementation 'androidx.navigation:navigation-fragment:2.7.4'
+//    implementation 'androidx.navigation:navigation-ui:2.7.4'
+//    implementation 'androidx.preference:preference:1.2.1'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.0.1'
     implementation 'dev.gustavoavila:java-android-websocket-client:2.0.1'
 
     implementation 'io.grpc:grpc-okhttp:1.52.0'
@@ -123,12 +123,12 @@ dependencies {
     implementation 'androidx.compose.material3:material3-window-size-class'
 
     // Optional - Integration with activities
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.activity:activity-compose:1.8.0'
     // Optional - Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
+//    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
     // Optional - Integration with LiveData
     implementation 'androidx.compose.runtime:runtime-livedata'
     // Optional - Integration with RxJava
-    implementation 'androidx.compose.runtime:runtime-rxjava2'
+//    implementation 'androidx.compose.runtime:runtime-rxjava2'
 
 }
