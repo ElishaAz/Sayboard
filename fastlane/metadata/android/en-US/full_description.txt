@@ -9,4 +9,4 @@
   <li>FOREGROUND_SERVICE - to download and import models in the background.</li>
 </ul>
 <br/>
-<p>Due to file size limits, only the ARMv8 architecture is included here. APKs for other devices can be downloaded from the project's <a href="https://github.com/ElishaAz/Sayboard/releases">Github page</a>.
+<p>Due to file size limits, only 64bit ARM architecture is included here. APKs for other devices can be downloaded from the project's <a href="https://github.com/ElishaAz/Sayboard/releases">Github page</a>.
