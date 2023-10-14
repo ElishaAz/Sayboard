@@ -11,7 +11,7 @@ This app requires a Vosk model to run. You can use the built-in downloader or do
 
 ## Permissions
 Sayboard uses for the following permissions:
-- INTERNET - to download the models. This permission is not required, and can be revoked through the device settings.
+- INTERNET - to download the models. This permission is not required, and can be revoked through the device settings in compatible ROMs.
 **Sayboard does not, and never will, send any of your information over the internet!**.
 - RECORD_AUDIO - well, this is a voice keyboard after all.
 - POST_NOTIFICATIONS - to show download and import progress.
