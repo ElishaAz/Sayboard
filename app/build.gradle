@@ -31,7 +31,7 @@ android {
         variant.outputs.configureEach { output ->
 //            output.outputFileName = "${variant.getFlavorName()}-${variant.buildType.name}-v${versionCode}_${versionName}-${new Date().format('ddMMMyyyy_HH-mm')}-${output.getFilter(com.android.build.OutputFile.ABI)}.apk"
             var abi_name = output.getFilter(com.android.build.OutputFile.ABI) ? output.getFilter(com.android.build.OutputFile.ABI): "Universal"
-            output.outputFileName = "Sayboard-${versionName}_${abi_name}.apk"
+            output.outputFileName = "Sayboard_${abi_name}.apk"
         }
     }
 
