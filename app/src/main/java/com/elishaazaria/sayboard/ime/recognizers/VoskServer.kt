@@ -31,13 +31,13 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
         get() = myRecognizerGRPC!!
     override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
         stateMLD.postValue(RecognizerState.LOADING)
-        myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f)
+        myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f, locale)
         stateMLD.postValue(RecognizerState.READY)
         onLoaded.onChanged(this)
     }
 
     override val locale: Locale?
-    get() = data.locale
+        get() = data.locale
 
     override fun close(freeRAM: Boolean) {
         myRecognizerGRPC!!.close()
@@ -48,7 +48,7 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
     override val name: String
         get() = String.format("%s:%s", data.uri.host, data.uri.port)
 
-    private class MyRecognizerGRPC(uri: URI, override val sampleRate: Float) : Recognizer, StreamObserver<StreamingRecognitionResponse> {
+    private class MyRecognizerGRPC(uri: URI, override val sampleRate: Float, override val locale: Locale?) : Recognizer, StreamObserver<StreamingRecognitionResponse> {
         private val blockingStub: SttServiceBlockingStub
         private val asyncStub: SttServiceStub
         private val requestStream: StreamObserver<StreamingRecognitionRequest>
@@ -127,13 +127,13 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
             Log.d("VoskServer", "Message received: $value")
             for (chunk in value.chunksList) {
                 if (chunk.endOfUtterance) {
-                    myFinalResult = chunk.getAlternatives(0).text
+                    myFinalResult = removeSpaceForLocale(chunk.getAlternatives(0).text)
                     isPartialResult = false
                 } else if (chunk.final) {
-                    myResult = chunk.getAlternatives(0).text
+                    myResult = removeSpaceForLocale(chunk.getAlternatives(0).text)
                     isPartialResult = false
                 } else {
-                    myPartialResult = chunk.getAlternatives(0).text
+                    myPartialResult = removeSpaceForLocale(chunk.getAlternatives(0).text)
                     isPartialResult = true
                 }
                 val oldLatch = latch

@@ -38,17 +38,17 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     private fun modelLoaded(model: Model) {
         this.model = model
         stateMLD.postValue(RecognizerState.READY)
-        myRecognizer = MyRecognizer(model, 16000.0f)
+        myRecognizer = MyRecognizer(model, 16000.0f, locale)
     }
 
     private class MyRecognizer     //            setMaxAlternatives(3); // TODO: implement
-        (model: Model, override val sampleRate: Float) : org.vosk.Recognizer(model, sampleRate),
+        (model: Model, override val sampleRate: Float, override val locale: Locale?) : org.vosk.Recognizer(model, sampleRate),
         Recognizer {
 
         override fun getResult(): String {
             try {
                 val result = JSONObject(super.getResult())
-                return result.getString("text").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("text").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -58,7 +58,7 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         override fun getPartialResult(): String {
             try {
                 val result = JSONObject(super.getPartialResult())
-                return result.getString("partial").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("partial").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
@@ -68,7 +68,7 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         override fun getFinalResult(): String {
             try {
                 val result = JSONObject(super.getFinalResult())
-                return result.getString("text").trim { it <= ' ' }
+                return removeSpaceForLocale(result.getString("text").trim { it <= ' ' })
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
