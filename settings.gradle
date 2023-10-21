@@ -3,9 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven {
-            url 'https://alphacephei.com/maven/'
-        }
         maven { url "https://jitpack.io" }
     }
 }
@@ -15,9 +12,6 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven {
-            url 'https://alphacephei.com/maven/'
-        }
         maven { url "https://jitpack.io" }
     }
 }
