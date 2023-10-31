@@ -101,7 +101,7 @@ class ActionManager(private val ime: IME, private val viewManager: ViewManager) 
         }
         if (!result && showError) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_no_previous_ime)
-            viewManager.stateLD.postValue(ViewManager.Companion.STATE_ERROR)
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
         }
     }
 

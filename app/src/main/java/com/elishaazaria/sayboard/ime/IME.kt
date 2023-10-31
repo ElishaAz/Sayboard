@@ -15,21 +15,18 @@ package com.elishaazaria.sayboard.ime
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.inputmethodservice.InputMethodService
 import android.os.IBinder
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
 import com.elishaazaria.sayboard.BuildConfig
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.data.KeepScreenAwakeMode
@@ -37,12 +34,11 @@ import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
 import org.vosk.android.RecognitionListener
-import java.util.Locale
 
-class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
+class IME : InputMethodService(), RecognitionListener {
     private val prefs by sayboardPreferenceModel()
 
-    private val lifecycleRegistry = LifecycleRegistry(this)
+    public val lifecycleOwner = IMELifecycleOwner()
     private lateinit var editorInfo: EditorInfo
     private lateinit var viewManager: ViewManager
     private lateinit var modelManager: ModelManager
@@ -50,7 +46,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     private lateinit var textManager: TextManager
     override fun onCreate() {
         super.onCreate()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        lifecycleOwner.onCreate()
         LibVosk.setLogLevel(if (BuildConfig.DEBUG) LogLevel.INFO else LogLevel.WARNINGS)
         viewManager = ViewManager(this)
         actionManager = ActionManager(this, viewManager)
@@ -68,7 +64,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     }
 
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycleOwner.onResume()
         checkMicrophonePermission()
 
         // text input has started
@@ -83,12 +79,11 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             }
         }
         modelManager.initializeRecognizer()
-        viewManager.refresh()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        lifecycleOwner.onPause()
         // text input has ended
         setKeepScreenOn(false)
         modelManager.stop()
@@ -99,7 +94,10 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     }
 
     override fun onCreateInputView(): View {
-        viewManager.init()
+        lifecycleOwner.attachToDecorView(
+            window?.window?.decorView
+        )
+
         viewManager.setListener(object : ViewManager.Listener {
             override fun micClick() {
                 if (modelManager.isRunning) {
@@ -139,34 +137,38 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             private val threshold = resources.displayMetrics.densityDpi / 6f
             private val charLen = resources.displayMetrics.densityDpi / 32f
             private var swiping = false
-            override fun backspaceTouched(v: View, event: MotionEvent): Boolean {
-                var x = event.x - initX
-                val y = event.y - initY
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        initX = event.x
-                        initY = event.y
-                        swiping = false
-                    }
+            private var restart = false
 
-                    MotionEvent.ACTION_MOVE -> {
-                        if (x < -threshold) {
-                            swiping = true
-                        }
-                        if (swiping) {
-                            x = -x // x is negative
-                            val amount = Math.round((x - threshold) / charLen)
-                            actionManager.selectCharsBack(amount)
-                        }
-                    }
+            override fun backspaceTouchStart(offset: Offset) {
+                restart = true
+                swiping = false
+            }
 
-                    MotionEvent.ACTION_UP -> if (swiping) {
-                        actionManager.deleteSelection()
-                    } else {
-                        v.performClick()
-                    }
+            override fun backspaceTouched(change: PointerInputChange, dragAmount: Offset) {
+                if (restart) {
+                    restart = false
+                    initX = change.position.x
+                    initY = change.position.y
                 }
-                return true
+
+                var x = change.position.x - initX
+                val y = change.position.y - initY
+
+                Log.d("IME", "$x,$y")
+
+                if (x < -threshold) {
+                    swiping = true
+                }
+                if (swiping) {
+                    x = -x // x is negative
+                    val amount = Math.round((x - threshold) / charLen)
+                    actionManager.selectCharsBack(amount)
+                }
+            }
+
+            override fun backspaceTouchEnd() {
+                if (swiping)
+                    actionManager.deleteSelection()
             }
 
             override fun returnClicked() {
@@ -178,7 +180,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             }
         })
         actionManager.onCreateInputView()
-        return viewManager.root
+        return viewManager
     }
 
     override fun onUpdateSelection(
@@ -208,15 +210,9 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
         textManager.onUpdateSelection(newSelStart, newSelEnd)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-
-//        viewManager.orientationChanged(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE);
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        lifecycleOwner.onDestroy()
         modelManager.onDestroy()
     }
 
@@ -265,18 +261,8 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     override fun onPartialResult(partialText: String) {
         Log.d("VoskIME", "Partial result: $partialText")
         if (partialText == "") return
-        //            resultView.setText(partialText);
+
         textManager.onText(partialText, TextManager.Mode.PARTIAL)
-        //
-//        InputConnection ic = getCurrentInputConnection();
-//        if (ic == null) return;
-//        String lastChar = ic.getTextBeforeCursor(1, 0).toString();
-//        if (lastChar.length() == 1) { // do not append two words without space
-//            if (!lastChar.equals(" ")) {
-//                partialText = " " + partialText;
-//            }
-//        }
-//        ic.setComposingText(partialText, 1);
     }
 
     override fun onError(e: Exception) {
@@ -300,7 +286,4 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             EditorInfo.IME_ACTION_PREVIOUS
         )
     }
-
-    override val lifecycle: Lifecycle
-        get() = lifecycleRegistry
 }

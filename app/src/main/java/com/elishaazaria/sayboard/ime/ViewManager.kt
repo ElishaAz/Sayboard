@@ -1,214 +1,192 @@
 package com.elishaazaria.sayboard.ime
 
-import android.annotation.SuppressLint
-import android.content.res.ColorStateList
+import android.content.Context
 import android.content.res.Configuration
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.darkColors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardBackspace
+import androidx.compose.material.icons.filled.KeyboardReturn
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicNone
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.SettingsVoice
+import androidx.compose.material.lightColors
+import androidx.compose.material.minimumInteractiveComponentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.AbstractComposeView
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.elishaazaria.sayboard.AppPrefs
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerState
 import com.elishaazaria.sayboard.sayboardPreferenceModel
+import com.elishaazaria.sayboard.theme.Shapes
+import com.elishaazaria.sayboard.ui.utils.MyIconButton
 
-class ViewManager(private val ime: IME) : Observer<RecognizerState> {
+class ViewManager(private val ime: Context) : AbstractComposeView(ime),
+    Observer<RecognizerState> {
     private val prefs by sayboardPreferenceModel()
-    lateinit var root: ConstraintLayout
-        private set
-    private lateinit var micButton: ImageButton
-    private lateinit var backButton: ImageButton
-    private lateinit var backspaceButton: ImageButton
-    private lateinit var returnButton: ImageButton
-    private lateinit var modelButton: Button
-    private lateinit var resultView: TextView
     val stateLD = MutableLiveData(STATE_INITIAL)
-    val errorMessageLD = MutableLiveData(0)
-    val recognizerNameLD = MutableLiveData("")
+    val errorMessageLD = MutableLiveData(R.string.mic_info_error)
     private var listener: Listener? = null
-    fun init() {
-        initializeVariables()
-        reloadOrientation()
-        setUpListeners()
-        currentForeground = Int.MAX_VALUE
-        currentBackground = Int.MAX_VALUE
-        setUpTheme()
-    }
-
-    @SuppressLint("InflateParams")
-    private fun initializeVariables() {
-        this.root = ime.layoutInflater.inflate(R.layout.ime, null) as ConstraintLayout
-        resultView = root.findViewById(R.id.result_text)
-        micButton = root.findViewById(R.id.mic_button)
-        backButton = root.findViewById(R.id.back_button)
-        backspaceButton = root.findViewById(R.id.backspace_button)
-        modelButton = root.findViewById(R.id.model_button)
-        returnButton = root.findViewById(R.id.return_button)
-        resultView.setMovementMethod(ScrollingMovementMethod())
-    }
-
-    private fun setUpListeners() {
-        micButton.setOnClickListener { v: View? -> if (listener != null) listener!!.micClick() }
-        micButton.setOnLongClickListener { v: View? -> listener != null && listener!!.micLongClick() }
-        backButton.setOnClickListener { v: View? -> if (listener != null) listener!!.backClicked() }
-        backspaceButton.setOnClickListener { v: View? -> if (listener != null) listener!!.backspaceClicked() }
-        backspaceButton.setOnTouchListener { v: View, event: MotionEvent ->
-            if (listener == null) {
-                v.performClick()
-                return@setOnTouchListener false
-            }
-            listener?.backspaceTouched(v, event) == true
-        }
-        returnButton.setOnClickListener { v: View? -> if (listener != null) listener!!.returnClicked() }
-        modelButton.setOnClickListener { v: View? -> if (listener != null) listener!!.modelClicked() }
-    }
-
-    private var currentForeground = Int.MAX_VALUE
-    private var currentBackground = Int.MAX_VALUE
+    val recognizerNameLD = MutableLiveData("")
 
     init {
-        stateLD.observe(ime) { state: Int -> observeState(state) }
-        errorMessageLD.observe(ime) { messageId: Int -> observeError(messageId) }
-        recognizerNameLD.observe(ime) { name: String? -> observeRecognizerName(name) }
+        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }
 
-    private fun setUpTheme() {
-        val dark =
-            ime.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+    @Composable
+    override fun Content() {
+        val stateS = stateLD.observeAsState()
+        val errorMessageS = errorMessageLD.observeAsState(R.string.mic_info_error)
+        val recognizerNameS = recognizerNameLD.observeAsState(initial = "")
+        val height =
+            (LocalConfiguration.current.screenHeightDp * when (LocalConfiguration.current.orientation) {
+                Configuration.ORIENTATION_LANDSCAPE -> prefs.uiKeyboardHeightLandscape.get()
+                else -> prefs.uiKeyboardHeightPortrait.get()
+            }).toInt().dp
+        IMETheme(prefs) {
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.primary) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(height)
+                        .background(MaterialTheme.colors.background)
+                ) {
+                    Column {
+                        Row {
+                            IconButton(onClick = { listener?.backClicked() }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            Box(
+                                modifier = Modifier
+                                    .pointerInput(Unit) {
+                                        detectDragGestures(onDragStart = {
+                                            listener?.backspaceTouchStart(it)
+                                        }, onDragCancel = {
+                                            listener?.backspaceTouchEnd()
+                                        }, onDragEnd = {
+                                            listener?.backspaceTouchEnd()
+                                        }, onDrag = { change, amount ->
+                                            listener?.backspaceTouched(change, amount)
+                                        })
+                                        detectTapGestures {
+                                            setOnClickListener { listener?.backspaceClicked() }
+                                        }
+                                    }
+                                    .minimumInteractiveComponentSize()
 
-        val foreground = if (dark) {
-            if (prefs.uiNightForegroundMaterialYou.get()) {
-                ContextCompat.getColor(ime, R.color.materialYouForeground)
-            } else {
-                prefs.uiNightForeground.get()
-            }
-        } else {
-            if (prefs.uiDayForegroundMaterialYou.get()) {
-                ContextCompat.getColor(ime, R.color.materialYouForeground)
-            } else {
-                prefs.uiDayForeground.get()
+                                    .padding(vertical = 8.dp, horizontal = 16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                val contentAlpha = LocalContentAlpha.current
+                                CompositionLocalProvider(LocalContentAlpha provides contentAlpha) {
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardBackspace,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
+                        Row(modifier = Modifier.weight(1f)) {
+                            Column {
+
+                            }
+                            MyIconButton(onClick = {
+                                listener?.micClick()
+                            }, onLongClick = {
+                                listener?.micLongClick()
+                            },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(
+                                    imageVector = when (stateS.value) {
+                                        STATE_INITIAL, STATE_LOADING -> Icons.Default.SettingsVoice
+                                        STATE_READY, STATE_PAUSED -> Icons.Default.MicNone
+                                        STATE_LISTENING -> Icons.Default.Mic
+                                        else -> Icons.Default.MicOff
+                                    }, contentDescription = null,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                            Column {
+
+                            }
+                        }
+                        Text(
+                            text = when (stateS.value) {
+                                STATE_INITIAL, STATE_LOADING -> stringResource(id = R.string.mic_info_preparing)
+                                STATE_READY, STATE_PAUSED -> stringResource(id = R.string.mic_info_ready)
+                                STATE_LISTENING -> stringResource(id = R.string.mic_info_recording)
+                                else -> stringResource(id = errorMessageS.value)
+                            }, modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Row {
+                            IconButton(
+                                onClick = { listener?.modelClicked() },
+                                modifier = Modifier.padding(5.dp)
+                            ) {
+                                Row {
+                                    Icon(
+                                        imageVector = Icons.Default.Language,
+                                        contentDescription = null
+                                    )
+                                    Text(text = recognizerNameS.value)
+                                }
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            IconButton(onClick = { listener?.returnClicked() }) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardReturn,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
-        val background = if (dark) {
-            prefs.uiNightBackground.get()
-        } else {
-            prefs.uiDayBackground.get()
-        }
-
-        if (currentForeground == foreground && currentBackground == background) return
-        currentForeground = foreground
-        currentBackground = background
-        root.setBackgroundColor(background)
-        val foregroundTint = ColorStateList.valueOf(foreground)
-        micButton.imageTintList = foregroundTint
-        backButton.imageTintList = foregroundTint
-        backspaceButton.imageTintList = foregroundTint
-        returnButton.imageTintList = foregroundTint
-        TextViewCompat.setCompoundDrawableTintList(modelButton, foregroundTint)
-        modelButton.setTextColor(foreground)
-        resultView.setTextColor(foreground)
     }
 
-    private fun reloadOrientation() {
-        val landscape =
-            ime.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        val window = ime.myWindow ?: return
-        val screenHeight = ime.resources.displayMetrics.heightPixels
-        val percent: Float
-        percent = if (landscape) {
-            prefs.uiKeyboardHeightLandscape.get()
-        } else {
-            prefs.uiKeyboardHeightPortrait.get()
-        }
-        val height = (percent * screenHeight).toInt()
-        Log.d("ViewManager", "Screen height: $screenHeight, height: $height")
-
-//        WindowManager.LayoutParams params = window.getAttributes();
-//        params.height = height;
-//        window.setAttributes(params);
-//
-        root.minHeight = height
-        root.maxHeight = height
-        //        overlayView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height));
-    }
-
-    fun refresh() {
-        setUpTheme()
-        reloadOrientation()
-    }
-
-    private fun observeState(state: Int) {
-        val enabled: Boolean
-        val text: Int
-        val icon: Int
-        when (state) {
-            STATE_INITIAL, STATE_LOADING -> {
-                text = R.string.mic_info_preparing
-                icon = R.drawable.ic_settings_voice
-                enabled = false
-            }
-
-            STATE_READY, STATE_PAUSED -> {
-                text = R.string.mic_info_ready
-                icon = R.drawable.ic_mic_none
-                enabled = true
-            }
-
-            STATE_LISTENING -> {
-                text = R.string.mic_info_recording
-                icon = R.drawable.ic_mic
-                enabled = true
-            }
-
-            STATE_ERROR -> {
-                text = R.string.mic_info_error
-                icon = R.drawable.ic_mic_off
-                enabled = false
-            }
-
-            else -> return
-        }
-        resultView.setText(text)
-        micButton.setImageDrawable(AppCompatResources.getDrawable(ime, icon))
-        micButton.isEnabled = enabled
-    }
-
-    private fun observeError(messageId: Int) {
-        if (messageId == 0) return
-        resultView.text = ime.getText(messageId)
-    }
-
-    fun observeRecognizerName(name: String?) {
-        modelButton.text = name
-    }
-
-    fun setListener(listener: Listener?) {
-        this.listener = listener
-    }
-
-    interface Listener {
-        fun micClick()
-        fun micLongClick(): Boolean
-        fun backClicked()
-        fun backspaceClicked()
-        fun backspaceTouched(v: View, event: MotionEvent): Boolean
-        fun returnClicked()
-        fun modelClicked()
-    }
-
-    override fun onChanged(recognizerState: RecognizerState) {
-        when (recognizerState) {
-            RecognizerState.CLOSED, RecognizerState.NONE -> stateLD.setValue(
-                STATE_INITIAL
-            )
+    override fun onChanged(value: RecognizerState) {
+        when (value) {
+            RecognizerState.CLOSED, RecognizerState.NONE -> stateLD.setValue(STATE_INITIAL)
 
             RecognizerState.LOADING -> stateLD.setValue(STATE_LOADING)
             RecognizerState.READY -> stateLD.setValue(STATE_READY)
@@ -217,8 +195,21 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
         }
     }
 
-    private fun convertDpToPixel(dp: Float): Int {
-        return (dp * (ime.resources.displayMetrics.densityDpi / 160f)).toInt()
+    fun setListener(listener: Listener) {
+        this.listener = listener
+    }
+
+    interface Listener {
+        fun micClick()
+        fun micLongClick(): Boolean
+        fun backClicked()
+        fun backspaceClicked()
+
+        fun backspaceTouchStart(offset: Offset)
+        fun backspaceTouched(change: PointerInputChange, dragAmount: Offset)
+        fun backspaceTouchEnd()
+        fun returnClicked()
+        fun modelClicked()
     }
 
     companion object {
@@ -229,4 +220,36 @@ class ViewManager(private val ime: IME) : Observer<RecognizerState> {
         const val STATE_PAUSED = 4
         const val STATE_ERROR = 5
     }
+}
+
+@Composable
+fun IMETheme(
+    prefs: AppPrefs,
+    content: @Composable () -> Unit
+) {
+    val colors = if (isSystemInDarkTheme()) {
+        darkColors(
+            background = Color(prefs.uiNightBackground.get()),
+            primary = if (prefs.uiNightForegroundMaterialYou.get()) {
+                colorResource(id = R.color.materialYouForeground)
+            } else {
+                Color(prefs.uiNightForeground.get())
+            },
+        )
+    } else {
+        lightColors(
+            background = Color(prefs.uiDayBackground.get()),
+            primary = if (prefs.uiDayForegroundMaterialYou.get()) {
+                colorResource(id = R.color.materialYouForeground)
+            } else {
+                Color(prefs.uiDayForeground.get())
+            },
+        )
+    }
+
+    MaterialTheme(
+        colors = colors,
+        shapes = Shapes,
+        content = content,
+    )
 }
