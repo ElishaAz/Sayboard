@@ -205,6 +205,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
             candidatesStart,
             candidatesEnd
         )
+        textManager.onUpdateSelection(newSelStart, newSelEnd)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

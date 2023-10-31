@@ -1,44 +1,60 @@
 package com.elishaazaria.sayboard.ime
 
 import android.util.Log
-import android.view.inputmethod.InputConnection
 
 class TextManager(private val ime: IME, private val modelManager: ModelManager) {
     private var isFirstCall = true
     private var addSpace = false
+
+    fun onUpdateSelection(
+        newSelStart: Int,
+        newSelEnd: Int,
+    ) {
+        if (newSelStart == newSelEnd) { // cursor moved
+            checkAddSpace()
+        }
+    }
+
     fun onText(text: String, mode: Mode) {
-        var text = text
+        if (text.isEmpty())  // no need to commit empty text
+            return
         val ic = ime.currentInputConnection ?: return
 
-        // If it's the first call after a commit
-        if (isFirstCall) {
-            isFirstCall = false
-            addSpace = shouldAddSpace(ic)
-        }
-        if (addSpace) {
-            text = " $text"
+        var spacedText = text
+        if (modelManager.currentRecognizerSourceAddSpaces && addSpace) {
+            spacedText = " $spacedText"
         }
         when (mode) {
             Mode.FINAL, Mode.STANDARD -> {
-                ic.commitText(text, 1)
-                isFirstCall = true
+                // add a space next time. Usually overridden by onUpdateSelection
+                addSpace = addSpaceAfter(
+                    spacedText[spacedText.length - 1] // last char
+                )
+                ic.commitText(spacedText, 1)
             }
-            Mode.PARTIAL -> ic.setComposingText(text, 1)
+
+            Mode.PARTIAL -> ic.setComposingText(spacedText, 1)
             Mode.INSERT ->                 // Manual insert. Don't add a space.
                 ic.commitText(text, 1)
         }
     }
 
-    private fun shouldAddSpace(ic: InputConnection): Boolean {
-        if (!modelManager.currentRecognizerSourceAddSpaces)
-            return false
-        val cs = ic.getTextBeforeCursor(1, 0)
+    private fun checkAddSpace() {
+        if (!modelManager.currentRecognizerSourceAddSpaces) {
+            addSpace = false
+            return
+        }
+        val cs = ime.currentInputConnection.getTextBeforeCursor(1, 0)
         Log.d("TextManager", "Standard, Text: $cs")
-        return if (cs != null) {
-            !(cs.length == 0 // if we're at the start of the text
-                    || cs == " ") // or there's a space already, then don't add.
-        } else true
-        // Unknown. Best to add a space.
+        if (cs != null) {
+            addSpace = cs.isNotEmpty() && addSpaceAfter(cs[0])
+        }
+    }
+
+    private fun addSpaceAfter(char: Char): Boolean = when (char) {
+        '"' -> false
+        '*' -> false
+        else -> true
     }
 
     enum class Mode {
