@@ -2,7 +2,7 @@
 <resources>
     <string name="main_shared_pref" translatable="false">main_shared_pref</string>
 
-    <string name="pref_models_vosk_servers_set">set_vosk_servers</string>
+    <string name="pref_models_vosk_servers_set" translatable="false">set_vosk_servers</string>
 
     <string name="pref_ui_light_foreground_material_you_b" translatable="false">b_light_foreground_material_you</string>
     <string name="pref_ui_light_foreground_c" translatable="false">c_light_foreground</string>

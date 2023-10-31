@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.elishaazaria.sayboard.R
 
 @Composable
 public fun GrantPermissionUi(
@@ -24,16 +26,16 @@ public fun GrantPermissionUi(
     ) {
         Button(onClick = requestMic, enabled = !mic.value) {
             if (mic.value) {
-                Text(text = "Microphone Permission Granted")
+                Text(text = stringResource(id = R.string.mic_permission_granted))
             } else {
-                Text(text = "Grant Microphone Permission")
+                Text(text = stringResource(id = R.string.mic_permission_not_granted))
             }
         }
         Button(onClick = requestIme, enabled = !ime.value) {
             if (ime.value) {
-                Text(text = "IME enabled")
+                Text(text = stringResource(id = R.string.keyboard_enabled))
             } else {
-                Text(text = "Enable IME")
+                Text(text = stringResource(id = R.string.keyboard_not_enabled))
             }
         }
     }

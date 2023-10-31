@@ -3,6 +3,8 @@
 
     <string name="app_name">Sayboard</string>
 
+    <!--  Mic  -->
+
     <string name="mic_info_error">Error\n</string>
     <string name="mic_info_preparing">Preparing the recognizer\n</string>
     <string name="mic_info_ready">Ready\n</string>
@@ -27,24 +29,28 @@
 
     <string name="model_dialog_title">Select Model</string>
 
+    <string name="button_cancel">Cancel</string>
+    <string name="button_select">Select</string>
+    <string name="button_default">Default</string>
 
-    <string name="mic_permission_grant">Grant Microphone permission</string>
-    <string name="mic_permission_not_granted">Not Granted</string>
-    <string name="mic_permission_granted">Granted</string>
-
-    <string name="keyboard_enable">Enable Keyboard</string>
-    <string name="keyboard_not_enabled">Not Enabled</string>
-    <string name="keyboard_enabled">Enabled</string>
-
-    <string name="switch_keyboard">Switch Keyboard</string>
-    <string name="open_ime_switcher">Open IME Switcher</string>
-    <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
-    <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="title_setup">Setup</string>
     <string name="title_models">Models</string>
     <string name="title_ui">User Interface</string>
     <string name="title_logic">Logic</string>
+
+    <!--  Setup  -->
+
+    <string name="mic_permission_not_granted">Grant Microphone permission</string>
+    <string name="mic_permission_granted">Microphone Permission Granted</string>
+
+    <string name="keyboard_not_enabled">Enable Keyboard</string>
+    <string name="keyboard_enabled">Keyboard Enabled</string>
+
+    <string name="switch_keyboard">Switch Keyboard</string>
+    <string name="open_ime_switcher">Open IME Switcher</string>
+    <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
     <!-- Preference Titles -->
     <string name="ui_light_theme_header">Light Theme</string>
@@ -59,6 +65,29 @@
     <string name="dialog_add_vosk_server_port">Port</string>
     <string name="dialog_add_vosk_server_add">Add</string>
     <string name="dialog_add_vosk_server_cancel">Cancel</string>
+
+    <string name="models_download_state_unknown">Unknown</string>
+    <string name="models_download_state_pending">Pending</string>
+    <string name="models_download_state_download_started">Downloading</string>
+    <string name="models_download_state_download_finished">Download Finished</string>
+    <string name="models_download_state_unzip_started">Unzipping</string>
+    <string name="models_download_state_unzip_finished">Unzipping Finished</string>
+    <string name="models_download_state_finished">Finished</string>
+    <string name="models_download_state_error">Error</string>
+    <string name="models_download_state_canceled">Canceled</string>
+
+    <string name="models_download_state">State: %s</string>
+    <string name="models_pending_download_state">State: Pending Download</string>
+
+    <string name="models_model_display_name_null">Null</string>
+
+    <string name="models_download_dialog_title">Download Model</string>
+
+    <string name="models_import_dialog_import">Import</string>
+    <string name="models_import_dialog_title">Import Model</string>
+    <string name="models_import_dialog_text_before_link">Manually download a Vosk model from </string>
+    <string name="models_import_dialog_text_link">the Vosk website</string>
+    <string name="models_import_dialog_text_after_link"> - make sure to pick a "small" model - and then choose it in the file picker after pressing import</string>
 
     <!-- UI Preferences -->
     <string name="ui_light_theme_foreground_material_you_title">Use Material You foreground color</string>
@@ -82,6 +111,10 @@
     <string name="other_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
     <string name="other_keep_model_in_ram_title">Keep the model in RAM (when closed)</string>
     <string name="other_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
+
+    <string name="p_keep_screen_awake_mode_never">Never</string>
+    <string name="p_keep_screen_awake_mode_when_listening">When Listening</string>
+    <string name="p_keep_screen_awake_mode_when_open">When Open</string>
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>

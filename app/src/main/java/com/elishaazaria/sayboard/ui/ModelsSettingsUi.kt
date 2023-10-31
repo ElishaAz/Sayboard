@@ -42,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -51,6 +52,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.SettingsActivity
 import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.data.LocalModel
@@ -120,20 +122,24 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(text = current.info.locale.displayName, fontSize = 20.sp)
                                 Text(text = current.info.url, fontSize = 12.sp)
-                                val stateText = when (current.state) {
-                                    State.NONE -> "Unknown"
-                                    State.QUEUED -> "Pending"
-                                    State.DOWNLOAD_STARTED -> "Downloading"
-                                    State.DOWNLOAD_FINISHED -> "Download Finished"
-                                    State.UNZIP_STARTED -> "Unzipping"
-                                    State.UNZIP_FINISHED -> "Unzipping Finished"
-                                    State.FINISHED -> "Finished"
-                                    State.ERROR -> "Error"
-                                    State.CANCELED -> "Canceled"
-                                }
+                                val stateText = stringResource(
+                                    id = when (current.state) {
+                                        State.NONE -> R.string.models_download_state_unknown
+                                        State.QUEUED -> R.string.models_download_state_pending
+                                        State.DOWNLOAD_STARTED -> R.string.models_download_state_download_started
+                                        State.DOWNLOAD_FINISHED -> R.string.models_download_state_download_finished
+                                        State.UNZIP_STARTED -> R.string.models_download_state_unzip_started
+                                        State.UNZIP_FINISHED -> R.string.models_download_state_unzip_finished
+                                        State.FINISHED -> R.string.models_download_state_finished
+                                        State.ERROR -> R.string.models_download_state_error
+                                        State.CANCELED -> R.string.models_download_state_canceled
+                                    }
+                                )
 
                                 Text(
-                                    text = "State: $stateText", fontSize = 14.sp
+                                    text = stringResource(id = R.string.models_download_state).format(
+                                        stateText
+                                    ), fontSize = 14.sp
                                 )
                             }
                             IconButton(onClick = {
@@ -161,7 +167,10 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(text = it.locale.displayName, fontSize = 20.sp)
                             Text(text = it.url, fontSize = 12.sp)
-                            Text(text = "State: Pending Download", fontSize = 14.sp)
+                            Text(
+                                text = stringResource(id = R.string.models_pending_download_state),
+                                fontSize = 14.sp
+                            )
                         }
                         IconButton(onClick = {
                             EventBus.getDefault()
@@ -182,7 +191,11 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = lm.locale.displayName ?: "null", fontSize = 20.sp)
+                            Text(
+                                text = lm.locale.displayName
+                                    ?: stringResource(id = R.string.models_model_display_name_null),
+                                fontSize = 20.sp
+                            )
                             Text(text = lm.path, fontSize = 12.sp)
                         }
                         IconButton(onClick = {
@@ -226,11 +239,6 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                                 Manifest.permission.POST_NOTIFICATIONS
                             ), SettingsActivity.PERMISSION_REQUEST_POST_NOTIFICATIONS
                         )
-//                        Toast.makeText(
-//                            activity,
-//                            "Notifications recommended for downloader to work properly",
-//                            Toast.LENGTH_LONG
-//                        ).show()
                     }
                 }
             }) {
@@ -254,7 +262,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                         Button(onClick = {
                             showDownloadDialog = false
                         }) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(id = R.string.button_cancel))
                         }
                     }
                 },
@@ -262,7 +270,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                 text = {
                     Column(verticalArrangement = Arrangement.Top) {
                         Text(
-                            text = "Download Model",
+                            text = stringResource(id = R.string.models_download_dialog_title),
                             fontSize = 30.sp,
                             modifier = Modifier.padding(
                                 horizontal = 5.dp,
@@ -298,18 +306,18 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                     showImportDialog = false
                     activity.importModel()
                 }) {
-                    Text(text = "Import")
+                    Text(text = stringResource(id = R.string.models_import_dialog_import))
                 }
             }, dismissButton = {
                 Button(onClick = { showImportDialog = false }) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(id = R.string.button_cancel))
                 }
             }, title = {
-                Text(text = "Import Model")
+                Text(text = stringResource(id = R.string.models_import_dialog_title))
             }, text = {
                 val annotatedString = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
-                        append("Manually download a Vosk model from ")
+                        append(stringResource(id = R.string.models_import_dialog_text_before_link))
                     }
 
                     pushStringAnnotation(
@@ -317,12 +325,12 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                         annotation = "https://alphacephei.com/vosk/models"
                     )
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                        append("the Vosk website")
+                        append(stringResource(id = R.string.models_import_dialog_text_link))
                     }
                     pop()
 
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
-                        append(" - make sure to pick a \"small\" model - and then choose it in the file picker after pressing import")
+                        append(stringResource(id = R.string.models_import_dialog_text_after_link))
                     }
                 }
 

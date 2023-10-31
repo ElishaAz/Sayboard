@@ -19,9 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.elishaazaria.sayboard.R
 import dev.patrickgold.jetpref.datastore.model.PreferenceData
 import dev.patrickgold.jetpref.datastore.model.PreferenceModel
 import dev.patrickgold.jetpref.datastore.ui.PreferenceUiScope
@@ -93,20 +95,20 @@ fun <T : PreferenceModel> PreferenceUiScope<T>.ColorPickerPreference(
                         setColor = Color(pref.default)
                         pref.set(pref.default)
                     }) {
-                        Text(text = "Default")
+                        Text(text = stringResource(id = R.string.button_default))
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Button(onClick = {
                         showDialog = false
                     }) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(id = R.string.button_cancel))
                     }
                     Button(onClick = {
                         showDialog = false
                         setColor = selectedColor
                         pref.set(selectedColor.toArgb())
                     }) {
-                        Text(text = "Select")
+                        Text(text = stringResource(id = R.string.button_select))
                     }
                 }
             })
