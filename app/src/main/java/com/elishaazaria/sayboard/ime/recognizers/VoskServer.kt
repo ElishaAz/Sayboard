@@ -26,18 +26,18 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
     private val stateMLD = MutableLiveData(RecognizerState.NONE)
     override val stateLD: LiveData<RecognizerState>
         get() = stateMLD
+    override val addSpaces: Boolean
+        get() = !listOf("ja", "zh").contains(data.locale?.language?:"")
     private var myRecognizerGRPC: MyRecognizerGRPC? = null
     override val recognizer: Recognizer
         get() = myRecognizerGRPC!!
     override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
         stateMLD.postValue(RecognizerState.LOADING)
-        myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f, locale)
+        myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f, data.locale)
         stateMLD.postValue(RecognizerState.READY)
         onLoaded.onChanged(this)
     }
 
-    override val locale: Locale?
-        get() = data.locale
     override val closed: Boolean
         get() = myRecognizerGRPC!!.closed
 

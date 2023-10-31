@@ -32,15 +32,15 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
         }
     }
 
-    override val locale: Locale?
-        get() = localModel.locale
     override val closed: Boolean
         get() = myRecognizer == null
+    override val addSpaces: Boolean
+        get() = !listOf("ja", "zh").contains(localModel.locale.language)
 
     private fun modelLoaded(model: Model) {
         this.model = model
         stateMLD.postValue(RecognizerState.READY)
-        myRecognizer = MyRecognizer(model, 16000.0f, locale)
+        myRecognizer = MyRecognizer(model, 16000.0f, localModel.locale)
     }
 
     private class MyRecognizer     //            setMaxAlternatives(3); // TODO: implement

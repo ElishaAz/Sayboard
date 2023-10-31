@@ -11,7 +11,8 @@ interface RecognizerSource {
     val recognizer: Recognizer
     fun close(freeRAM: Boolean)
     val stateLD: LiveData<RecognizerState>
-    val locale: Locale?
+    
+    val addSpaces: Boolean
 
     val closed: Boolean
 

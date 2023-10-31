@@ -56,7 +56,7 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
         actionManager = ActionManager(this, viewManager)
         checkMicrophonePermission()
         modelManager = ModelManager(this, viewManager)
-        textManager = TextManager(this)
+        textManager = TextManager(this, modelManager)
     }
 
     override fun onInitializeInterface() {
@@ -286,9 +286,6 @@ class IME : InputMethodService(), RecognitionListener, LifecycleOwner {
     override fun onTimeout() {
         viewManager.stateLD.postValue(ViewManager.STATE_PAUSED)
     }
-
-    val currentRecognizerSourceLocale: Locale?
-        get() = modelManager.currentRecognizerSourceLocale
 
     companion object {
         private val editorActions = intArrayOf(

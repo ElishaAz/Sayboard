@@ -3,7 +3,7 @@ package com.elishaazaria.sayboard.ime
 import android.util.Log
 import android.view.inputmethod.InputConnection
 
-class TextManager(private val ime: IME) {
+class TextManager(private val ime: IME, private val modelManager: ModelManager) {
     private var isFirstCall = true
     private var addSpace = false
     fun onText(text: String, mode: Mode) {
@@ -29,13 +29,8 @@ class TextManager(private val ime: IME) {
         }
     }
 
-    private fun localeAddsSpace(): Boolean {
-        val locale = ime.currentRecognizerSourceLocale
-        return !listOf("ja", "zh").contains(locale?.language?:"")
-    }
-
     private fun shouldAddSpace(ic: InputConnection): Boolean {
-        if (!localeAddsSpace())
+        if (!modelManager.currentRecognizerSourceAddSpaces)
             return false
         val cs = ic.getTextBeforeCursor(1, 0)
         Log.d("TextManager", "Standard, Text: $cs")

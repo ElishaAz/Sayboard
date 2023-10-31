@@ -40,8 +40,8 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         currentRecognizerSource.initialize(executor, onLoaded)
     }
 
-    val currentRecognizerSourceLocale: Locale?
-        get() = currentRecognizerSource.locale
+    val currentRecognizerSourceAddSpaces: Boolean
+        get() = currentRecognizerSource.addSpaces
 
     private fun stopRecognizerSource(freeRam: Boolean) {
         currentRecognizerSource.close(freeRam)
