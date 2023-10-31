@@ -13,6 +13,8 @@ interface RecognizerSource {
     val stateLD: LiveData<RecognizerState>
     val locale: Locale?
 
+    val closed: Boolean
+
     @get:StringRes
     val errorMessage: Int
     val name: String

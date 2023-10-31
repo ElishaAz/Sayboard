@@ -2,6 +2,7 @@ package com.elishaazaria.sayboard.ime
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.R
@@ -54,13 +55,14 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         if (currentRecognizerSourceIndex >= recognizerSources.size) {
             currentRecognizerSourceIndex = 0
         }
-        initializeRecognizer()
-        if (prefs.logicListenImmediately.get()) {
-            start()
-        }
+        initializeRecognizer() // start is called after the recognizer is initialized
     }
 
     fun start() {
+        if (currentRecognizerSource.closed) {
+            Log.w(TAG, "Trying to start a closed Recognizer Source: ${currentRecognizerSource.name}")
+            return
+        }
         if (isRunning || speechService != null) {
             speechService!!.stop()
         }
@@ -142,5 +144,9 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         if (currentRecognizerSourceIndex == -1) {
             currentRecognizerSourceIndex = 0
         }
+    }
+
+    companion object{
+        private const val TAG = "ModelManager"
     }
 }

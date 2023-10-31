@@ -34,6 +34,8 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
 
     override val locale: Locale?
         get() = localModel.locale
+    override val closed: Boolean
+        get() = myRecognizer == null
 
     private fun modelLoaded(model: Model) {
         this.model = model
@@ -42,7 +44,8 @@ class VoskLocal(private val localModel: LocalModel) : RecognizerSource {
     }
 
     private class MyRecognizer     //            setMaxAlternatives(3); // TODO: implement
-        (model: Model, override val sampleRate: Float, override val locale: Locale?) : org.vosk.Recognizer(model, sampleRate),
+        (model: Model, override val sampleRate: Float, override val locale: Locale?) :
+        org.vosk.Recognizer(model, sampleRate),
         Recognizer {
 
         override fun getResult(): String {

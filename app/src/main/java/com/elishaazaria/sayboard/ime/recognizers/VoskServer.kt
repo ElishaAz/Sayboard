@@ -38,6 +38,8 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
 
     override val locale: Locale?
         get() = data.locale
+    override val closed: Boolean
+        get() = myRecognizerGRPC!!.closed
 
     override fun close(freeRAM: Boolean) {
         myRecognizerGRPC!!.close()
@@ -60,7 +62,7 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
         private var myFinalResult: String = ""
 
         private var isPartialResult = false
-        private var closed = false
+        var closed = false
 
         init {
             val channel = ManagedChannelBuilder.forAddress(uri.host, uri.port).build()
