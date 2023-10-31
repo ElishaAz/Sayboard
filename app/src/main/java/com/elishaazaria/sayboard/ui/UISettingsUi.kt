@@ -10,9 +10,8 @@ import dev.patrickgold.jetpref.datastore.ui.ExperimentalJetPrefDatastoreUi
 import dev.patrickgold.jetpref.datastore.ui.PreferenceGroup
 import dev.patrickgold.jetpref.datastore.ui.ScrollablePreferenceLayout
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
-import dev.patrickgold.jetpref.material.ui.ExperimentalJetPrefMaterialUi
 
-@OptIn(ExperimentalJetPrefMaterialUi::class, ExperimentalJetPrefDatastoreUi::class)
+@OptIn(ExperimentalJetPrefDatastoreUi::class)
 @Composable
 fun UISettingsUi() = ScrollablePreferenceLayout(sayboardPreferenceModel()) {
     PreferenceGroup(title = stringResource(id = R.string.ui_light_theme_header)) {

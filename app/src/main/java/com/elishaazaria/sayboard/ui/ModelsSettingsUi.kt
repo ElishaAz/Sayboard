@@ -7,32 +7,33 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -41,9 +42,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -114,7 +112,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             item {
                 currentDownloadingModel.value?.let { current ->
-                    Card {
+                    Card() {
                         Row(
                             modifier = Modifier.padding(10.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -138,12 +136,12 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                                     text = "State: $stateText", fontSize = 14.sp
                                 )
                             }
-                            FilledIconButton(onClick = {
+                            IconButton(onClick = {
                                 EventBus.getDefault()
                                     .post(
                                         CancelCurrent(current.info)
                                     )
-                            }, shape = ShapeDefaults.Medium) {
+                            }) {
                                 Icon(
                                     imageVector = Icons.Default.Cancel,
                                     contentDescription = null
@@ -165,12 +163,12 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                             Text(text = it.url, fontSize = 12.sp)
                             Text(text = "State: Pending Download", fontSize = 14.sp)
                         }
-                        FilledIconButton(onClick = {
+                        IconButton(onClick = {
                             EventBus.getDefault()
                                 .post(
                                     CancelPending(it)
                                 )
-                        }, shape = ShapeDefaults.Medium) {
+                        }) {
                             Icon(imageVector = Icons.Default.Cancel, contentDescription = null)
                         }
                     }
@@ -187,10 +185,10 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                             Text(text = lm.locale.displayName ?: "null", fontSize = 20.sp)
                             Text(text = lm.path, fontSize = 12.sp)
                         }
-                        FilledIconButton(onClick = {
+                        IconButton(onClick = {
                             Tools.deleteModel(lm, activity)
                             reloadModels()
-                        }, shape = ShapeDefaults.Medium) {
+                        }) {
                             Icon(imageVector = Icons.Default.Delete, contentDescription = null)
                         }
                     }
@@ -199,7 +197,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun Fab() {
         var showDownloadDialog by remember {
@@ -247,22 +245,32 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
         }
 
         if (showDownloadDialog) {
-            AlertDialog(onDismissRequest = {
-                showDownloadDialog = false
-            }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-                Box(
-                    Modifier
-                        .clip(RectangleShape)
-                        .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(10.dp)
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(text = "Download Model", fontSize = 30.sp)
-
+            AlertDialog(
+                backgroundColor = MaterialTheme.colors.background,
+                onDismissRequest = { showDownloadDialog = false },
+                buttons = {
+                    Row(modifier = Modifier.padding(10.dp)) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Button(onClick = {
+                            showDownloadDialog = false
+                        }) {
+                            Text(text = "Cancel")
+                        }
+                    }
+                },
+                properties = DialogProperties(usePlatformDefaultWidth = false),
+                text = {
+                    Column(verticalArrangement = Arrangement.Top) {
+                        Text(
+                            text = "Download Model",
+                            fontSize = 30.sp,
+                            modifier = Modifier.padding(
+                                horizontal = 5.dp,
+                                vertical = 30.dp
+                            ) // for some reason the title jumps up and down without this
+                        )
                         LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            modifier = Modifier.weight(1f)
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             items(items = ModelLink.values()) { ml ->
                                 Card(onClick = {
@@ -276,16 +284,10 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                                 }
                             }
                         }
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Button(onClick = {
-                                showDownloadDialog = false
-                            }, modifier = Modifier.align(Alignment.CenterEnd)) {
-                                Text(text = "Cancel")
-                            }
-                        }
                     }
-                }
-            }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
         }
 
         if (showImportDialog) {
@@ -306,23 +308,37 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                 Text(text = "Import Model")
             }, text = {
                 val annotatedString = buildAnnotatedString {
-                    append("Manually download a Vosk model from ")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
+                        append("Manually download a Vosk model from ")
+                    }
 
-                    pushStringAnnotation(tag = "vosk-website", annotation = "https://alphacephei.com/vosk/models")
-                    withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                    pushStringAnnotation(
+                        tag = "vosk-website",
+                        annotation = "https://alphacephei.com/vosk/models"
+                    )
+                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
                         append("the Vosk website")
                     }
                     pop()
 
-                    append(" - make sure to pick a \"small\" model - and then choose it in the file picker after pressing import")
+                    withStyle(style = SpanStyle(color = MaterialTheme.colors.onSurface)) {
+                        append(" - make sure to pick a \"small\" model - and then choose it in the file picker after pressing import")
+                    }
                 }
 
-                ClickableText(text = annotatedString, style = MaterialTheme.typography.bodyMedium, onClick = { offset ->
-                    annotatedString.getStringAnnotations(tag = "vosk-website", start = offset, end = offset).firstOrNull()?.let {
-                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.item))
-                        activity.startActivity(browserIntent)
-                    }
-                })
+                ClickableText(
+                    text = annotatedString,
+                    style = MaterialTheme.typography.body1,
+                    onClick = { offset ->
+                        annotatedString.getStringAnnotations(
+                            tag = "vosk-website",
+                            start = offset,
+                            end = offset
+                        ).firstOrNull()?.let {
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(it.item))
+                            activity.startActivity(browserIntent)
+                        }
+                    })
             })
         }
     }

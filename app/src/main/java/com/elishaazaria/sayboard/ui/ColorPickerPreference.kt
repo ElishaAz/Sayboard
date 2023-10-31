@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +30,7 @@ import dev.patrickgold.jetpref.material.ui.JetPrefColorPicker
 import dev.patrickgold.jetpref.material.ui.JetPrefListItem
 import dev.patrickgold.jetpref.material.ui.rememberJetPrefColorPickerState
 
-@OptIn(ExperimentalJetPrefMaterialUi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalJetPrefMaterialUi::class)
 @Composable
 fun <T : PreferenceModel> PreferenceUiScope<T>.ColorPickerPreference(
     pref: PreferenceData<Int>,
@@ -75,39 +73,42 @@ fun <T : PreferenceModel> PreferenceUiScope<T>.ColorPickerPreference(
     )
 
     if (showDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                showDialog = false
-            }) {
-            Card {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+        AlertDialog(onDismissRequest = { showDialog = false },
+            title = {
+                Text(text = title, fontSize = 20.sp)
+            },
+            text = {
+                JetPrefColorPicker(state = colorPickerState,
+                    onColorChange = {
+                        selectedColor = it
+                    })
+            },
+            buttons = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.padding(10.dp)
                 ) {
-                    Text(text = title, fontSize = 20.sp)
-                    JetPrefColorPicker(state = colorPickerState,
-                        onColorChange = {
-                            selectedColor = it
-                        })
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Button(onClick = {
-                            showDialog = false
-                        }) {
-                            Text(text = "Cancel")
-                        }
-                        Button(onClick = {
-                            showDialog = false
-                            setColor = selectedColor
-                            pref.set(selectedColor.toArgb())
-                        }) {
-                            Text(text = "Select")
-                        }
+                    Button(onClick = {
+                        showDialog = false
+                        setColor = Color(pref.default)
+                        pref.set(pref.default)
+                    }) {
+                        Text(text = "Default")
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Button(onClick = {
+                        showDialog = false
+                    }) {
+                        Text(text = "Cancel")
+                    }
+                    Button(onClick = {
+                        showDialog = false
+                        setColor = selectedColor
+                        pref.set(selectedColor.toArgb())
+                    }) {
+                        Text(text = "Select")
                     }
                 }
-            }
-        }
+            })
     }
 }

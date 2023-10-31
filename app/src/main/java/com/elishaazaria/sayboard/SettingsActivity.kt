@@ -9,14 +9,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,6 +31,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.elishaazaria.sayboard.data.LocalModel
 import com.elishaazaria.sayboard.downloader.FileDownloader
+import com.elishaazaria.sayboard.theme.AppTheme
 import com.elishaazaria.sayboard.ui.GrantPermissionUi
 import com.elishaazaria.sayboard.ui.LogicSettingsUi
 import com.elishaazaria.sayboard.ui.ModelsSettingsUi
@@ -53,20 +54,22 @@ class SettingsActivity : ComponentActivity() {
         modelSettingsUi.onCreate()
 
         setContent {
-            val micGrantedState = micGranted.observeAsState(true)
-            val imeGrantedState = imeGranted.observeAsState(true)
-            if (micGrantedState.value && imeGrantedState.value) {
+            AppTheme {
+                val micGrantedState = micGranted.observeAsState(true)
+                val imeGrantedState = imeGranted.observeAsState(true)
+                if (micGrantedState.value && imeGrantedState.value) {
 
-                MainUi()
-            } else {
-                GrantPermissionUi(mic = micGrantedState, ime = imeGrantedState, requestMic = {
-                    ActivityCompat.requestPermissions(
-                        this, arrayOf(
-                            Manifest.permission.RECORD_AUDIO
-                        ), PERMISSIONS_REQUEST_RECORD_AUDIO
-                    )
-                }) {
-                    startActivity(Intent("android.settings.INPUT_METHOD_SETTINGS"))
+                    MainUi()
+                } else {
+                    GrantPermissionUi(mic = micGrantedState, ime = imeGrantedState, requestMic = {
+                        ActivityCompat.requestPermissions(
+                            this, arrayOf(
+                                Manifest.permission.RECORD_AUDIO
+                            ), PERMISSIONS_REQUEST_RECORD_AUDIO
+                        )
+                    }) {
+                        startActivity(Intent("android.settings.INPUT_METHOD_SETTINGS"))
+                    }
                 }
             }
         }
@@ -80,9 +83,9 @@ class SettingsActivity : ComponentActivity() {
         }
 
         Scaffold(bottomBar = {
-            NavigationBar() {
+            BottomNavigation() {
                 tabs.forEachIndexed { index, tab ->
-                    NavigationBarItem(
+                    BottomNavigationItem(
                         selected = index == selectedIndex,
                         onClick = { selectedIndex = index },
                         icon = {
