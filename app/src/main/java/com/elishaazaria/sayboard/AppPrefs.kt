@@ -3,8 +3,12 @@ package com.elishaazaria.sayboard
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.elishaazaria.sayboard.data.KeepScreenAwakeMode
+import com.elishaazaria.sayboard.utils.KeysListSerializer
+import com.elishaazaria.sayboard.utils.leftDefaultKeysList
+import com.elishaazaria.sayboard.utils.rightDefaultKeysList
 import dev.patrickgold.jetpref.datastore.JetPref
 import dev.patrickgold.jetpref.datastore.model.PreferenceModel
+import dev.patrickgold.jetpref.datastore.model.PreferenceSerializer
 
 // Defining a getter function for easy retrieval of the AppPrefs model.
 // You can name this however you want, the convention is <projectName>PreferenceModel
@@ -68,6 +72,18 @@ class AppPrefs : PreferenceModel("example-app-preferences") {
     val uiKeyboardHeightLandscape = float(
         key = "f_keyboard_height_landscape",
         default = 0.5f
+    )
+
+    val uiKeyboardKeysLeft = custom(
+        key = "sl_keyboard_keys_left",
+        default = leftDefaultKeysList,
+        serializer = KeysListSerializer()
+    )
+
+    val uiKeyboardKeysRight = custom(
+        key = "sl_keyboard_keys_right",
+        default = rightDefaultKeysList,
+        serializer = KeysListSerializer()
     )
 
 

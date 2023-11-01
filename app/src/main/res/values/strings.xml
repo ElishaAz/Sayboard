@@ -32,6 +32,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_select">Select</string>
     <string name="button_default">Default</string>
+    <string name="button_confirm">OK</string>
 
 
     <string name="title_setup">Setup</string>
@@ -102,6 +103,14 @@
 
     <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
     <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
+
+    <string name="ui_keys_title">Keys</string>
+    <string name="ui_keys_left">Left Keys</string>
+    <string name="ui_keys_right">Right Keys</string>
+
+    <string name="ui_keys_dialog_key_entry">Label: %s, Text: %s</string>
+    <string name="ui_keys_dialog_key_label_label">Label</string>
+    <string name="ui_keys_dialog_key_text_label">Text</string>
 
     <!--  Logic Preferences  -->
     <string name="other_keep_screen_awake_title">Keep screen awake</string>

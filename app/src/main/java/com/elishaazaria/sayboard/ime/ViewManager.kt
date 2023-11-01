@@ -8,6 +8,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,6 +36,7 @@ import androidx.compose.material.lightColors
 import androidx.compose.material.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +57,7 @@ import com.elishaazaria.sayboard.ime.recognizers.RecognizerState
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
+import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 class ViewManager(private val ime: Context) : AbstractComposeView(ime),
     Observer<RecognizerState> {
@@ -67,6 +71,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     override fun Content() {
         val stateS = stateLD.observeAsState()
@@ -125,15 +130,22 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             }
                         }
                         Row(modifier = Modifier.weight(1f)) {
-                            Column {
-
+                            val leftKeys by prefs.uiKeyboardKeysLeft.observeAsState()
+                            FlowColumn() {
+                                for (key in leftKeys) {
+                                    IconButton(onClick = { listener?.buttonClicked(key.text) }) {
+                                        Text(text = key.label)
+                                    }
+                                }
                             }
                             MyIconButton(onClick = {
                                 listener?.micClick()
                             }, onLongClick = {
                                 listener?.micLongClick()
                             },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxSize()
                             ) {
                                 Icon(
                                     imageVector = when (stateS.value) {
@@ -145,8 +157,13 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                     modifier = Modifier.fillMaxSize()
                                 )
                             }
-                            Column {
-
+                            val rightKeys by prefs.uiKeyboardKeysRight.observeAsState()
+                            FlowColumn {
+                                for (key in rightKeys) {
+                                    IconButton(onClick = { listener?.buttonClicked(key.text) }) {
+                                        Text(text = key.label)
+                                    }
+                                }
                             }
                         }
                         Text(
@@ -210,6 +227,8 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         fun backspaceTouchEnd()
         fun returnClicked()
         fun modelClicked()
+
+        fun buttonClicked(text: String)
     }
 
     companion object {
@@ -219,6 +238,14 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         const val STATE_LISTENING = 3
         const val STATE_PAUSED = 4
         const val STATE_ERROR = 5
+
+//        const val BUTTON_TOP_LEFT = 1
+//        const val BUTTON_MIDDLE_LEFT = 2
+//        const val BUTTON_BOTTOM_LEFT = 3
+//        const val BUTTON_TOP_RIGHT = 11
+//        const val BUTTON_MIDDLE_RIGHT = 12
+//        const val BUTTON_BOTTOM_RIGHT = 13
+
     }
 }
 

@@ -178,6 +178,10 @@ class IME : InputMethodService(), RecognitionListener {
             override fun modelClicked() {
                 modelManager.switchToNextRecognizer()
             }
+
+            override fun buttonClicked(text: String) {
+                textManager.onText(text, TextManager.Mode.INSERT)
+            }
         })
         actionManager.onCreateInputView()
         return viewManager
