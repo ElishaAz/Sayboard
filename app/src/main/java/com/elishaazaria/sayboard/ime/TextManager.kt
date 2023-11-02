@@ -3,21 +3,39 @@ package com.elishaazaria.sayboard.ime
 import android.util.Log
 
 class TextManager(private val ime: IME, private val modelManager: ModelManager) {
-    private var isFirstCall = true
     private var addSpace = false
+    private var firstSinceResume = true
+
+    private var composing = false
 
     fun onUpdateSelection(
         newSelStart: Int,
         newSelEnd: Int,
     ) {
-        if (newSelStart == newSelEnd) { // cursor moved
-            checkAddSpace()
+        if (!composing) {
+            if (newSelStart == newSelEnd) { // cursor moved
+                checkAddSpace()
+            }
         }
     }
 
     fun onText(text: String, mode: Mode) {
         if (text.isEmpty())  // no need to commit empty text
             return
+        Log.d(
+            TAG,
+            "onText. text: $text, mode: $mode, addSpace: $addSpace, firstSinceResume: $firstSinceResume"
+        )
+
+        if (text.startsWith(" ")) {
+            Log.d(TAG, "Starts with space!")
+        }
+
+        if (firstSinceResume) {
+            firstSinceResume = false
+            checkAddSpace()
+        }
+
         val ic = ime.currentInputConnection ?: return
 
         var spacedText = text
@@ -30,12 +48,19 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
                 addSpace = addSpaceAfter(
                     spacedText[spacedText.length - 1] // last char
                 )
+                composing = false
                 ic.commitText(spacedText, 1)
             }
 
-            Mode.PARTIAL -> ic.setComposingText(spacedText, 1)
-            Mode.INSERT ->                 // Manual insert. Don't add a space.
+            Mode.PARTIAL -> {
+                composing = true
+                ic.setComposingText(spacedText, 1)
+            }
+
+            Mode.INSERT -> {                // Manual insert. Don't add a space.
+                composing = false
                 ic.commitText(text, 1)
+            }
         }
     }
 
@@ -45,7 +70,7 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
             return
         }
         val cs = ime.currentInputConnection.getTextBeforeCursor(1, 0)
-        Log.d("TextManager", "Standard, Text: $cs")
+        Log.d(TAG, "Standard, Text: $cs")
         if (cs != null) {
             addSpace = cs.isNotEmpty() && addSpaceAfter(cs[0])
         }
@@ -57,7 +82,15 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
         else -> true
     }
 
+    fun onResume() {
+        firstSinceResume = true;
+    }
+
     enum class Mode {
         STANDARD, PARTIAL, FINAL, INSERT
+    }
+
+    companion object {
+        private const val TAG = "TextManager"
     }
 }

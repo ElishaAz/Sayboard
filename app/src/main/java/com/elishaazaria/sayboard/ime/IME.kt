@@ -80,6 +80,7 @@ class IME : InputMethodService(), RecognitionListener {
             }
         }
         modelManager.onResume()
+        textManager.onResume()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
     }
 
