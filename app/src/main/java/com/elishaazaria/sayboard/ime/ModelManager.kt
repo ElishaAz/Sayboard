@@ -33,7 +33,7 @@ class ModelManager(
     private var currentRecognizerSourceIndex = 0
     private var currentRecognizerSource: RecognizerSource? = null
     private val executor: Executor = Executors.newSingleThreadExecutor()
-    fun initializeRecognizer() {
+    private fun initializeRecognizer() {
         if (recognizerSources.size == 0) {
             return
         }
@@ -50,11 +50,6 @@ class ModelManager(
 
     val currentRecognizerSourceAddSpaces: Boolean
         get() = currentRecognizerSource?.addSpaces ?: true
-
-    private fun stopRecognizerSource(freeRam: Boolean) {
-        currentRecognizerSource?.close(freeRam)
-        currentRecognizerSource?.stateLD?.removeObserver(viewManager)
-    }
 
     fun switchToNextRecognizer() {
         if (recognizerSources.size == 0 || recognizerSources.size == 1) return
@@ -106,24 +101,17 @@ class ModelManager(
     private var pausedState = false
 
     init {
-        recognizerSources.clear()
-        prefs.modelsOrder.get().forEach { localModel ->
-            recognizerSourceProviders.recognizerSourceForModel(localModel)?.let {
-                recognizerSources.add(it)
-            }
-        }
-        if (recognizerSources.size == 0) {
-            viewManager.errorMessageLD.postValue(R.string.mic_error_no_recognizers)
-            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
-        } else {
-            currentRecognizerSourceIndex = 0
-            initializeRecognizer()
-        }
+        reloadModels()
     }
 
     private fun reloadModels() {
         val newModels = prefs.modelsOrder.get()
         if (newModels == recognizerSourceModels) {
+            if (prefs.logicListenImmediately.get()) {
+                if (currentRecognizerSource != null) {
+                    start()
+                }
+            }
             return
         }
 
@@ -162,18 +150,31 @@ class ModelManager(
         get() = pausedState && speechService != null
 
     fun stop(forceFreeRam: Boolean = false) {
-        speechService?.stop()
-        speechService?.shutdown()
+        speechService?.let {
+            executor.execute {
+                it.stop()
+                it.shutdown()
+            }
+        }
         speechService = null
         isRunning = false
         stopRecognizerSource(forceFreeRam || !prefs.logicKeepModelInRam.get())
     }
 
-    fun onDestroy() {
-        stop()
+    private fun stopRecognizerSource(freeRam: Boolean) {
+        currentRecognizerSource?.let {
+            executor.execute {
+                it.close(freeRam)
+            }
+        }
+        currentRecognizerSource?.stateLD?.removeObserver(viewManager)
     }
 
-    fun onResume(){
+    fun onDestroy() {
+        stop(true)
+    }
+
+    fun onResume() {
         reloadModels()
     }
 

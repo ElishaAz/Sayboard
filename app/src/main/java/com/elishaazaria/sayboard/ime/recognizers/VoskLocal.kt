@@ -80,9 +80,9 @@ class VoskLocal(private val localModel: VoskLocalModel) : RecognizerSource {
     }
 
     override fun close(freeRAM: Boolean) {
-        myRecognizer?.close()
-        myRecognizer = null
         if (freeRAM) {
+            myRecognizer?.close()
+            myRecognizer = null
             model?.close()
             model = null
         }

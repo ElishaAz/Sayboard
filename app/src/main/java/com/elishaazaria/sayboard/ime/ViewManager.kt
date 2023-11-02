@@ -55,6 +55,10 @@ import com.elishaazaria.sayboard.AppPrefs
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerState
 import com.elishaazaria.sayboard.sayboardPreferenceModel
+import com.elishaazaria.sayboard.theme.Green500
+import com.elishaazaria.sayboard.theme.Green700
+import com.elishaazaria.sayboard.theme.Orange700
+import com.elishaazaria.sayboard.theme.Orange900
 import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import dev.patrickgold.jetpref.datastore.model.observeAsState
@@ -83,7 +87,9 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                 else -> prefs.keyboardHeightPortrait.get()
             }).toInt().dp
         IMETheme(prefs) {
-            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.primary) {
+            CompositionLocalProvider(
+                LocalContentColor provides MaterialTheme.colors.primary
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
