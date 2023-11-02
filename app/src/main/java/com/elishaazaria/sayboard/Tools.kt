@@ -58,47 +58,6 @@ object Tools {
         }
     }
 
-    fun getInstalledModelsMap(context: Context?): Map<Locale, MutableList<VoskLocalModel>> {
-        val localeMap: MutableMap<Locale, MutableList<VoskLocalModel>> = HashMap()
-        val modelsDir = getModelsDirectory(context!!)
-        if (!modelsDir.exists()) return localeMap
-        for (localeFolder in modelsDir.listFiles()!!) {
-            if (!localeFolder.isDirectory) continue
-            val locale = Locale.forLanguageTag(localeFolder.name)
-            val models: MutableList<VoskLocalModel> = ArrayList()
-            for (modelFolder in localeFolder.listFiles()!!) {
-                if (!modelFolder.isDirectory) continue
-                val name = modelFolder.name
-                val model = VoskLocalModel(modelFolder.absolutePath, locale, name)
-                models.add(model)
-            }
-            localeMap[locale] = models
-        }
-        return localeMap
-    }
-
-    @JvmStatic
-    fun getInstalledModelsList(context: Context?): List<InstalledModelReference> {
-        val models: MutableList<InstalledModelReference> = ArrayList()
-        val modelsDir = getModelsDirectory(context!!)
-        if (!modelsDir.exists()) return models
-        for (localeFolder in modelsDir.listFiles()!!) {
-            if (!localeFolder.isDirectory) continue
-            val locale = Locale.forLanguageTag(localeFolder.name)
-            for (modelFolder in localeFolder.listFiles()!!) {
-                if (!modelFolder.isDirectory) continue
-//                val name = modelFolder.name
-                val model = InstalledModelReference(
-                    modelFolder.absolutePath,
-                    locale.displayName,
-                    ModelType.VoskLocal
-                )
-                models.add(model)
-            }
-        }
-        return models
-    }
-
     fun getVoskModelFromReference(
         reference: InstalledModelReference
     ): VoskLocalModel? {
@@ -111,16 +70,6 @@ object Tools {
             return model
         }
         return null
-    }
-
-    @JvmStatic
-    fun getModelForLink(modelLink: ModelLink, context: Context?): VoskLocalModel? {
-        val modelsDir = getModelsDirectory(context!!)
-        val localeDir = File(modelsDir, modelLink.locale.toLanguageTag())
-        val modelDir = File(localeDir, modelLink.filename)
-        return if (!localeDir.exists() || !modelDir.exists() || !modelDir.isDirectory) {
-            null
-        } else VoskLocalModel(modelDir.absolutePath, modelLink.locale, modelLink.filename)
     }
 
     fun createNotificationChannel(context: Context) {

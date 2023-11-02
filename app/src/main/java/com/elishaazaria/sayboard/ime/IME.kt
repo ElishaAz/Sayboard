@@ -23,7 +23,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.core.app.ActivityCompat
@@ -37,6 +36,8 @@ import org.vosk.android.RecognitionListener
 
 class IME : InputMethodService(), RecognitionListener {
     private val prefs by sayboardPreferenceModel()
+
+    private var hasMicPermission: Boolean = false
 
     public val lifecycleOwner = IMELifecycleOwner()
     private lateinit var editorInfo: EditorInfo
@@ -78,7 +79,7 @@ class IME : InputMethodService(), RecognitionListener {
                 break
             }
         }
-        modelManager.initializeRecognizer()
+        modelManager.onResume()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
     }
 
@@ -100,7 +101,10 @@ class IME : InputMethodService(), RecognitionListener {
 
         viewManager.setListener(object : ViewManager.Listener {
             override fun micClick() {
-                if (modelManager.isRunning) {
+                if (!hasMicPermission || modelManager.openSettingsOnMic) {
+                    // errors! open settings
+                    actionManager.openSettings()
+                } else if (modelManager.isRunning) {
                     if (modelManager.isPaused) {
                         modelManager.pause(false)
                         if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
@@ -239,14 +243,13 @@ class IME : InputMethodService(), RecognitionListener {
     }
 
     private fun checkMicrophonePermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this@IME,
-                Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            Toast.makeText(this@IME, "Microphone permission is required!", Toast.LENGTH_SHORT)
-                .show()
-            actionManager.openSettings()
+        hasMicPermission = ActivityCompat.checkSelfPermission(
+            this,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!hasMicPermission) {
+            viewManager.errorMessageLD.postValue(R.string.mic_error_no_permission)
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
         }
     }
 

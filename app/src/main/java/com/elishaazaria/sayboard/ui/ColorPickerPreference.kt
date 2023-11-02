@@ -93,7 +93,7 @@ fun <T : PreferenceModel> PreferenceUiScope<T>.ColorPickerPreference(
                     Button(onClick = {
                         showDialog = false
                         setColor = Color(pref.default)
-                        pref.set(pref.default)
+                        pref.reset()
                     }) {
                         Text(text = stringResource(id = R.string.button_default))
                     }

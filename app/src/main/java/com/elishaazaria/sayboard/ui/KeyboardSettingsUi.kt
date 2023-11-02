@@ -117,7 +117,7 @@ private fun PreferenceUiScope<AppPrefs>.KeysPreference(
                 keysDialog = false
             },
             onNeutral = {
-                keysPref.set(keysPref.default)
+                keysPref.reset()
                 keysDialog = false
             },
             confirmLabel = stringResource(id = R.string.button_confirm),

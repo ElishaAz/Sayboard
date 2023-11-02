@@ -138,23 +138,37 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                     }
                                 }
                             }
-                            MyIconButton(onClick = {
-                                listener?.micClick()
-                            }, onLongClick = {
-                                listener?.micLongClick()
-                            },
+                            Column(
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxSize()
                             ) {
-                                Icon(
-                                    imageVector = when (stateS.value) {
-                                        STATE_INITIAL, STATE_LOADING -> Icons.Default.SettingsVoice
-                                        STATE_READY, STATE_PAUSED -> Icons.Default.MicNone
-                                        STATE_LISTENING -> Icons.Default.Mic
-                                        else -> Icons.Default.MicOff
-                                    }, contentDescription = null,
-                                    modifier = Modifier.fillMaxSize()
+                                MyIconButton(onClick = {
+                                    listener?.micClick()
+                                }, onLongClick = {
+                                    listener?.micLongClick()
+                                },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxSize()
+                                ) {
+                                    Icon(
+                                        imageVector = when (stateS.value) {
+                                            STATE_INITIAL, STATE_LOADING -> Icons.Default.SettingsVoice
+                                            STATE_READY, STATE_PAUSED -> Icons.Default.MicNone
+                                            STATE_LISTENING -> Icons.Default.Mic
+                                            else -> Icons.Default.MicOff
+                                        }, contentDescription = null,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                                Text(
+                                    text = when (stateS.value) {
+                                        STATE_INITIAL, STATE_LOADING -> stringResource(id = R.string.mic_info_preparing)
+                                        STATE_READY, STATE_PAUSED -> stringResource(id = R.string.mic_info_ready)
+                                        STATE_LISTENING -> stringResource(id = R.string.mic_info_recording)
+                                        else -> stringResource(id = errorMessageS.value)
+                                    }, modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
                             }
                             val rightKeys by prefs.keyboardKeysRight.observeAsState()
@@ -166,14 +180,6 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                 }
                             }
                         }
-                        Text(
-                            text = when (stateS.value) {
-                                STATE_INITIAL, STATE_LOADING -> stringResource(id = R.string.mic_info_preparing)
-                                STATE_READY, STATE_PAUSED -> stringResource(id = R.string.mic_info_ready)
-                                STATE_LISTENING -> stringResource(id = R.string.mic_info_recording)
-                                else -> stringResource(id = errorMessageS.value)
-                            }, modifier = Modifier.align(Alignment.CenterHorizontally)
-                        )
                         Row {
                             IconButton(
                                 onClick = { listener?.modelClicked() },

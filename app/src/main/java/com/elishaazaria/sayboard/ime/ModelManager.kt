@@ -6,47 +6,54 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.R
-import com.elishaazaria.sayboard.Tools
+import com.elishaazaria.sayboard.data.InstalledModelReference
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource
 import com.elishaazaria.sayboard.ime.recognizers.providers.Providers
-import com.elishaazaria.sayboard.ime.recognizers.providers.RecognizerSourceProvider
-import com.elishaazaria.sayboard.ime.recognizers.providers.VoskLocalProvider
-import com.elishaazaria.sayboard.ime.recognizers.providers.VoskServerProvider
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 import java.io.IOException
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
+class ModelManager(
+    private val ime: IME,
+    private val viewManager: ViewManager
+) {
     private val prefs by sayboardPreferenceModel()
     private var speechService: MySpeechService? = null
     var isRunning = false
         private set
+
+    val openSettingsOnMic: Boolean
+        get() = recognizerSources.size == 0
+
     private var recognizerSourceProviders = Providers(ime)
 
+    private var recognizerSourceModels: List<InstalledModelReference> = listOf()
     private var recognizerSources: MutableList<RecognizerSource> = ArrayList()
     private var currentRecognizerSourceIndex = 0
-    private lateinit var currentRecognizerSource: RecognizerSource
+    private var currentRecognizerSource: RecognizerSource? = null
     private val executor: Executor = Executors.newSingleThreadExecutor()
     fun initializeRecognizer() {
-        if (recognizerSources.size == 0) return
+        if (recognizerSources.size == 0) {
+            return
+        }
         val onLoaded = Observer { r: RecognizerSource? ->
             if (prefs.logicListenImmediately.get()) {
                 start() // execute after initialize
             }
         }
         currentRecognizerSource = recognizerSources[currentRecognizerSourceIndex]
-        viewManager.recognizerNameLD.postValue(currentRecognizerSource.name)
-        currentRecognizerSource.stateLD.observe(ime.lifecycleOwner, viewManager)
-        currentRecognizerSource.initialize(executor, onLoaded)
+        viewManager.recognizerNameLD.postValue(currentRecognizerSource!!.name)
+        currentRecognizerSource!!.stateLD.observe(ime.lifecycleOwner, viewManager)
+        currentRecognizerSource!!.initialize(executor, onLoaded)
     }
 
     val currentRecognizerSourceAddSpaces: Boolean
-        get() = currentRecognizerSource.addSpaces
+        get() = currentRecognizerSource?.addSpaces ?: true
 
     private fun stopRecognizerSource(freeRam: Boolean) {
-        currentRecognizerSource.close(freeRam)
-        currentRecognizerSource.stateLD.removeObserver(viewManager)
+        currentRecognizerSource?.close(freeRam)
+        currentRecognizerSource?.stateLD?.removeObserver(viewManager)
     }
 
     fun switchToNextRecognizer() {
@@ -60,10 +67,17 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     }
 
     fun start() {
-        if (currentRecognizerSource.closed) {
+        if (currentRecognizerSource == null) {
             Log.w(
                 TAG,
-                "Trying to start a closed Recognizer Source: ${currentRecognizerSource.name}"
+                "currentRecognizerSource is null!"
+            )
+            return
+        }
+        if (currentRecognizerSource!!.closed) {
+            Log.w(
+                TAG,
+                "Trying to start a closed Recognizer Source: ${currentRecognizerSource!!.name}"
             )
             return
         }
@@ -73,7 +87,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         isRunning = true
         viewManager.stateLD.postValue(ViewManager.STATE_LISTENING)
         try {
-            val recognizer = currentRecognizerSource.recognizer
+            val recognizer = currentRecognizerSource!!.recognizer
             if (ActivityCompat.checkSelfPermission(
                     ime,
                     Manifest.permission.RECORD_AUDIO
@@ -92,8 +106,31 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     private var pausedState = false
 
     init {
+        recognizerSources.clear()
         prefs.modelsOrder.get().forEach { localModel ->
             recognizerSourceProviders.recognizerSourceForModel(localModel)?.let {
+                recognizerSources.add(it)
+            }
+        }
+        if (recognizerSources.size == 0) {
+            viewManager.errorMessageLD.postValue(R.string.mic_error_no_recognizers)
+            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
+        } else {
+            currentRecognizerSourceIndex = 0
+            initializeRecognizer()
+        }
+    }
+
+    private fun reloadModels() {
+        val newModels = prefs.modelsOrder.get()
+        if (newModels == recognizerSourceModels) {
+            return
+        }
+
+        recognizerSources.clear()
+        recognizerSourceModels = newModels
+        recognizerSourceModels.forEach { model ->
+            recognizerSourceProviders.recognizerSourceForModel(model)?.let {
                 recognizerSources.add(it)
             }
         }
@@ -134,6 +171,10 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
 
     fun onDestroy() {
         stop()
+    }
+
+    fun onResume(){
+        reloadModels()
     }
 
     companion object {
