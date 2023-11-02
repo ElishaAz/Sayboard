@@ -1,0 +1,8 @@
+- Fixed a bug when switching languages with "listen immediately" enabled
+- Monochrome (themed) icon for Android 13 (#39)
+- Dark theme for the setting activity (#40)
+- Fixed a few bugs with when to insert a space (#28)
+- The keyboard UI is now in Jetpack Compose
+- Customizable punctuation keys (#4, #24)
+- Drag & Drop to change the order of the languages (#20)
+- Handle opening keyboard without the microphone permission or any models installed better
