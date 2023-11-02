@@ -79,8 +79,8 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         val recognizerNameS = recognizerNameLD.observeAsState(initial = "")
         val height =
             (LocalConfiguration.current.screenHeightDp * when (LocalConfiguration.current.orientation) {
-                Configuration.ORIENTATION_LANDSCAPE -> prefs.uiKeyboardHeightLandscape.get()
-                else -> prefs.uiKeyboardHeightPortrait.get()
+                Configuration.ORIENTATION_LANDSCAPE -> prefs.keyboardHeightLandscape.get()
+                else -> prefs.keyboardHeightPortrait.get()
             }).toInt().dp
         IMETheme(prefs) {
             CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.primary) {
@@ -130,7 +130,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             }
                         }
                         Row(modifier = Modifier.weight(1f)) {
-                            val leftKeys by prefs.uiKeyboardKeysLeft.observeAsState()
+                            val leftKeys by prefs.keyboardKeysLeft.observeAsState()
                             FlowColumn() {
                                 for (key in leftKeys) {
                                     IconButton(onClick = { listener?.buttonClicked(key.text) }) {
@@ -157,7 +157,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                     modifier = Modifier.fillMaxSize()
                                 )
                             }
-                            val rightKeys by prefs.uiKeyboardKeysRight.observeAsState()
+                            val rightKeys by prefs.keyboardKeysRight.observeAsState()
                             FlowColumn {
                                 for (key in rightKeys) {
                                     IconButton(onClick = { listener?.buttonClicked(key.text) }) {

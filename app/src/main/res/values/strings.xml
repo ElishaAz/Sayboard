@@ -38,6 +38,7 @@
     <string name="title_setup">Setup</string>
     <string name="title_models">Models</string>
     <string name="title_ui">User Interface</string>
+    <string name="title_keyboard">Keyboard</string>
     <string name="title_logic">Logic</string>
 
     <!--  Setup  -->
@@ -52,12 +53,6 @@
     <string name="open_ime_switcher">Open IME Switcher</string>
     <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
     <string name="title_activity_settings">SettingsActivity</string>
-
-    <!-- Preference Titles -->
-    <string name="ui_light_theme_header">Light Theme</string>
-    <string name="ui_dark_theme_header">Dark Theme</string>
-    <string name="ui_keyboard_header">Keyboard</string>
-    <string name="logic_logic_header">Logic</string>
 
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Add Vosk Server</string>
@@ -91,39 +86,47 @@
     <string name="models_import_dialog_text_after_link"> - make sure to pick a "small" model - and then choose it in the file picker after pressing import</string>
 
     <!-- UI Preferences -->
+    <string name="ui_light_theme_header">Light Theme</string>
     <string name="ui_light_theme_foreground_material_you_title">Use Material You foreground color</string>
     <string name="ui_light_theme_foreground_color_title">Foreground color</string>
     <string name="ui_light_theme_background_color_title">Background color</string>
 
+
+    <string name="ui_dark_theme_header">Dark Theme</string>
     <string name="ui_dark_theme_foreground_material_you_title">Use Material You foreground color</string>
     <string name="ui_dark_theme_foreground_color_title">Foreground color</string>
     <string name="ui_dark_theme_background_color_title">Background color</string>
 
     <string name="ui_theme_reset_color">Reset</string>
 
-    <string name="other_keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
-    <string name="other_keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
-
-    <string name="ui_keys_title">Keys</string>
-    <string name="ui_keys_left">Left Keys</string>
-    <string name="ui_keys_right">Right Keys</string>
-
-    <string name="ui_keys_dialog_key_entry">Label: %s, Text: %s</string>
-    <string name="ui_keys_dialog_key_label_label">Label</string>
-    <string name="ui_keys_dialog_key_text_label">Text</string>
-
     <!--  Logic Preferences  -->
-    <string name="other_keep_screen_awake_title">Keep screen awake</string>
-    <string name="other_listen_immediately_title">Listen immediately</string>
-    <string name="other_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
-    <string name="other_auto_switch_back_title">Auto switch back</string>
-    <string name="other_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
-    <string name="other_keep_model_in_ram_title">Keep the model in RAM (when closed)</string>
-    <string name="other_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
+    <string name="logic_logic_header">Logic</string>
+    <string name="logic_keep_screen_awake_title">Keep screen awake</string>
+    <string name="logic_listen_immediately_title">Listen immediately</string>
+    <string name="logic_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
+    <string name="logic_auto_switch_back_title">Auto switch back</string>
+    <string name="logic_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
+    <string name="logic_keep_model_in_ram_title">Keep the model in RAM (when closed)</string>
+    <string name="logic_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
 
     <string name="p_keep_screen_awake_mode_never">Never</string>
     <string name="p_keep_screen_awake_mode_when_listening">When Listening</string>
     <string name="p_keep_screen_awake_mode_when_open">When Open</string>
+
+    <!--  Keyboard Preferences  -->
+    <string name="keyboard_height_header">Keyboard Height</string>
+
+    <string name="keyboard_height_portrait_title">Keyboard height in portrait mode (%)</string>
+    <string name="keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
+
+    <string name="keyboard_keys_header">Keys</string>
+    <string name="keyboard_keys_left_title">Left Keys</string>
+    <string name="keyboard_keys_right_title">Right Keys</string>
+
+    <string name="keyboard_keys_dialog_key_entry">Label: %s, Text: %s</string>
+    <string name="keyboard_keys_dialog_key_label_label">Label</string>
+    <string name="keyboard_keys_dialog_key_text_label">Text</string>
+
 
     <!--  Notifications  -->
     <string name="notification_download_channel_name">Model download</string>

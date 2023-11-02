@@ -16,6 +16,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Keyboard
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,10 +31,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import com.elishaazaria.sayboard.data.LocalModel
+import com.elishaazaria.sayboard.data.VoskLocalModel
 import com.elishaazaria.sayboard.downloader.FileDownloader
 import com.elishaazaria.sayboard.theme.AppTheme
 import com.elishaazaria.sayboard.ui.GrantPermissionUi
+import com.elishaazaria.sayboard.ui.KeyboardSettingsUi
 import com.elishaazaria.sayboard.ui.LogicSettingsUi
 import com.elishaazaria.sayboard.ui.ModelsSettingsUi
 import com.elishaazaria.sayboard.ui.UISettingsUi
@@ -81,6 +83,7 @@ class SettingsActivity : ComponentActivity() {
         val tabs = listOf<String>(
             stringResource(id = R.string.title_models),
             stringResource(id = R.string.title_ui),
+            stringResource(id = R.string.title_keyboard),
             stringResource(id = R.string.title_logic)
         )
         var selectedIndex by remember {
@@ -106,6 +109,11 @@ class SettingsActivity : ComponentActivity() {
                                 )
 
                                 2 -> Icon(
+                                    imageVector = Icons.Default.Keyboard,
+                                    contentDescription = null
+                                )
+
+                                3 -> Icon(
                                     imageVector = Icons.Default.Settings,
                                     contentDescription = null
                                 )
@@ -128,7 +136,8 @@ class SettingsActivity : ComponentActivity() {
                 when (selectedIndex) {
                     0 -> modelSettingsUi.Content()
                     1 -> UISettingsUi()
-                    2 -> LogicSettingsUi()
+                    2 -> KeyboardSettingsUi()
+                    3 -> LogicSettingsUi()
                 }
             }
         }
@@ -178,12 +187,5 @@ class SettingsActivity : ComponentActivity() {
         public const val PERMISSION_REQUEST_POST_NOTIFICATIONS = 1
 
 //        private const val FILE_PICKER_REQUEST_CODE = 1
-    }
-
-    @Preview
-    @Composable
-    fun DefaultPreview() {
-        modelSettingsUi.models.postValue(listOf(LocalModel("abc/def", Locale.ENGLISH, "english")))
-        MainUi()
     }
 }

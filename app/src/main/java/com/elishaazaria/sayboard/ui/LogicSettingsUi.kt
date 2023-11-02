@@ -13,28 +13,28 @@ import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 fun LogicSettingsUi() = ScrollablePreferenceLayout(sayboardPreferenceModel()) {
     ListPreference(
         listPref = prefs.logicKeepScreenAwake,
-        title = stringResource(id = R.string.other_keep_screen_awake_title),
+        title = stringResource(id = R.string.logic_keep_screen_awake_title),
         entries = KeepScreenAwakeMode.listEntries()
     )
     SwitchPreference(
         pref = prefs.logicListenImmediately,
-        title = stringResource(id = R.string.other_listen_immediately_title),
+        title = stringResource(id = R.string.logic_listen_immediately_title),
         summary = stringResource(
-            id = R.string.other_listen_immediately_summery
+            id = R.string.logic_listen_immediately_summery
         )
     )
     SwitchPreference(
         pref = prefs.logicAutoSwitchBack,
-        title = stringResource(id = R.string.other_auto_switch_back_title),
+        title = stringResource(id = R.string.logic_auto_switch_back_title),
         summary = stringResource(
-            id = R.string.other_auto_switch_back_summery
+            id = R.string.logic_auto_switch_back_summery
         )
     )
     SwitchPreference(
         pref = prefs.logicKeepModelInRam,
-        title = stringResource(id = R.string.other_keep_model_in_ram_title),
+        title = stringResource(id = R.string.logic_keep_model_in_ram_title),
         summary = stringResource(
-            id = R.string.other_keep_model_in_ram_summery
+            id = R.string.logic_keep_model_in_ram_summery
         )
     )
 }

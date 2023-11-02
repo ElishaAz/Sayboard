@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource
+import com.elishaazaria.sayboard.ime.recognizers.providers.Providers
 import com.elishaazaria.sayboard.ime.recognizers.providers.RecognizerSourceProvider
 import com.elishaazaria.sayboard.ime.recognizers.providers.VoskLocalProvider
 import com.elishaazaria.sayboard.ime.recognizers.providers.VoskServerProvider
@@ -21,7 +22,8 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     private var speechService: MySpeechService? = null
     var isRunning = false
         private set
-    private val sourceProviders: MutableList<RecognizerSourceProvider> = ArrayList()
+    private var recognizerSourceProviders = Providers(ime)
+
     private var recognizerSources: MutableList<RecognizerSource> = ArrayList()
     private var currentRecognizerSourceIndex = 0
     private lateinit var currentRecognizerSource: RecognizerSource
@@ -59,7 +61,10 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
 
     fun start() {
         if (currentRecognizerSource.closed) {
-            Log.w(TAG, "Trying to start a closed Recognizer Source: ${currentRecognizerSource.name}")
+            Log.w(
+                TAG,
+                "Trying to start a closed Recognizer Source: ${currentRecognizerSource.name}"
+            )
             return
         }
         if (isRunning || speechService != null) {
@@ -87,13 +92,12 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
     private var pausedState = false
 
     init {
-        sourceProviders.add(VoskLocalProvider(ime))
-        if (Tools.VOSK_SERVER_ENABLED) {
-            sourceProviders.add(VoskServerProvider())
+        prefs.modelsOrder.get().forEach { localModel ->
+            recognizerSourceProviders.recognizerSourceForModel(localModel)?.let {
+                recognizerSources.add(it)
+            }
         }
-        for (provider in sourceProviders) {
-            provider.loadSources(recognizerSources)
-        }
+
         if (recognizerSources.size == 0) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_no_recognizers)
             viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
@@ -132,20 +136,7 @@ class ModelManager(private val ime: IME, private val viewManager: ViewManager) {
         stop()
     }
 
-    fun reloadModels() {
-        val newModels: MutableList<RecognizerSource> = ArrayList()
-        for (provider in sourceProviders) {
-            provider.loadSources(newModels)
-        }
-        val currentModel = recognizerSources[currentRecognizerSourceIndex]
-        recognizerSources = newModels
-        currentRecognizerSourceIndex = newModels.indexOf(currentModel)
-        if (currentRecognizerSourceIndex == -1) {
-            currentRecognizerSourceIndex = 0
-        }
-    }
-
-    companion object{
+    companion object {
         private const val TAG = "ModelManager"
     }
 }

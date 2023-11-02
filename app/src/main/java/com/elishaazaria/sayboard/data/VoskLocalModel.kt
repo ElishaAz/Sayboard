@@ -3,16 +3,17 @@ package com.elishaazaria.sayboard.data
 import java.io.Serializable
 import java.util.*
 
-data class LocalModel(val path: String, val locale: Locale, val filename: String) : Serializable {
+data class VoskLocalModel(val path: String, val locale: Locale, val filename: String) : Serializable {
 
     companion object {
-        fun serialize(model: LocalModel): String {
+        fun serialize(model: VoskLocalModel): String {
             return "[path:\"" + encode(model.path) +
                     "\", locale:\"" + model.locale +
                     "\", name:\"" + encode(model.filename) + "\"]"
         }
 
-        fun deserialize(serialized: String?): LocalModel {
+        fun deserialize(serialized: String?): VoskLocalModel {
+
             throw RuntimeException() // TODO: implement
         }
 
@@ -26,6 +27,7 @@ data class LocalModel(val path: String, val locale: Locale, val filename: String
                         sb.append("\\")
                         sb.append(String.format("%02x", c.code))
                     }
+
                     else -> sb.append(c)
                 }
             }
