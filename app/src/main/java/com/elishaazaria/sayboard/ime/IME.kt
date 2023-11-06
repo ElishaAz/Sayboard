@@ -149,7 +149,7 @@ class IME : InputMethodService(), RecognitionListener {
                 swiping = false
             }
 
-            override fun backspaceTouched(change: PointerInputChange, dragAmount: Offset) {
+            override fun backspaceTouched(change: PointerInputChange, dragAmount: Float) {
                 if (restart) {
                     restart = false
                     initX = change.position.x
@@ -174,6 +174,8 @@ class IME : InputMethodService(), RecognitionListener {
             override fun backspaceTouchEnd() {
                 if (swiping)
                     actionManager.deleteSelection()
+//                else
+//                    backspaceClicked()
             }
 
             override fun returnClicked() {

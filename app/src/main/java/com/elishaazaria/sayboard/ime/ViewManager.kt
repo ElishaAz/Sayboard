@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -108,18 +109,20 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             Box(
                                 modifier = Modifier
                                     .pointerInput(Unit) {
-                                        detectDragGestures(onDragStart = {
+                                        detectTapGestures(onTap = {
+                                            listener?.backspaceClicked()
+                                        })
+                                    }
+                                    .pointerInput(Unit) {
+                                        detectHorizontalDragGestures(onDragStart = {
                                             listener?.backspaceTouchStart(it)
                                         }, onDragCancel = {
                                             listener?.backspaceTouchEnd()
                                         }, onDragEnd = {
                                             listener?.backspaceTouchEnd()
-                                        }, onDrag = { change, amount ->
+                                        }, onHorizontalDrag = { change, amount ->
                                             listener?.backspaceTouched(change, amount)
                                         })
-                                        detectTapGestures {
-                                            setOnClickListener { listener?.backspaceClicked() }
-                                        }
                                     }
                                     .minimumInteractiveComponentSize()
 
@@ -233,9 +236,8 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         fun micLongClick(): Boolean
         fun backClicked()
         fun backspaceClicked()
-
         fun backspaceTouchStart(offset: Offset)
-        fun backspaceTouched(change: PointerInputChange, dragAmount: Offset)
+        fun backspaceTouched(change: PointerInputChange, dragAmount: Float)
         fun backspaceTouchEnd()
         fun returnClicked()
         fun modelClicked()

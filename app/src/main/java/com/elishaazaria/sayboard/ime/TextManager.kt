@@ -79,6 +79,7 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
     private fun addSpaceAfter(char: Char): Boolean = when (char) {
         '"' -> false
         '*' -> false
+        ' ' -> false
         else -> true
     }
 
