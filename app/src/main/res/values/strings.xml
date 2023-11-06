@@ -17,17 +17,6 @@
     <string name="mic_error_recognizer_error">Recognizer error</string>
     <string name="mic_error_mic_in_use">Microphone is already in use!</string>
 
-    <!--    <string name="pause">Pause</string>-->
-    <!--    <string name="continueRecognition">Continue</string>-->
-    <string name="comma">,</string>
-    <string name="exclamation">!</string>
-    <string name="colon">:</string>
-    <string name="dot">.</string>
-    <string name="enter"><![CDATA[<-\']]></string>
-    <string name="world">O</string>
-    <string name="backspace"><![CDATA[<-]]></string>
-    <string name="question">\?</string>
-
     <string name="model_dialog_title">Select Model</string>
 
     <string name="button_cancel">Cancel</string>
