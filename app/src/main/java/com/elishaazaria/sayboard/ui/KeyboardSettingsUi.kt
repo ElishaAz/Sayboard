@@ -74,6 +74,11 @@ fun KeyboardSettingsUi() = ScrollablePreferenceLayout(sayboardPreferenceModel())
     PreferenceGroup(title = stringResource(id = R.string.keyboard_keys_header)) {
 
         KeysPreference(
+            prefs.keyboardKeysTop,
+            stringResource(id = R.string.keyboard_keys_top_title)
+        )
+
+        KeysPreference(
             prefs.keyboardKeysLeft,
             stringResource(id = R.string.keyboard_keys_left_title)
         )

@@ -77,6 +77,7 @@
     <string name="keyboard_height_portrait_title">Hauteur du clavier en mode portrait (%)</string>
     <string name="keyboard_height_landscape_title">Hauteur du clavier en mode paysage (%)</string>
     <string name="keyboard_keys_header">Touches</string>
+    <string name="keyboard_keys_top_title">Top Keys</string>
     <string name="keyboard_keys_left_title">Touches de gauche</string>
     <string name="keyboard_keys_right_title">Touches de droite</string>
     <string name="keyboard_keys_dialog_key_entry">Libellé: %s, Texte: %s</string>

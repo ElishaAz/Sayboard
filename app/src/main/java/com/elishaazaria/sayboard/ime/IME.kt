@@ -17,6 +17,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
 import android.os.IBinder
+import android.text.InputType
 import android.util.Log
 import android.view.View
 import android.view.Window
@@ -33,6 +34,7 @@ import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
 import org.vosk.android.RecognitionListener
+import kotlin.math.roundToInt
 
 class IME : InputMethodService(), RecognitionListener {
     private val prefs by sayboardPreferenceModel()
@@ -45,6 +47,14 @@ class IME : InputMethodService(), RecognitionListener {
     private lateinit var modelManager: ModelManager
     private lateinit var actionManager: ActionManager
     private lateinit var textManager: TextManager
+
+
+    public var enterAction = EditorInfo.IME_ACTION_UNSPECIFIED
+        private set
+
+    var isRichTextEditor = true
+        private set
+
     override fun onCreate() {
         super.onCreate()
         lifecycleOwner.onCreate()
@@ -67,21 +77,23 @@ class IME : InputMethodService(), RecognitionListener {
     override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
         lifecycleOwner.onResume()
         checkMicrophonePermission()
-
-        // text input has started
         editorInfo = info
-
-        // get enter action
-        val action = editorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
-        for (a in editorActions) {
-            if (action == a) {
-                actionManager.setEnterAction(action)
-                break
-            }
-        }
+        enterAction = findEnterAction()
+        isRichTextEditor =
+            editorInfo.inputType and InputType.TYPE_MASK_CLASS != EditorInfo.TYPE_NULL ||
+                    editorInfo.initialSelStart >= 0 && editorInfo.initialSelEnd >= 0 // based on florisboard code
         modelManager.onResume()
         textManager.onResume()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
+    }
+
+    private fun findEnterAction(): Int {
+        val action = editorInfo.imeOptions and EditorInfo.IME_MASK_ACTION
+        if (editorInfo.imeOptions and EditorInfo.IME_FLAG_NO_ENTER_ACTION == 0 && action in editorActions) {
+            return action
+        }
+
+        return EditorInfo.IME_ACTION_UNSPECIFIED
     }
 
     override fun onFinishInputView(finishingInput: Boolean) {
@@ -108,17 +120,20 @@ class IME : InputMethodService(), RecognitionListener {
                 } else if (modelManager.isRunning) {
                     if (modelManager.isPaused) {
                         modelManager.pause(false)
-                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
-                            setKeepScreenOn(true)
+                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
+                            true
+                        )
                     } else {
                         modelManager.pause(true)
-                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
-                            setKeepScreenOn(false)
+                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
+                            false
+                        )
                     }
                 } else {
                     modelManager.start()
-                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
-                        setKeepScreenOn(true)
+                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
+                        true
+                    )
                 }
             }
 
@@ -166,16 +181,13 @@ class IME : InputMethodService(), RecognitionListener {
                 }
                 if (swiping) {
                     x = -x // x is negative
-                    val amount = Math.round((x - threshold) / charLen)
+                    val amount = ((x - threshold) / charLen).roundToInt()
                     actionManager.selectCharsBack(amount)
                 }
             }
 
             override fun backspaceTouchEnd() {
-                if (swiping)
-                    actionManager.deleteSelection()
-//                else
-//                    backspaceClicked()
+                if (swiping) actionManager.deleteSelection()
             }
 
             override fun returnClicked() {
@@ -184,6 +196,10 @@ class IME : InputMethodService(), RecognitionListener {
 
             override fun modelClicked() {
                 modelManager.switchToNextRecognizer()
+            }
+
+            override fun settingsClicked() {
+                actionManager.openSettings()
             }
 
             override fun buttonClicked(text: String) {
@@ -203,20 +219,10 @@ class IME : InputMethodService(), RecognitionListener {
         candidatesEnd: Int
     ) {
         super.onUpdateSelection(
-            oldSelStart,
-            oldSelEnd,
-            newSelStart,
-            newSelEnd,
-            candidatesStart,
-            candidatesEnd
+            oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd
         )
         actionManager.updateSelection(
-            oldSelStart,
-            oldSelEnd,
-            newSelStart,
-            newSelEnd,
-            candidatesStart,
-            candidatesEnd
+            oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd
         )
         textManager.onUpdateSelection(newSelStart, newSelEnd)
     }
@@ -247,8 +253,7 @@ class IME : InputMethodService(), RecognitionListener {
 
     private fun checkMicrophonePermission() {
         hasMicPermission = ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.RECORD_AUDIO
+            this, Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
         if (!hasMicPermission) {
             viewManager.errorMessageLD.postValue(R.string.mic_error_no_permission)

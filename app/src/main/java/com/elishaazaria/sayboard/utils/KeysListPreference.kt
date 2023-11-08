@@ -21,5 +21,6 @@ class KeysListSerializer : PreferenceSerializer<List<Key>> {
 
 }
 
+val topDefaultKeysList = listOf<Key>()
 val leftDefaultKeysList = listOf(Key(",", ","), Key(".", "."), Key("?", "?"))
 val rightDefaultKeysList = listOf(Key("!", "!"), Key("\"", "\""), Key("'", "'"))
