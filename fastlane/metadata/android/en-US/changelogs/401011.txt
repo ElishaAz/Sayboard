@@ -1,0 +1,9 @@
+- fixed the backspace key (#45)
+- German translations for the settings (@Schrebergarten03-links)
+- French translations for the settings (@przmkg)
+- Fixed a bug with adding a newline to the right / left keys
+- Top row keys
+- Settings button (#21)
+- Fixed the enter key which was broken in some apps (#50)
+- Auto capitalize (#47)
+- Change the enter key's icon based on its action
