@@ -299,6 +299,7 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun Fab() {
+        val modelOrder by prefs.modelsOrder.observeAsState()
         var showDownloadDialog by remember {
             mutableStateOf(false)
         }
@@ -350,7 +351,16 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                         .fillMaxWidth()
                         .heightIn(0.dp, (LocalConfiguration.current.screenHeightDp * 0.9).dp)
                 ) {
-                    items(items = ModelLink.values()) { ml ->
+                    items(items = ModelLink.values().filter { ml ->
+                        modelOrder.none {
+                            ml.link.substring(
+                                ml.link.lastIndexOf('/'),
+                                ml.link.lastIndexOf('.')
+                            ) == it.path.substring(
+                                it.path.lastIndexOf('/')
+                            )
+                        }
+                    }) { ml ->
                         Card(
                             onClick = {
                                 showDownloadDialog = false
@@ -372,49 +382,6 @@ class ModelsSettingsUi(private val activity: SettingsActivity) {
                     }
                 }
             }
-
-//            AlertDialog(
-//                backgroundColor = MaterialTheme.colors.background,
-//                onDismissRequest = { showDownloadDialog = false },
-//                buttons = {
-//                    Row(modifier = Modifier.padding(10.dp)) {
-//                        Spacer(modifier = Modifier.weight(1f))
-//                        Button(onClick = {
-//                            showDownloadDialog = false
-//                        }) {
-//                            Text(text = stringResource(id = R.string.button_cancel))
-//                        }
-//                    }
-//                },
-//                properties = DialogProperties(usePlatformDefaultWidth = false),
-//                text = {
-//                    Column(verticalArrangement = Arrangement.Top) {
-//                        Text(
-//                            text = stringResource(id = R.string.models_download_dialog_title),
-//                            fontSize = 30.sp,
-//                            modifier = Modifier.padding(
-//                                horizontal = 5.dp, vertical = 30.dp
-//                            ) // for some reason the title jumps up and down without this
-//                        )
-//                        LazyColumn(
-//                            verticalArrangement = Arrangement.spacedBy(10.dp)
-//                        ) {
-//                            items(items = ModelLink.values()) { ml ->
-//                                Card(onClick = {
-//                                    showDownloadDialog = false
-//                                    FileDownloader.downloadModel(ml, activity)
-//                                }, modifier = Modifier.fillMaxWidth()) {
-//                                    Column(modifier = Modifier.padding(10.dp)) {
-//                                        Text(text = ml.locale.displayName)
-//                                        Text(text = ml.link, fontSize = 10.sp)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                },
-//                modifier = Modifier.fillMaxSize()
-//            )
         }
 
         if (showImportDialog) {
