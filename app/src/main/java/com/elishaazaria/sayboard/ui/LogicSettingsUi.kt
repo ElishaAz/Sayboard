@@ -37,4 +37,9 @@ fun LogicSettingsUi() = ScrollablePreferenceLayout(sayboardPreferenceModel()) {
             id = R.string.logic_keep_model_in_ram_summery
         )
     )
+    SwitchPreference(
+        pref = prefs.logicAutoCapitalize,
+        title = stringResource(id = R.string.logic_auto_capitalize_title),
+        summary = stringResource(id = R.string.logic_auto_capitalize_summary)
+    )
 }

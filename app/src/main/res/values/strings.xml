@@ -98,6 +98,8 @@
     <string name="logic_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
     <string name="logic_keep_model_in_ram_title">Keep the model in RAM (when closed)</string>
     <string name="logic_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
+    <string name="logic_auto_capitalize_title">Auto Capitalize</string>
+    <string name="logic_auto_capitalize_summary">Automatically capitalize the first letter after a period (where applicable).</string>
 
     <string name="p_keep_screen_awake_mode_never">Never</string>
     <string name="p_keep_screen_awake_mode_when_listening">When Listening</string>

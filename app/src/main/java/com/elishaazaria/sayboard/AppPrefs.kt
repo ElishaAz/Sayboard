@@ -45,6 +45,11 @@ class AppPrefs : PreferenceModel("example-app-preferences") {
         default = false
     )
 
+    val logicAutoCapitalize = boolean(
+        key = "b_auto_capitalize",
+        default = true
+    )
+
     val keyboardHeightPortrait = float(
         key = "f_keyboard_height_portrait",
         default = 0.3f

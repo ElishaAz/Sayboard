@@ -97,6 +97,8 @@
     <string name="logic_auto_switch_back_summery">Automatisch zur vorherigen Tastatur wechseln wenn die Tastatur versteckt ist.</string>
     <string name="logic_keep_model_in_ram_title">Halte das Modell im RAM (when closed)</string>
     <string name="logic_keep_model_in_ram_summery">Hält das Modell im Ram um das Öffnen zu beschleunigen. Braucht mehr Ram.</string>
+    <string name="logic_auto_capitalize_title">Auto Capitalize</string>
+    <string name="logic_auto_capitalize_summary">Automatically capitalize the first letter after a period (where applicable).</string>
 
     <string name="p_keep_screen_awake_mode_never">Niemals</string>
     <string name="p_keep_screen_awake_mode_when_listening">Beim Zuhören</string>

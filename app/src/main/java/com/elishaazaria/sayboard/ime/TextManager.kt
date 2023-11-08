@@ -1,9 +1,13 @@
 package com.elishaazaria.sayboard.ime
 
 import android.util.Log
+import com.elishaazaria.sayboard.sayboardPreferenceModel
 
 class TextManager(private val ime: IME, private val modelManager: ModelManager) {
+    private val prefs by sayboardPreferenceModel()
+
     private var addSpace = false
+    private var capitalize = true
     private var firstSinceResume = true
 
     private var composing = false
@@ -14,7 +18,7 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
     ) {
         if (!composing) {
             if (newSelStart == newSelEnd) { // cursor moved
-                checkAddSpace()
+                checkAddSpaceAndCapitalize()
             }
         }
     }
@@ -33,12 +37,16 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
 
         if (firstSinceResume) {
             firstSinceResume = false
-            checkAddSpace()
+            checkAddSpaceAndCapitalize()
         }
 
         val ic = ime.currentInputConnection ?: return
 
         var spacedText = text
+        if (prefs.logicAutoCapitalize.get() && capitalize) {
+            spacedText = spacedText[0].uppercase() + spacedText.substring(1)
+        }
+
         if (modelManager.currentRecognizerSourceAddSpaces && addSpace) {
             spacedText = " $spacedText"
         }
@@ -48,6 +56,11 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
                 addSpace = addSpaceAfter(
                     spacedText[spacedText.length - 1] // last char
                 )
+                capitalizeAfter(
+                    spacedText
+                )?.let {
+                    capitalize = it
+                }
                 composing = false
                 ic.commitText(spacedText, 1)
             }
@@ -64,16 +77,32 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
         }
     }
 
-    private fun checkAddSpace() {
+    private fun checkAddSpaceAndCapitalize() {
         if (!modelManager.currentRecognizerSourceAddSpaces) {
             addSpace = false
             return
         }
-        val cs = ime.currentInputConnection.getTextBeforeCursor(1, 0)
-        Log.d(TAG, "Standard, Text: $cs")
+        val cs = ime.currentInputConnection.getTextBeforeCursor(3, 0)
         if (cs != null) {
-            addSpace = cs.isNotEmpty() && addSpaceAfter(cs[0])
+            addSpace = cs.isNotEmpty() && addSpaceAfter(cs[cs.length - 1])
+
+            val value = capitalizeAfter(cs)
+            value?.let {
+                capitalize = it
+            }
         }
+    }
+
+    private fun capitalizeAfter(string: CharSequence): Boolean? {
+        for (char in string.reversed()) {
+            if (char.isLetterOrDigit()) {
+                return false
+            }
+            if (char in capitalizeSeparators) {
+                return true
+            }
+        }
+        return null
     }
 
     private fun addSpaceAfter(char: Char): Boolean = when (char) {
@@ -93,5 +122,6 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
 
     companion object {
         private const val TAG = "TextManager"
+        private val capitalizeSeparators = charArrayOf('.', '\n')
     }
 }
