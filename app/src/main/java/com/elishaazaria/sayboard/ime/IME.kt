@@ -79,6 +79,7 @@ class IME : InputMethodService(), RecognitionListener {
         checkMicrophonePermission()
         editorInfo = info
         enterAction = findEnterAction()
+        viewManager.enterActionLD.postValue(enterAction)
         isRichTextEditor =
             editorInfo.inputType and InputType.TYPE_MASK_CLASS != EditorInfo.TYPE_NULL ||
                     editorInfo.initialSelStart >= 0 && editorInfo.initialSelEnd >= 0 // based on florisboard code

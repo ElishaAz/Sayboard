@@ -77,13 +77,14 @@ import com.elishaazaria.sayboard.ui.utils.MyTextButton
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 @SuppressLint("ViewConstructor")
-class ViewManager(private val ime: IME) : AbstractComposeView(ime),
+class ViewManager(private val ime: Context) : AbstractComposeView(ime),
     Observer<RecognizerState> {
     private val prefs by sayboardPreferenceModel()
     val stateLD = MutableLiveData(STATE_INITIAL)
     val errorMessageLD = MutableLiveData(R.string.mic_info_error)
     private var listener: Listener? = null
     val recognizerNameLD = MutableLiveData("")
+    val enterActionLD = MutableLiveData(EditorInfo.IME_ACTION_UNSPECIFIED)
 
     init {
         layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -232,8 +233,9 @@ class ViewManager(private val ime: IME) : AbstractComposeView(ime),
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             IconButton(onClick = { listener?.returnClicked() }) {
+                                val enterAction by enterActionLD.observeAsState()
                                 Icon(
-                                    imageVector = when (ime.enterAction) {
+                                    imageVector = when (enterAction) {
                                         EditorInfo.IME_ACTION_GO -> Icons.Default.ArrowRightAlt
                                         EditorInfo.IME_ACTION_SEARCH -> Icons.Default.Search
                                         EditorInfo.IME_ACTION_SEND -> Icons.Default.Send
