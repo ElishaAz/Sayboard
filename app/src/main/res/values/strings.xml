@@ -110,6 +110,7 @@
     <string name="keyboard_height_landscape_title">Keyboard height in landscape mode (%)</string>
 
     <string name="keyboard_keys_header">Keys</string>
+    <string name="keyboard_keys_top_title">Top Keys</string>
     <string name="keyboard_keys_left_title">Left Keys</string>
     <string name="keyboard_keys_right_title">Right Keys</string>
 

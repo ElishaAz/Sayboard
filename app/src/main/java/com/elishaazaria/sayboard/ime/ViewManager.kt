@@ -7,10 +7,12 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +25,7 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -32,6 +35,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicNone
 import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.lightColors
 import androidx.compose.material.minimumInteractiveComponentSize
@@ -62,6 +66,7 @@ import com.elishaazaria.sayboard.theme.Orange700
 import com.elishaazaria.sayboard.theme.Orange900
 import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
+import com.elishaazaria.sayboard.ui.utils.MyTextButton
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
 class ViewManager(private val ime: Context) : AbstractComposeView(ime),
@@ -98,14 +103,24 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                         .background(MaterialTheme.colors.background)
                 ) {
                     Column {
-                        Row {
+                        Row(verticalAlignment = Alignment.Top) {
                             IconButton(onClick = { listener?.backClicked() }) {
                                 Icon(
                                     imageVector = Icons.Default.ArrowBack,
                                     contentDescription = null
                                 )
                             }
-                            Spacer(modifier = Modifier.weight(1f))
+                            val topKeys by prefs.keyboardKeysTop.observeAsState()
+                            FlowRow(
+                                modifier = Modifier.weight(1f),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                for (key in topKeys) {
+                                    MyTextButton(onClick = { listener?.buttonClicked(key.text) }) {
+                                        Text(text = key.label)
+                                    }
+                                }
+                            }
                             Box(
                                 modifier = Modifier
                                     .pointerInput(Unit) {
@@ -142,7 +157,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             val leftKeys by prefs.keyboardKeysLeft.observeAsState()
                             FlowColumn() {
                                 for (key in leftKeys) {
-                                    IconButton(onClick = { listener?.buttonClicked(key.text) }) {
+                                    MyTextButton(onClick = { listener?.buttonClicked(key.text) }) {
                                         Text(text = key.label)
                                     }
                                 }
@@ -183,16 +198,21 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             val rightKeys by prefs.keyboardKeysRight.observeAsState()
                             FlowColumn {
                                 for (key in rightKeys) {
-                                    IconButton(onClick = { listener?.buttonClicked(key.text) }) {
+                                    MyTextButton(onClick = { listener?.buttonClicked(key.text) }) {
                                         Text(text = key.label)
                                     }
                                 }
                             }
                         }
                         Row {
+                            IconButton(onClick = { listener?.settingsClicked() }) {
+                                Icon(
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = null
+                                )
+                            }
                             IconButton(
-                                onClick = { listener?.modelClicked() },
-                                modifier = Modifier.padding(5.dp)
+                                onClick = { listener?.modelClicked() }
                             ) {
                                 Row {
                                     Icon(
@@ -241,7 +261,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         fun backspaceTouchEnd()
         fun returnClicked()
         fun modelClicked()
-
+        fun settingsClicked()
         fun buttonClicked(text: String)
     }
 

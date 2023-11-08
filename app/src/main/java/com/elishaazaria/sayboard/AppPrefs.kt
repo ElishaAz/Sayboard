@@ -7,6 +7,7 @@ import com.elishaazaria.sayboard.utils.KeysListSerializer
 import com.elishaazaria.sayboard.utils.ModelListSerializer
 import com.elishaazaria.sayboard.utils.leftDefaultKeysList
 import com.elishaazaria.sayboard.utils.rightDefaultKeysList
+import com.elishaazaria.sayboard.utils.topDefaultKeysList
 import dev.patrickgold.jetpref.datastore.JetPref
 import dev.patrickgold.jetpref.datastore.model.PreferenceModel
 
@@ -52,6 +53,12 @@ class AppPrefs : PreferenceModel("example-app-preferences") {
     val keyboardHeightLandscape = float(
         key = "f_keyboard_height_landscape",
         default = 0.5f
+    )
+
+    val keyboardKeysTop = custom(
+        key = "sl_keyboard_keys_top",
+        default = topDefaultKeysList,
+        serializer = KeysListSerializer()
     )
 
     val keyboardKeysLeft = custom(

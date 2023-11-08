@@ -109,6 +109,7 @@
     <string name="keyboard_height_landscape_title">Tastaturhöhe im Landschafts Modus (%)</string>
 
     <string name="keyboard_keys_header">Tasten</string>
+    <string name="keyboard_keys_top_title">Top Keys</string>
     <string name="keyboard_keys_left_title">Linke Tasten Keys</string>
     <string name="keyboard_keys_right_title">Rechte Tasten</string>
 
