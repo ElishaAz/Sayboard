@@ -109,6 +109,8 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
         '"' -> false
         '*' -> false
         ' ' -> false
+        '\n' -> false
+        '\t' -> false
         else -> true
     }
 
