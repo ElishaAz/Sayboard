@@ -1,7 +1,9 @@
 package com.elishaazaria.sayboard.ime
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -29,12 +31,17 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.material.icons.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicNone
 import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.NavigateBefore
+import androidx.compose.material.icons.filled.NavigateNext
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SettingsVoice
 import androidx.compose.material.lightColors
@@ -69,7 +76,8 @@ import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import com.elishaazaria.sayboard.ui.utils.MyTextButton
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 
-class ViewManager(private val ime: Context) : AbstractComposeView(ime),
+@SuppressLint("ViewConstructor")
+class ViewManager(private val ime: IME) : AbstractComposeView(ime),
     Observer<RecognizerState> {
     private val prefs by sayboardPreferenceModel()
     val stateLD = MutableLiveData(STATE_INITIAL)
@@ -225,7 +233,14 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             Spacer(modifier = Modifier.weight(1f))
                             IconButton(onClick = { listener?.returnClicked() }) {
                                 Icon(
-                                    imageVector = Icons.Default.KeyboardReturn,
+                                    imageVector = when (ime.enterAction) {
+                                        EditorInfo.IME_ACTION_GO -> Icons.Default.ArrowRightAlt
+                                        EditorInfo.IME_ACTION_SEARCH -> Icons.Default.Search
+                                        EditorInfo.IME_ACTION_SEND -> Icons.Default.Send
+                                        EditorInfo.IME_ACTION_NEXT -> Icons.Default.NavigateNext
+                                        EditorInfo.IME_ACTION_PREVIOUS -> Icons.Default.NavigateBefore
+                                        else -> Icons.Default.KeyboardReturn
+                                    },
                                     contentDescription = null,
                                 )
                             }
