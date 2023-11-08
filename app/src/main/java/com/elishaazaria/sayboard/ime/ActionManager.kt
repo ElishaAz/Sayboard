@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.ExtractedTextRequest
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.SettingsActivity
 
@@ -87,8 +88,7 @@ class ActionManager(private val ime: IME, private val viewManager: ViewManager) 
             mInputMethodManager.switchToLastInputMethod(ime.token)
         }
         if (!result && showError) {
-            viewManager.errorMessageLD.postValue(R.string.mic_error_no_previous_ime)
-            viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
+            Toast.makeText(ime, R.string.toast_error_no_previous_ime, Toast.LENGTH_SHORT).show()
         }
     }
 

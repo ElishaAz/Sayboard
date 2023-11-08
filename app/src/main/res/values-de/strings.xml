@@ -10,7 +10,7 @@
     <string name="mic_info_error_failed">Fehler bei der Initialisierung%s\n</string>
     <string name="mic_info_recording">Sag Etwas\n</string>
 
-    <string name="mic_error_no_previous_ime">Kein vorherige IME!</string>
+    <string name="toast_error_no_previous_ime">Kein vorherige IME!</string>
     <string name="mic_error_no_recognizers">Keine Erkennung installiert!</string>
     <string name="mic_error_no_permission">Mikrofon Erlaubniss nicht gewährt!</string>
     <string name="mic_error_recognizer_error">Erkennungs Fehler</string>

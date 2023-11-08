@@ -6,7 +6,7 @@
     <string name="mic_info_ready">Prêt[...]</string>
     <string name="mic_info_error_failed">Échec de l\'initialisation du détecteur %s[...]</string>
     <string name="mic_info_recording">Dites quelque chose[...]</string>
-    <string name="mic_error_no_previous_ime">Aucun IME précédent !</string>
+    <string name="toast_error_no_previous_ime">Aucun IME précédent !</string>
     <string name="mic_error_no_recognizers">Aucun Détecteur installé !</string>
     <string name="mic_error_no_permission">L\'accès au microphone n\'a pas été autorisé !</string>
     <string name="mic_error_recognizer_error">Erreur du détecteur</string>

@@ -11,7 +11,7 @@
     <string name="mic_info_error_failed">Failed to initialize recognizer %s\n</string>
     <string name="mic_info_recording">Say something\n</string>
 
-    <string name="mic_error_no_previous_ime">No previous IME!</string>
+    <string name="toast_error_no_previous_ime">No previous IME!</string>
     <string name="mic_error_no_recognizers">No Recognizers installed!</string>
     <string name="mic_error_no_permission">Microphone permission not granted!</string>
     <string name="mic_error_recognizer_error">Recognizer error</string>
