@@ -15,7 +15,7 @@ import java.util.zip.ZipFile
 object ZipTools {
     private const val TAG = "ZipTools"
     private val localePattern: Pattern =
-        Pattern.compile("vosk-model-small-(\\w\\w(-\\w\\w)?)-(\\w+-)?\\d\\.\\d+.*")
+        Pattern.compile("vosk-model-(small-)?(\\w\\w(-\\w\\w)?)-(\\w+-)?\\d\\.\\d+.*")
 
     @Throws(IOException::class)
     fun unzip(
@@ -42,7 +42,6 @@ object ZipTools {
         val size = zipfile.size().toDouble()
 
         var foundAmFinalMDL = false
-        var foundConfModel = false
         var i = 0
         while (e.hasMoreElements()) {
             progressObserver.onChanged(i / size)
@@ -51,7 +50,7 @@ object ZipTools {
                 Log.d(TAG, "Trying to detect locale: ${entry.name}")
                 val matcher = localePattern.matcher(entry.name)
                 if (matcher.matches()) {
-                    locale = Locale.forLanguageTag(matcher.group(1)!!)
+                    locale = Locale.forLanguageTag(matcher.group(2)!!)
                     Log.d(TAG, "Locale detected: ${locale.toLanguageTag()}")
                 }
             }
@@ -60,15 +59,17 @@ object ZipTools {
             if (!foundAmFinalMDL && entry.name.endsWith("/am/final.mdl")) {
                 foundAmFinalMDL = true
             }
-            if (!foundConfModel && entry.name.endsWith("/conf/model.conf")) {
-                foundConfModel = true
+
+            // outdated, but final.mdl might be elsewhere
+            if (!foundAmFinalMDL && entry.name.endsWith("/final.mdl")) {
+                foundAmFinalMDL = true
             }
 
             unzipEntry(zipfile, entry, tempUnzipLocation.absolutePath)
             i++
         }
 
-        if (!foundAmFinalMDL || !foundConfModel) {
+        if (!foundAmFinalMDL) {
             // Not a Vosk model!
             Log.e(TAG, "Not a Vosk model: ${archive.absolutePath}")
             errorObserver?.onChanged("Zip is not a Vosk model!")
