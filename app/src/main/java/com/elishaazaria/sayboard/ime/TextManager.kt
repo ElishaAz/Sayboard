@@ -98,7 +98,7 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
             if (char.isLetterOrDigit()) {
                 return false
             }
-            if (char in capitalizeSeparators) {
+            if (char in sentenceTerminator) {
                 return true
             }
         }
@@ -122,6 +122,6 @@ class TextManager(private val ime: IME, private val modelManager: ModelManager) 
 
     companion object {
         private const val TAG = "TextManager"
-        private val capitalizeSeparators = charArrayOf('.', '\n')
+        private val sentenceTerminator = charArrayOf('.', '\n', '!', '?')
     }
 }
