@@ -70,8 +70,8 @@
     <string name="logic_auto_switch_back_summery">Basculer automatiquement vers le clavier précédent lorsque le clavier est caché.</string>
     <string name="logic_keep_model_in_ram_title">Garder le modèle dans la mémoire vive (lorsqu\'il est fermé)</string>
     <string name="logic_keep_model_in_ram_summery">Garder le modèle dans la mémoire vive afin d\'accélérer le démarrage du clavier. Utilise plus de mémoire vive.</string>
-    <string name="logic_auto_capitalize_title">Auto Capitalize</string>
-    <string name="logic_auto_capitalize_summary">Automatically capitalize the first letter after a period (where applicable).</string>
+    <string name="logic_auto_capitalize_title">Majuscule automatique</string>
+    <string name="logic_auto_capitalize_summary">Mettre automatiquement une majuscule à la première lettre après une virgule (là où c\'est applicable).</string>
     <string name="p_keep_screen_awake_mode_never">Jamais</string>
     <string name="p_keep_screen_awake_mode_when_listening">Lors de l\'écoute</string>
     <string name="p_keep_screen_awake_mode_when_open">Lorsqu\'il est ouvert</string>
@@ -79,7 +79,7 @@
     <string name="keyboard_height_portrait_title">Hauteur du clavier en mode portrait (%)</string>
     <string name="keyboard_height_landscape_title">Hauteur du clavier en mode paysage (%)</string>
     <string name="keyboard_keys_header">Touches</string>
-    <string name="keyboard_keys_top_title">Top Keys</string>
+    <string name="keyboard_keys_top_title">Touches du haut</string>
     <string name="keyboard_keys_left_title">Touches de gauche</string>
     <string name="keyboard_keys_right_title">Touches de droite</string>
     <string name="keyboard_keys_dialog_key_entry">Libellé: %s, Texte: %s</string>
