@@ -115,7 +115,7 @@
     <string name="keyboard_keys_left_title">Linke Tasten Keys</string>
     <string name="keyboard_keys_right_title">Rechte Tasten</string>
 
-    <string name="keyboard_keys_dialog_key_entry">Label: %s, Text: %s</string>
+    <string name="keyboard_keys_dialog_key_entry">Label: %1$s, Text: %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Label</string>
     <string name="keyboard_keys_dialog_key_text_label">Text</string>
 

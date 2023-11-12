@@ -5,11 +5,11 @@
 
     <!--  Mic  -->
 
-    <string name="mic_info_error">Error\n</string>
-    <string name="mic_info_preparing">Preparing the recognizer\n</string>
-    <string name="mic_info_ready">Ready\n</string>
-    <string name="mic_info_error_failed">Failed to initialize recognizer %s\n</string>
-    <string name="mic_info_recording">Say something\n</string>
+    <string name="mic_info_error">Error</string>
+    <string name="mic_info_preparing">Preparing the recognizer</string>
+    <string name="mic_info_ready">Ready</string>
+    <string name="mic_info_error_failed">Failed to initialize recognizer %s</string>
+    <string name="mic_info_recording">Say something</string>
 
     <string name="toast_error_no_previous_ime">No previous IME!</string>
     <string name="mic_error_no_recognizers">No Recognizers installed!</string>
@@ -116,7 +116,7 @@
     <string name="keyboard_keys_left_title">Left Keys</string>
     <string name="keyboard_keys_right_title">Right Keys</string>
 
-    <string name="keyboard_keys_dialog_key_entry">Label: %s, Text: %s</string>
+    <string name="keyboard_keys_dialog_key_entry">Label: %1$s, Text: %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Label</string>
     <string name="keyboard_keys_dialog_key_text_label">Text</string>
 

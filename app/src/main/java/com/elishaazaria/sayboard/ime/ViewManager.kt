@@ -201,7 +201,10 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                         STATE_READY, STATE_PAUSED -> stringResource(id = R.string.mic_info_ready)
                                         STATE_LISTENING -> stringResource(id = R.string.mic_info_recording)
                                         else -> stringResource(id = errorMessageS.value)
-                                    }, modifier = Modifier.align(Alignment.CenterHorizontally)
+                                    }, fontSize = MaterialTheme.typography.h6.fontSize,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterHorizontally)
+                                        .padding(5.dp)
                                 )
                             }
                             val rightKeys by prefs.keyboardKeysRight.observeAsState()

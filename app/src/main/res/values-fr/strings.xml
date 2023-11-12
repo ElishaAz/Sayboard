@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sayboard</string>
-    <string name="mic_info_error">Erreur[...]</string>
-    <string name="mic_info_preparing">Préparation du détecteur[...]</string>
-    <string name="mic_info_ready">Prêt[...]</string>
-    <string name="mic_info_error_failed">Échec de l\'initialisation du détecteur %s[...]</string>
-    <string name="mic_info_recording">Dites quelque chose[...]</string>
+    <string name="mic_info_error">Erreur</string>
+    <string name="mic_info_preparing">Préparation du détecteur</string>
+    <string name="mic_info_ready">Prêt</string>
+    <string name="mic_info_error_failed">Échec de l\'initialisation du détecteur %s</string>
+    <string name="mic_info_recording">Dites quelque chose</string>
     <string name="toast_error_no_previous_ime">Aucun IME précédent !</string>
     <string name="mic_error_no_recognizers">Aucun Détecteur installé !</string>
     <string name="mic_error_no_permission">L\'accès au microphone n\'a pas été autorisé !</string>
@@ -82,7 +82,7 @@
     <string name="keyboard_keys_top_title">Touches du haut</string>
     <string name="keyboard_keys_left_title">Touches de gauche</string>
     <string name="keyboard_keys_right_title">Touches de droite</string>
-    <string name="keyboard_keys_dialog_key_entry">Libellé: %s, Texte: %s</string>
+    <string name="keyboard_keys_dialog_key_entry">Libellé: %1$s, Texte: %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Libellé</string>
     <string name="keyboard_keys_dialog_key_text_label">Texte</string>
     <string name="notification_download_channel_name">Téléchargement du modèle</string>
