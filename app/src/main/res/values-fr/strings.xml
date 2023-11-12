@@ -88,9 +88,9 @@
     <string name="notification_download_channel_name">Téléchargement du modèle</string>
     <string name="notification_download_channel_description">Notifications de l\'état de téléchargement du modèle.</string>
     <string name="notification_download_title">Téléchargement du modèle</string>
-    <string name="notification_download_content_unknown">Chargement...</string>
-    <string name="notification_download_content_downloading">Téléchargement en cours...</string>
-    <string name="notification_download_content_unzipping">Extraction du modèle en cours...</string>
+    <string name="notification_download_content_unknown">Chargement…</string>
+    <string name="notification_download_content_downloading">Téléchargement en cours…</string>
+    <string name="notification_download_content_unzipping">Extraction du modèle en cours…</string>
     <string name="notification_download_content_finished">Téléchargement terminé !</string>
     <string name="notification_download_content_error">Erreur lors du téléchargement du modèle</string>
 </resources>
