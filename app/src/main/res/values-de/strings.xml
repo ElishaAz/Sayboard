@@ -4,11 +4,11 @@
 
     <!--  Mic  -->
 
-    <string name="mic_info_error">Error\n</string>
-    <string name="mic_info_preparing">Vorbereiten der Erkennung\n</string>
-    <string name="mic_info_ready">Fertig\n</string>
-    <string name="mic_info_error_failed">Fehler bei der Initialisierung%s\n</string>
-    <string name="mic_info_recording">Sag Etwas\n</string>
+    <string name="mic_info_error">Error</string>
+    <string name="mic_info_preparing">Vorbereiten der Erkennung</string>
+    <string name="mic_info_ready">Fertig</string>
+    <string name="mic_info_error_failed">Fehler bei der Initialisierung %s</string>
+    <string name="mic_info_recording">Sag Etwas</string>
 
     <string name="toast_error_no_previous_ime">Kein vorherige IME!</string>
     <string name="mic_error_no_recognizers">Keine Erkennung installiert!</string>
