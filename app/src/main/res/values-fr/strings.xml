@@ -10,7 +10,7 @@
     <string name="mic_error_no_recognizers">Aucun Détecteur installé !</string>
     <string name="mic_error_no_permission">L\'accès au microphone n\'a pas été autorisé !</string>
     <string name="mic_error_recognizer_error">Erreur du détecteur</string>
-    <string name="mic_error_mic_in_use">Le microphone est déjà en cours d\'utilisation</string>
+    <string name="mic_error_mic_in_use">Le microphone est déjà en cours d\'utilisation !</string>
     <string name="model_dialog_title">Sélectionnez le modèle</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_select">Sélectionner</string>
@@ -27,7 +27,7 @@
     <string name="keyboard_enabled">Clavier activé</string>
     <string name="switch_keyboard">Changer de clavier</string>
     <string name="open_ime_switcher">Ouvrir le sélecteur d\'IME</string>
-    <string name="open_ime_note">Note: vous pouvez ouvrir le sélecteur d\'IME quand le clavier est ouvert en appuyement longuement sur le boutton Microphone.</string>
+    <string name="open_ime_note">Note : vous pouvez ouvrir le sélecteur d\'IME quand le clavier est ouvert en appuyement longuement sur le boutton Microphone.</string>
     <string name="title_activity_settings">Activité de réglages</string>
     <string name="menu_models_add_server">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_title">Ajouter un serveur Vosk</string>
@@ -44,8 +44,8 @@
     <string name="models_download_state_finished">Terminé</string>
     <string name="models_download_state_error">Erreur</string>
     <string name="models_download_state_canceled">Annulé</string>
-    <string name="models_download_state">État: %s</string>
-    <string name="models_pending_download_state">État: En attente de téléchargement</string>
+    <string name="models_download_state">État : %s</string>
+    <string name="models_pending_download_state">État : En attente de téléchargement</string>
     <string name="models_model_display_name_null">Null</string>
     <string name="models_download_dialog_title">Télécharger le modèle</string>
     <string name="models_import_dialog_import">Importer</string>
@@ -82,7 +82,7 @@
     <string name="keyboard_keys_top_title">Touches du haut</string>
     <string name="keyboard_keys_left_title">Touches de gauche</string>
     <string name="keyboard_keys_right_title">Touches de droite</string>
-    <string name="keyboard_keys_dialog_key_entry">Libellé: %1$s, Texte: %2$s</string>
+    <string name="keyboard_keys_dialog_key_entry">Libellé : %1$s, Texte : %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Libellé</string>
     <string name="keyboard_keys_dialog_key_text_label">Texte</string>
     <string name="notification_download_channel_name">Téléchargement du modèle</string>
