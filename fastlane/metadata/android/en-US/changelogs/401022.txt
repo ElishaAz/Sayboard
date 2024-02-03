@@ -1,0 +1,5 @@
+- skip Sayboard in next keyboard iteration (#52)
+- Italian translations for the settings (@LuccoJ)
+- Brazilian Portuguese translations for the settings (@andreltrigo)
+
+Sayboard is now on Weblate: https://hosted.weblate.org/projects/sayboard/
