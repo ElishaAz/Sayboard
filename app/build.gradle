@@ -117,13 +117,13 @@ protobuf {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'net.java.dev.jna:jna:5.9.0@aar'
+    implementation 'net.java.dev.jna:jna:5.13.0@aar'
     implementation 'com.alphacephei:vosk-android:0.3.32'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
 
 
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
 //    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 //    implementation 'androidx.lifecycle:lifecycle-extensions:2.6.2'
 //    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
@@ -181,7 +181,7 @@ dependencies {
     implementation 'androidx.compose.material3:material3-window-size-class'
 
     // Optional - Integration with activities
-    implementation 'androidx.activity:activity-compose:1.8.0'
+    implementation 'androidx.activity:activity-compose:1.8.2'
     // Optional - Integration with ViewModels
 //    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2'
     // Optional - Integration with LiveData
