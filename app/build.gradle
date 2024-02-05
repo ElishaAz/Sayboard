@@ -12,6 +12,7 @@ android {
         targetSdkVersion 33
         versionCode 401020
         versionName "v4.1.2"
+        ndkVersion "r25c"
     }
     buildTypes {
         release {
