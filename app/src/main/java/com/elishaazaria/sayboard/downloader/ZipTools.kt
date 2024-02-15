@@ -15,7 +15,7 @@ import java.util.zip.ZipFile
 object ZipTools {
     private const val TAG = "ZipTools"
     private val localePattern: Pattern =
-        Pattern.compile("vosk-model-(small-)?(\\w\\w(-\\w\\w)?)-(\\w+-)?\\d\\.\\d+.*")
+        Pattern.compile("vosk-model-(small-)?(\\w\\w(-\\w\\w)?)-(\\w+-)?v?\\d\\.?\\d*.*")
 
     @Throws(IOException::class)
     fun unzip(

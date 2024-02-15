@@ -89,6 +89,10 @@ enum class ModelLink(
     POLISH(
         "https://alphacephei.com/vosk/models/vosk-model-small-pl-0.22.zip",
         Locale("pl")
+    ),
+    UKRAINIAN(
+        "https://alphacephei.com/vosk/models/vosk-model-small-uk-v3-small.zip",
+        Locale("uk")
     );
 
     val filename: String
