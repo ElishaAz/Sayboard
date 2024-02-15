@@ -1,4 +1,4 @@
-package com.elishaazaria.sayboard.ime.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers
 import java.util.Locale
 
 interface Recognizer {

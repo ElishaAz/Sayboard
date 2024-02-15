@@ -6,6 +6,8 @@ import java.io.File
 import java.util.*
 
 object Constants {
+    public val UndefinedLocale = Locale("und")
+
     @JvmField
     var DOWNLOADER_CHANNEL_ID = "downloader"
     private fun getCacheDir(context: Context): File {

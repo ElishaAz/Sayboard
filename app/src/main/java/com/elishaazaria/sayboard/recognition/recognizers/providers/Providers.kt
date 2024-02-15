@@ -1,10 +1,10 @@
-package com.elishaazaria.sayboard.ime.recognizers.providers
+package com.elishaazaria.sayboard.recognition.recognizers.providers
 
 import android.content.Context
 import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.data.InstalledModelReference
 import com.elishaazaria.sayboard.data.ModelType
-import com.elishaazaria.sayboard.ime.recognizers.RecognizerSource
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
 
 class Providers(context: Context) {
     private val voskLocalProvider: VoskLocalProvider

@@ -73,7 +73,7 @@ import com.elishaazaria.sayboard.downloader.messages.State
 import com.elishaazaria.sayboard.downloader.messages.Status
 import com.elishaazaria.sayboard.downloader.messages.StatusQuery
 import com.elishaazaria.sayboard.downloader.messages.UnzipProgress
-import com.elishaazaria.sayboard.ime.recognizers.providers.Providers
+import com.elishaazaria.sayboard.recognition.recognizers.providers.Providers
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import dev.patrickgold.jetpref.material.ui.JetPrefAlertDialog

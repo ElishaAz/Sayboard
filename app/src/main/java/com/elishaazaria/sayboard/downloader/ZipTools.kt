@@ -22,7 +22,7 @@ object ZipTools {
         archive: File,
 //        tempUnzipLocation: File,
 //        unzipFinalDestination: File,
-        definedLocale: Locale = Locale.ROOT,
+        definedLocale: Locale = Constants.UndefinedLocale,
         context: Context,
         errorObserver: Observer<String>? = null,
         progressObserver: Observer<Double>
@@ -30,7 +30,7 @@ object ZipTools {
         var locale = definedLocale
         val tempUnzipLocation = Constants.getTemporaryUnzipLocation(context)
 
-        if (!tempUnzipLocation.parentFile!!.exists()){
+        if (!tempUnzipLocation.parentFile!!.exists()) {
             tempUnzipLocation.parentFile!!.mkdirs()
         }
 
@@ -46,7 +46,7 @@ object ZipTools {
         while (e.hasMoreElements()) {
             progressObserver.onChanged(i / size)
             val entry = e.nextElement() as ZipEntry
-            if (locale == Locale.ROOT) {
+            if (locale == Constants.UndefinedLocale) {
                 Log.d(TAG, "Trying to detect locale: ${entry.name}")
                 val matcher = localePattern.matcher(entry.name)
                 if (matcher.matches()) {

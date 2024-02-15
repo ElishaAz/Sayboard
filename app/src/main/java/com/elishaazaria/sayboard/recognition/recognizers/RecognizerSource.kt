@@ -1,10 +1,10 @@
-package com.elishaazaria.sayboard.ime.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import java.util.Locale
 import java.util.concurrent.Executor
-import java.util.*
 
 interface RecognizerSource {
     fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>)
@@ -19,4 +19,6 @@ interface RecognizerSource {
     @get:StringRes
     val errorMessage: Int
     val name: String
+
+    val locale: Locale
 }

@@ -1,6 +1,7 @@
 package com.elishaazaria.sayboard.ime
 
 import android.util.Log
+import com.elishaazaria.sayboard.recognition.ModelManager
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 
 class TextManager(private val ime: IME, private val modelManager: ModelManager) {

@@ -30,13 +30,15 @@ import androidx.core.app.ActivityCompat
 import com.elishaazaria.sayboard.BuildConfig
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.data.KeepScreenAwakeMode
+import com.elishaazaria.sayboard.recognition.ModelManager
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
 import org.vosk.android.RecognitionListener
 import kotlin.math.roundToInt
 
-class IME : InputMethodService(), RecognitionListener {
+class IME : InputMethodService(), ModelManager.Listener {
     private val prefs by sayboardPreferenceModel()
 
     private var hasMicPermission: Boolean = false
@@ -47,6 +49,8 @@ class IME : InputMethodService(), RecognitionListener {
     private lateinit var modelManager: ModelManager
     private lateinit var actionManager: ActionManager
     private lateinit var textManager: TextManager
+
+    private var currentRecognizerSource: RecognizerSource? = null
 
 
     public var enterAction = EditorInfo.IME_ACTION_UNSPECIFIED
@@ -62,8 +66,10 @@ class IME : InputMethodService(), RecognitionListener {
         viewManager = ViewManager(this)
         actionManager = ActionManager(this, viewManager)
         checkMicrophonePermission()
-        modelManager = ModelManager(this, viewManager)
+        modelManager = ModelManager(this, this)
         textManager = TextManager(this, modelManager)
+
+        modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
     }
 
     override fun onInitializeInterface() {
@@ -83,7 +89,8 @@ class IME : InputMethodService(), RecognitionListener {
         isRichTextEditor =
             editorInfo.inputType and InputType.TYPE_MASK_CLASS != EditorInfo.TYPE_NULL ||
                     editorInfo.initialSelStart >= 0 && editorInfo.initialSelEnd >= 0 // based on florisboard code
-        modelManager.onResume()
+        modelManager.reloadModels()
+        modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
         textManager.onResume()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
     }
@@ -196,7 +203,7 @@ class IME : InputMethodService(), RecognitionListener {
             }
 
             override fun modelClicked() {
-                modelManager.switchToNextRecognizer()
+                modelManager.switchToNextRecognizer(prefs.logicListenImmediately.get())
             }
 
             override fun settingsClicked() {
@@ -281,9 +288,43 @@ class IME : InputMethodService(), RecognitionListener {
         textManager.onText(partialText, TextManager.Mode.PARTIAL)
     }
 
+    override fun onStateChanged(state: ModelManager.State) {
+        if (state == ModelManager.State.STATE_STOPPED) {
+            currentRecognizerSource?.stateLD?.removeObserver(viewManager)
+        } else {
+
+            viewManager.stateLD.postValue(
+                when (state) {
+                    ModelManager.State.STATE_INITIAL -> ViewManager.STATE_INITIAL
+                    ModelManager.State.STATE_LOADING -> ViewManager.STATE_LOADING
+                    ModelManager.State.STATE_READY -> ViewManager.STATE_READY
+                    ModelManager.State.STATE_LISTENING -> ViewManager.STATE_LISTENING
+                    ModelManager.State.STATE_PAUSED -> ViewManager.STATE_PAUSED
+                    ModelManager.State.STATE_ERROR -> ViewManager.STATE_ERROR
+                    else -> TODO()
+                }
+            )
+        }
+    }
+
+    override fun onError(type: ModelManager.ErrorType) {
+        viewManager.errorMessageLD.postValue(
+            when (type) {
+                ModelManager.ErrorType.MIC_IN_USE -> R.string.mic_error_mic_in_use
+                ModelManager.ErrorType.NO_RECOGNIZERS_INSTALLED -> R.string.mic_error_no_recognizers
+            }
+        )
+    }
+
     override fun onError(e: Exception) {
         viewManager.errorMessageLD.postValue(R.string.mic_error_recognizer_error)
         viewManager.stateLD.postValue(ViewManager.STATE_ERROR)
+    }
+
+    override fun onRecognizerSource(source: RecognizerSource) {
+        currentRecognizerSource?.stateLD?.removeObserver(viewManager)
+        currentRecognizerSource = source
+        source.stateLD.observe(lifecycleOwner, viewManager)
     }
 
     override fun onTimeout() {

@@ -1,4 +1,4 @@
-package com.elishaazaria.sayboard.ime.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers
 
 import android.os.Handler
 import android.os.Looper
@@ -92,4 +92,6 @@ class VoskLocal(private val localModel: VoskLocalModel) : RecognizerSource {
         get() = 0
     override val name: String
         get() = localModel.locale.displayName ?: ""
+    override val locale: Locale
+        get() = localModel.locale
 }

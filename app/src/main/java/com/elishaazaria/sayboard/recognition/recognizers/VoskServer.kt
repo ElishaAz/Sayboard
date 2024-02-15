@@ -1,10 +1,11 @@
-package com.elishaazaria.sayboard.ime.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers
 
 import com.elishaazaria.sayboard.data.VoskServerData
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import android.util.Log
 import androidx.lifecycle.Observer
+import com.elishaazaria.sayboard.Constants
 import io.grpc.stub.StreamObserver
 import vosk.stt.v1.SttServiceOuterClass.StreamingRecognitionResponse
 import vosk.stt.v1.SttServiceGrpc.SttServiceBlockingStub
@@ -27,10 +28,11 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
     override val stateLD: LiveData<RecognizerState>
         get() = stateMLD
     override val addSpaces: Boolean
-        get() = !listOf("ja", "zh").contains(data.locale?.language?:"")
+        get() = !listOf("ja", "zh").contains(data.locale?.language ?: "")
     private var myRecognizerGRPC: MyRecognizerGRPC? = null
     override val recognizer: Recognizer
         get() = myRecognizerGRPC!!
+
     override fun initialize(executor: Executor, onLoaded: Observer<RecognizerSource?>) {
         stateMLD.postValue(RecognizerState.LOADING)
         myRecognizerGRPC = MyRecognizerGRPC(data.uri, 16000.0f, data.locale)
@@ -49,8 +51,14 @@ class VoskServer(private val data: VoskServerData) : RecognizerSource {
         get() = 0
     override val name: String
         get() = String.format("%s:%s", data.uri.host, data.uri.port)
+    override val locale: Locale
+        get() = data.locale ?: Constants.UndefinedLocale
 
-    private class MyRecognizerGRPC(uri: URI, override val sampleRate: Float, override val locale: Locale?) : Recognizer, StreamObserver<StreamingRecognitionResponse> {
+    private class MyRecognizerGRPC(
+        uri: URI,
+        override val sampleRate: Float,
+        override val locale: Locale?
+    ) : Recognizer, StreamObserver<StreamingRecognitionResponse> {
         private val blockingStub: SttServiceBlockingStub
         private val asyncStub: SttServiceStub
         private val requestStream: StreamObserver<StreamingRecognitionRequest>

@@ -1,20 +1,25 @@
 /*
  * org.vosk.SpeechService, extended to support other recognizers.
  */
-package com.elishaazaria.sayboard.ime
+package com.elishaazaria.sayboard.recognition
 
 import android.Manifest
+import android.content.Context
+import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresPermission
-import com.elishaazaria.sayboard.ime.recognizers.Recognizer
+import com.elishaazaria.sayboard.recognition.recognizers.Recognizer
 import org.vosk.android.RecognitionListener
 import java.io.IOException
+import kotlin.math.roundToInt
 
 class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) constructor(
-    private val recognizer: Recognizer, sampleRate: Float
+    private val recognizer: Recognizer, sampleRate: Float,
+    attributionContext: Context? = null
 ) {
     private val sampleRate: Int
     private val bufferSize: Int
@@ -24,14 +29,20 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
 
     init {
         this.sampleRate = sampleRate.toInt()
-        bufferSize = Math.round(this.sampleRate.toFloat() * BUFFER_SIZE_SECONDS)
-        recorder = AudioRecord(
-            MediaRecorder.AudioSource.VOICE_RECOGNITION,
-            this.sampleRate,
-            16,
-            2,
-            bufferSize * 2
-        )
+        bufferSize = (this.sampleRate.toFloat() * BUFFER_SIZE_SECONDS).roundToInt()
+        recorder = AudioRecord.Builder().apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && attributionContext != null) {
+                setContext(attributionContext)
+            }
+            setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
+            setAudioFormat(AudioFormat.Builder().apply {
+                setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                setSampleRate(this@MySpeechService.sampleRate)
+                setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            }.build())
+            setBufferSizeInBytes(bufferSize * 2)
+        }.build()
+
         if (recorder.state == 0) {
             recorder.release()
             throw IOException("Failed to initialize recorder. Microphone might be already in use.")

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -27,7 +26,6 @@ import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -65,12 +63,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.AppPrefs
 import com.elishaazaria.sayboard.R
-import com.elishaazaria.sayboard.ime.recognizers.RecognizerState
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerState
 import com.elishaazaria.sayboard.sayboardPreferenceModel
-import com.elishaazaria.sayboard.theme.Green500
-import com.elishaazaria.sayboard.theme.Green700
-import com.elishaazaria.sayboard.theme.Orange700
-import com.elishaazaria.sayboard.theme.Orange900
 import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import com.elishaazaria.sayboard.ui.utils.MyTextButton
