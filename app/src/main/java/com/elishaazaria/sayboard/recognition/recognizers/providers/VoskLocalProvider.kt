@@ -6,7 +6,7 @@ import com.elishaazaria.sayboard.Tools
 import com.elishaazaria.sayboard.data.InstalledModelReference
 import com.elishaazaria.sayboard.data.ModelType
 import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
-import com.elishaazaria.sayboard.recognition.recognizers.VoskLocal
+import com.elishaazaria.sayboard.recognition.recognizers.sources.VoskLocal
 import java.util.Locale
 
 class VoskLocalProvider(private val context: Context) : RecognizerSourceProvider {

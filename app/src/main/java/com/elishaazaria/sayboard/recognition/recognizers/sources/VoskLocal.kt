@@ -1,4 +1,4 @@
-package com.elishaazaria.sayboard.recognition.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers.sources
 
 import android.os.Handler
 import android.os.Looper
@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.data.VoskLocalModel
+import com.elishaazaria.sayboard.recognition.recognizers.Recognizer
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerState
 import org.json.JSONException
 import org.json.JSONObject
 import org.vosk.Model

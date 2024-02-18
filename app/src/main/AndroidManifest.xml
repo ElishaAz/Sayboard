@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!--  The app calling the SpeechRecognitionService gets ERROR_INSUFFICIENT_PERMISSIONS if we don't have this (regardless of if they have microphone permission) -->
+    <!--  The app calling the SpeechRecognitionService gets ERROR_INSUFFICIENT_PERMISSIONS if we can't query for them (even if they have microphone permission) -->
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />

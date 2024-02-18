@@ -1,4 +1,4 @@
-package com.elishaazaria.sayboard.recognition.recognizers
+package com.elishaazaria.sayboard.recognition.recognizers.sources
 
 import com.elishaazaria.sayboard.data.VoskServerData
 import androidx.lifecycle.LiveData
@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.Constants
+import com.elishaazaria.sayboard.recognition.recognizers.Recognizer
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
+import com.elishaazaria.sayboard.recognition.recognizers.RecognizerState
 import io.grpc.stub.StreamObserver
 import vosk.stt.v1.SttServiceOuterClass.StreamingRecognitionResponse
 import vosk.stt.v1.SttServiceGrpc.SttServiceBlockingStub
