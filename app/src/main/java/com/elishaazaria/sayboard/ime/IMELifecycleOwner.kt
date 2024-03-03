@@ -23,6 +23,7 @@ class IMELifecycleOwner :
     fun onCreate() {
         savedStateRegistryController.performRestore(null)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     fun onResume() {
@@ -34,6 +35,7 @@ class IMELifecycleOwner :
     }
 
     fun onDestroy() {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         store.clear()
     }

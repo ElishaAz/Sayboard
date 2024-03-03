@@ -35,7 +35,6 @@ import com.elishaazaria.sayboard.recognition.recognizers.RecognizerSource
 import com.elishaazaria.sayboard.sayboardPreferenceModel
 import org.vosk.LibVosk
 import org.vosk.LogLevel
-import org.vosk.android.RecognitionListener
 import kotlin.math.roundToInt
 
 class IME : InputMethodService(), ModelManager.Listener {
@@ -61,27 +60,61 @@ class IME : InputMethodService(), ModelManager.Listener {
 
     override fun onCreate() {
         super.onCreate()
-        lifecycleOwner.onCreate()
-        LibVosk.setLogLevel(if (BuildConfig.DEBUG) LogLevel.INFO else LogLevel.WARNINGS)
-        viewManager = ViewManager(this)
-        actionManager = ActionManager(this, viewManager)
-        checkMicrophonePermission()
-        modelManager = ModelManager(this, this)
-        textManager = TextManager(this, modelManager)
+        Log.d("IME", "@onCreate")
 
+        lifecycleOwner.onCreate()
+
+        LibVosk.setLogLevel(if (BuildConfig.DEBUG) LogLevel.INFO else LogLevel.WARNINGS)
+
+        viewManager = ViewManager(this)
+        viewManager.setListener(viewManagerListener)
+
+        actionManager = ActionManager(this, viewManager)
+
+        checkMicrophonePermission()
+
+        modelManager = ModelManager(this, this)
+        modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
+
+        textManager = TextManager(this, modelManager)
+    }
+
+    /**
+     * Called on create and after a configuration change
+     */
+
+    override fun onInitializeInterface() {
+        Log.d("IME", "@onInitializeInterface")
+
+        checkMicrophonePermission()
+    }
+
+    /**
+     * Called when switching to a new app (input sink)
+     */
+    override fun onBindInput() {
+        Log.d("IME", "@onBindInput")
+
+        modelManager.reloadModels()
         modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
     }
 
-    override fun onInitializeInterface() {
-        checkMicrophonePermission()
-    }
-
-    override fun onBindInput() {
-        // when user first clicks e.g. in text field
-    }
-
-    override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
+    override fun onWindowShown() {
+        super.onWindowShown()
         lifecycleOwner.onResume()
+    }
+
+    override fun onWindowHidden() {
+        super.onWindowHidden()
+        lifecycleOwner.onPause()
+    }
+
+    /**
+     * Called when the keyboard is opened (called twice for some reason)
+     */
+    override fun onStartInputView(info: EditorInfo, restarting: Boolean) {
+        Log.d("IME", "@onStartInputView, info: $info, restarting: $restarting")
+
         checkMicrophonePermission()
         editorInfo = info
         enterAction = findEnterAction()
@@ -89,10 +122,9 @@ class IME : InputMethodService(), ModelManager.Listener {
         isRichTextEditor =
             editorInfo.inputType and InputType.TYPE_MASK_CLASS != EditorInfo.TYPE_NULL ||
                     editorInfo.initialSelStart >= 0 && editorInfo.initialSelEnd >= 0 // based on florisboard code
-        modelManager.reloadModels()
-        modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
         textManager.onResume()
         setKeepScreenOn(prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_OPEN)
+        actionManager.onStartInputView()
     }
 
     private fun findEnterAction(): Int {
@@ -104,8 +136,12 @@ class IME : InputMethodService(), ModelManager.Listener {
         return EditorInfo.IME_ACTION_UNSPECIFIED
     }
 
+    /**
+     * Called when the keyboard is closed
+     */
     override fun onFinishInputView(finishingInput: Boolean) {
-        lifecycleOwner.onPause()
+        Log.d("IME", "@onFinishInputView. finishedInput: $finishingInput")
+
         // text input has ended
         setKeepScreenOn(false)
         modelManager.stop()
@@ -115,109 +151,116 @@ class IME : InputMethodService(), ModelManager.Listener {
         }
     }
 
+    /**
+     * Called the first time the keyboard is opened after a configuration change
+     */
     override fun onCreateInputView(): View {
+        Log.d("IME", "@onCreateInputView. decorView: ${window?.window?.decorView}")
+
         lifecycleOwner.attachToDecorView(
             window?.window?.decorView
         )
 
-        viewManager.setListener(object : ViewManager.Listener {
-            override fun micClick() {
-                if (!hasMicPermission || modelManager.openSettingsOnMic) {
-                    // errors! open settings
-                    actionManager.openSettings()
-                } else if (modelManager.isRunning) {
-                    if (modelManager.isPaused) {
-                        modelManager.pause(false)
-                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
-                            true
-                        )
-                    } else {
-                        modelManager.pause(true)
-                        if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
-                            false
-                        )
-                    }
-                } else {
-                    modelManager.start()
-                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING) setKeepScreenOn(
-                        true
-                    )
-                }
-            }
-
-            override fun micLongClick(): Boolean {
-                val imeManager =
-                    applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imeManager.showInputMethodPicker()
-                return true
-            }
-
-            override fun backClicked() {
-                actionManager.switchToLastIme(true)
-            }
-
-            override fun backspaceClicked() {
-                actionManager.deleteLastChar()
-            }
-
-            private var initX = 0f
-            private var initY = 0f
-            private val threshold = resources.displayMetrics.densityDpi / 6f
-            private val charLen = resources.displayMetrics.densityDpi / 32f
-            private var swiping = false
-            private var restart = false
-
-            override fun backspaceTouchStart(offset: Offset) {
-                restart = true
-                swiping = false
-            }
-
-            override fun backspaceTouched(change: PointerInputChange, dragAmount: Float) {
-                if (restart) {
-                    restart = false
-                    initX = change.position.x
-                    initY = change.position.y
-                }
-
-                var x = change.position.x - initX
-                val y = change.position.y - initY
-
-                Log.d("IME", "$x,$y")
-
-                if (x < -threshold) {
-                    swiping = true
-                }
-                if (swiping) {
-                    x = -x // x is negative
-                    val amount = ((x - threshold) / charLen).roundToInt()
-                    actionManager.selectCharsBack(amount)
-                }
-            }
-
-            override fun backspaceTouchEnd() {
-                if (swiping) actionManager.deleteSelection()
-            }
-
-            override fun returnClicked() {
-                actionManager.sendEnter()
-            }
-
-            override fun modelClicked() {
-                modelManager.switchToNextRecognizer(prefs.logicListenImmediately.get())
-            }
-
-            override fun settingsClicked() {
-                actionManager.openSettings()
-            }
-
-            override fun buttonClicked(text: String) {
-                textManager.onText(text, TextManager.Mode.INSERT)
-            }
-        })
-        actionManager.onCreateInputView()
         return viewManager
     }
 
+    private val viewManagerListener = object : ViewManager.Listener {
+        override fun micClick() {
+            if (!hasMicPermission || modelManager.openSettingsOnMic) {
+                // errors! open settings
+                actionManager.openSettings()
+            } else if (modelManager.isRunning) {
+                if (modelManager.isPaused) {
+                    modelManager.pause(false)
+                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                        setKeepScreenOn(true)
+                } else {
+                    modelManager.pause(true)
+                    if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                        setKeepScreenOn(false)
+                }
+            } else {
+                modelManager.start()
+                if (prefs.logicKeepScreenAwake.get() == KeepScreenAwakeMode.WHEN_LISTENING)
+                    setKeepScreenOn(true)
+            }
+        }
+
+        override fun micLongClick(): Boolean {
+            val imeManager =
+                applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imeManager.showInputMethodPicker()
+            return true
+        }
+
+        override fun backClicked() {
+            actionManager.switchToLastIme(true)
+        }
+
+        override fun backspaceClicked() {
+            actionManager.deleteLastChar()
+        }
+
+        private var initX = 0f
+        private var initY = 0f
+        private val threshold: Float
+            get() = resources.displayMetrics.densityDpi / 6f
+        private val charLen: Float
+            get() = resources.displayMetrics.densityDpi / 32f
+        private var swiping = false
+        private var restart = false
+
+        override fun backspaceTouchStart(offset: Offset) {
+            restart = true
+            swiping = false
+        }
+
+        override fun backspaceTouched(change: PointerInputChange, dragAmount: Float) {
+            if (restart) {
+                restart = false
+                initX = change.position.x
+                initY = change.position.y
+            }
+
+            var x = change.position.x - initX
+            val y = change.position.y - initY
+
+            Log.d("IME", "$x,$y")
+
+            if (x < -threshold) {
+                swiping = true
+            }
+            if (swiping) {
+                x = -x // x is negative
+                val amount = ((x - threshold) / charLen).roundToInt()
+                actionManager.selectCharsBack(amount)
+            }
+        }
+
+        override fun backspaceTouchEnd() {
+            if (swiping) actionManager.deleteSelection()
+        }
+
+        override fun returnClicked() {
+            actionManager.sendEnter()
+        }
+
+        override fun modelClicked() {
+            modelManager.switchToNextRecognizer(prefs.logicListenImmediately.get())
+        }
+
+        override fun settingsClicked() {
+            actionManager.openSettings()
+        }
+
+        override fun buttonClicked(text: String) {
+            textManager.onText(text, TextManager.Mode.INSERT)
+        }
+    }
+
+    /**
+     * Called when the current selection is updated (which happens when we write text, too - we need to make sure there aren't any loops)
+     */
     override fun onUpdateSelection(
         oldSelStart: Int,
         oldSelEnd: Int,
@@ -226,6 +269,8 @@ class IME : InputMethodService(), ModelManager.Listener {
         candidatesStart: Int,
         candidatesEnd: Int
     ) {
+        Log.d("IME", "@onUpdateSelection")
+
         super.onUpdateSelection(
             oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd
         )
@@ -235,8 +280,13 @@ class IME : InputMethodService(), ModelManager.Listener {
         textManager.onUpdateSelection(newSelStart, newSelEnd)
     }
 
+    /**
+     * Called when the keyboard process is closed. This happens when the user switches to a different keyboard.
+     */
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("IME", "@onDestroy")
+
         lifecycleOwner.onDestroy()
         modelManager.onDestroy()
     }

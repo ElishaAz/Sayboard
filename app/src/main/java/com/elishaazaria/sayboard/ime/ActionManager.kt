@@ -17,7 +17,7 @@ class ActionManager(private val ime: IME, private val viewManager: ViewManager) 
     private var selectionStart = 0
     private var selectionEnd = 0
 
-    fun onCreateInputView() {
+    fun onStartInputView() {
         val ic = ime.currentInputConnection
         if (ic != null) {
             val et = ic.getExtractedText(ExtractedTextRequest(), 0)
