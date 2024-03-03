@@ -63,14 +63,14 @@ class ModelManager(
     val currentRecognizerSourceAddSpaces: Boolean
         get() = currentRecognizerSource?.addSpaces ?: true
 
-    fun switchToNextRecognizer(autoStart: Boolean) {
+    fun switchToNextRecognizer(autoStart: Boolean, attributionContext: Context? = null) {
         if (recognizerSources.size == 0 || recognizerSources.size == 1) return
         stop(true)
         currentRecognizerSourceIndex++
         if (currentRecognizerSourceIndex >= recognizerSources.size) {
             currentRecognizerSourceIndex = 0
         }
-        initializeRecognizer(autoStart) // start is called after the recognizer is initialized
+        initializeRecognizer(autoStart, attributionContext) // start is called after the recognizer is initialized
     }
 
     fun switchToRecognizerOfLocale(
@@ -131,7 +131,7 @@ class ModelManager(
         }
 
         currentRecognizerSourceIndex = 0
-        initializeRecognizer(autoStart)
+        initializeRecognizer(autoStart, attributionContext)
         return true
     }
 
