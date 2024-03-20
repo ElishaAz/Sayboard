@@ -1,0 +1,2 @@
+- Added a RecognitionService implementation (#54). Do to a bug in Android, this requires the QUERY_ALL_PACKAGES permission.
+- Added Ukrainian model (@BogdanLata)
