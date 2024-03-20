@@ -20,6 +20,7 @@ Sayboard uses for the following permissions:
 - RECORD_AUDIO - well, this is a voice keyboard after all.
 - POST_NOTIFICATIONS - to show download and import progress.
 - FOREGROUND_SERVICE - to download and import models in the background.
+- QUERY_ALL_PACKAGES - do to bug in Android, this permission is required for a speech RecognitionService to work properly (see https://github.com/Kaljurand/K6nele-service/issues/9).
 
 ## Screenshot
 
