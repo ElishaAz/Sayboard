@@ -375,6 +375,7 @@ class IME : InputMethodService(), ModelManager.Listener {
         currentRecognizerSource?.stateLD?.removeObserver(viewManager)
         currentRecognizerSource = source
         source.stateLD.observe(lifecycleOwner, viewManager)
+        viewManager.recognizerNameLD.postValue(currentRecognizerSource!!.name)
     }
 
     override fun onTimeout() {
