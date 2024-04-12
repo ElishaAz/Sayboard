@@ -30,6 +30,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
+import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.material.icons.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Language
@@ -150,7 +151,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                 val contentAlpha = LocalContentAlpha.current
                                 CompositionLocalProvider(LocalContentAlpha provides contentAlpha) {
                                     Icon(
-                                        imageVector = Icons.Default.KeyboardBackspace,
+                                        imageVector = Icons.Default.Backspace,
                                         contentDescription = null
                                     )
                                 }
