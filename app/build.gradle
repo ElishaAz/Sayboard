@@ -10,8 +10,8 @@ android {
         applicationId "com.elishaazaria.sayboard"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 402000
-        versionName "v4.2.0"
+        versionCode 402010
+        versionName "v4.2.1"
         ndkVersion "r25c"
     }
     buildTypes {
