@@ -10,6 +10,7 @@ import java.io.*
 import java.util.Locale
 import java.util.regex.Pattern
 import java.util.zip.ZipEntry
+import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
 object ZipTools {
@@ -37,7 +38,11 @@ object ZipTools {
         if (tempUnzipLocation.exists()) {
             deleteRecursive(tempUnzipLocation)
         }
-        val zipfile = ZipFile(archive)
+        val zipfile = try {
+            ZipFile(archive)
+        } catch (e: ZipException) {
+            return
+        }
         val e = zipfile.entries()
         val size = zipfile.size().toDouble()
 
