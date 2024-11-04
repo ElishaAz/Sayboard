@@ -3,6 +3,7 @@ package com.elishaazaria.sayboard.ime
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -31,7 +32,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Backspace
-import androidx.compose.material.icons.filled.KeyboardBackspace
 import androidx.compose.material.icons.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.AppPrefs
+import com.elishaazaria.sayboard.Constants
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.recognition.recognizers.RecognizerState
 import com.elishaazaria.sayboard.sayboardPreferenceModel
@@ -70,6 +71,9 @@ import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import com.elishaazaria.sayboard.ui.utils.MyTextButton
 import dev.patrickgold.jetpref.datastore.model.observeAsState
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @SuppressLint("ViewConstructor")
 class ViewManager(private val ime: Context) : AbstractComposeView(ime),
@@ -128,7 +132,24 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                             Box(
                                 modifier = Modifier
                                     .pointerInput(Unit) {
-                                        detectTapGestures(onTap = {
+                                        detectTapGestures(onPress = {
+                                            var down = true;
+                                            coroutineScope {
+                                                val repeatJob = launch {
+                                                    delay(Constants.BackspaceRepeatStartDelay)
+                                                    while (down) {
+                                                        listener?.backspaceClicked()
+                                                        delay(Constants.BackspaceRepeatDelay)
+                                                    }
+                                                }
+                                                launch {
+                                                    val released = tryAwaitRelease();
+                                                    down = false;
+                                                    Log.d("ViewManager", "$released")
+                                                    repeatJob.cancel()
+                                                }
+                                            }
+                                        }, onTap = {
                                             listener?.backspaceClicked()
                                         })
                                     }

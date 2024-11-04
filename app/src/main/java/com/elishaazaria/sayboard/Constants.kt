@@ -8,6 +8,10 @@ import java.util.*
 object Constants {
     public val UndefinedLocale = Locale("und")
 
+    // TODO make configurable
+    val BackspaceRepeatStartDelay: Long = 500
+    val BackspaceRepeatDelay: Long = 100
+
     @JvmField
     var DOWNLOADER_CHANNEL_ID = "downloader"
     private fun getCacheDir(context: Context): File {
