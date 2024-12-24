@@ -31,6 +31,7 @@
     <string name="models_download_state_finished">Rematou</string>
     <string name="dialog_add_vosk_server_title">Engadir Servidor Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">Ao Escoitar</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Elixe o Modelo</string>
     <string name="notification_download_channel_description">Notificacións do estado da descarga do modelo.</string>
     <string name="ui_light_theme_foreground_material_you_title">Usar a cor principal de Material You</string>

@@ -11,6 +11,7 @@
     <string name="mic_error_no_permission">L\'accès au microphone n\'a pas été autorisé !</string>
     <string name="mic_error_recognizer_error">Erreur du détecteur</string>
     <string name="mic_error_mic_in_use">Le microphone est déjà en cours d\'utilisation !</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Sélectionnez le modèle</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_select">Sélectionner</string>

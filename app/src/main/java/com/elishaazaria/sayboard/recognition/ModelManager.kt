@@ -3,6 +3,7 @@ package com.elishaazaria.sayboard.recognition
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.media.AudioDeviceInfo
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
@@ -165,6 +166,7 @@ class ModelManager(
                 return
             }
             speechService = MySpeechService(recognizer, recognizer.sampleRate, attributionContext)
+            speechService!!.recordDevice = recordDevice
             speechService!!.startListening(listener)
         } catch (e: IOException) {
             listener.onError(ErrorType.MIC_IN_USE)
@@ -246,6 +248,12 @@ class ModelManager(
     fun onDestroy() {
         stop(true)
     }
+
+    var recordDevice: AudioDeviceInfo? = null
+        set(value) {
+            field = value
+            speechService?.recordDevice = value
+        }
 
     companion object {
         private const val TAG = "ModelManager"

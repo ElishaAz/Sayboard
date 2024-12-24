@@ -31,6 +31,7 @@
     <string name="models_download_state_finished">انتهى</string>
     <string name="dialog_add_vosk_server_title">إضافة خادم صوتي Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">عند الاستماع</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">اختيار النموذج</string>
     <string name="notification_download_channel_description">Model download status notifications.</string>
     <string name="ui_light_theme_foreground_material_you_title">Use Material You foreground color</string>

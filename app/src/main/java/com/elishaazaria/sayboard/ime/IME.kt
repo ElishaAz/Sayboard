@@ -16,6 +16,7 @@ package com.elishaazaria.sayboard.ime
 import android.Manifest
 import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
+import android.media.AudioDeviceInfo
 import android.os.IBinder
 import android.text.InputType
 import android.util.Log
@@ -77,6 +78,10 @@ class IME : InputMethodService(), ModelManager.Listener {
         modelManager.initializeFirstLocale(prefs.logicListenImmediately.get())
 
         textManager = TextManager(this, modelManager)
+
+        viewManager.recordDevice.observe(lifecycleOwner) {
+            modelManager.recordDevice = it
+        }
     }
 
     /**
@@ -255,6 +260,10 @@ class IME : InputMethodService(), ModelManager.Listener {
 
         override fun buttonClicked(text: String) {
             textManager.onText(text, TextManager.Mode.INSERT)
+        }
+
+        override fun deviceChanged(device: AudioDeviceInfo) {
+            modelManager.recordDevice = device
         }
     }
 

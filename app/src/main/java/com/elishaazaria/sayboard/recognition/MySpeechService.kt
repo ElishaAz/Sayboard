@@ -5,6 +5,7 @@ package com.elishaazaria.sayboard.recognition
 
 import android.Manifest
 import android.content.Context
+import android.media.AudioDeviceInfo
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
@@ -59,6 +60,12 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
             true
         }
     }
+
+    var recordDevice: AudioDeviceInfo?
+        get() = recorder.preferredDevice
+        set(value) {
+            recorder.preferredDevice = value
+        }
 
     fun startListening(listener: RecognitionListener, timeout: Int): Boolean {
         return if (null != recognizerThread) {

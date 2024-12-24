@@ -16,6 +16,7 @@
     <string name="mic_error_recognizer_error">Erkennungs Fehler</string>
     <string name="mic_error_mic_in_use">Mikrofon ist wird bereits benutzt!</string>
 
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">WähleModel</string>
 
     <string name="button_cancel">Abbruch</string>

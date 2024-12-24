@@ -30,6 +30,7 @@
     <string name="models_download_state_finished">已完成</string>
     <string name="dialog_add_vosk_server_title">新增 Vosk 伺服器</string>
     <string name="p_keep_screen_awake_mode_when_listening">聆聽時</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">選取模型</string>
     <string name="notification_download_channel_description">模型下載狀態通知。</string>
     <string name="ui_light_theme_foreground_material_you_title">使用 Material You 前景色</string>

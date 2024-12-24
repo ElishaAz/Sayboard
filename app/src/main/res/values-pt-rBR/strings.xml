@@ -13,6 +13,7 @@
     <string name="mic_error_no_permission">A permissão de microfone não foi concedida!</string>
     <string name="mic_error_recognizer_error">Erro do reconhecedor</string>
     <string name="mic_error_mic_in_use">O microfone já está em uso!</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Selecionar modelo</string>
     <string name="button_cancel">Cancelar</string>
     <string name="button_select">Selecionar</string>

@@ -30,6 +30,7 @@
     <string name="models_download_state_finished">تمام شد</string>
     <string name="dialog_add_vosk_server_title">افزودن سرور Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">وقتی در حال شنیدن است</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">مدل را انتخاب کنید</string>
     <string name="notification_download_channel_description">آگاه‌ساز های وضعیت دانلود مدل.</string>
     <string name="ui_light_theme_foreground_material_you_title">از رنگ پیش‌زمینه Material You استفاده کنید</string>

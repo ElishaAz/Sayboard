@@ -3,9 +3,12 @@ package com.elishaazaria.sayboard.ime
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.media.AudioDeviceInfo
+import android.os.Build
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,6 +24,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
@@ -32,13 +40,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material.icons.filled.Bluetooth
+import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicExternalOn
 import androidx.compose.material.icons.filled.MicNone
 import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.NavigateBefore
 import androidx.compose.material.icons.filled.NavigateNext
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Settings
@@ -49,6 +61,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -70,6 +85,7 @@ import com.elishaazaria.sayboard.sayboardPreferenceModel
 import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import com.elishaazaria.sayboard.ui.utils.MyTextButton
+import com.elishaazaria.sayboard.utils.AudioDevices
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -85,11 +101,15 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
     val recognizerNameLD = MutableLiveData("")
     val enterActionLD = MutableLiveData(EditorInfo.IME_ACTION_UNSPECIFIED)
 
+    val recordDevice: MutableLiveData<AudioDeviceInfo?> = MutableLiveData()
+
+    private var devices: List<AudioDeviceInfo> = listOf()
+
     init {
         layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }
 
-    @OptIn(ExperimentalLayoutApi::class)
+    @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         val stateS = stateLD.observeAsState()
@@ -100,6 +120,9 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                 Configuration.ORIENTATION_LANDSCAPE -> prefs.keyboardHeightLandscape.get()
                 else -> prefs.keyboardHeightPortrait.get()
             }).toInt().dp
+        var showDevicesPopup by remember { mutableStateOf(false) }
+        val recordDeviceS by recordDevice.observeAsState()
+
         IMETheme(prefs) {
             CompositionLocalProvider(
                 LocalContentColor provides MaterialTheme.colors.primary
@@ -251,6 +274,22 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                 }
                             }
                             Spacer(modifier = Modifier.weight(1f))
+                            IconButton(onClick = {
+                                devices = AudioDevices.validAudioDevices(ime)
+                                showDevicesPopup = true
+                            }) {
+                                Icon(
+                                    imageVector = when (recordDeviceS?.type) {
+                                        AudioDeviceInfo.TYPE_BUILTIN_MIC -> Icons.Default.PhoneAndroid
+                                        AudioDeviceInfo.TYPE_WIRED_HEADSET -> Icons.Default.HeadsetMic
+                                        AudioDeviceInfo.TYPE_BLE_HEADSET -> Icons.Default.Bluetooth
+                                        AudioDeviceInfo.TYPE_USB_HEADSET -> Icons.Default.MicExternalOn
+                                        else -> Icons.Default.PhoneAndroid
+                                    },
+                                    contentDescription = null,
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
                             IconButton(onClick = { listener?.returnClicked() }) {
                                 val enterAction by enterActionLD.observeAsState()
                                 Icon(
@@ -264,6 +303,70 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                     },
                                     contentDescription = null,
                                 )
+                            }
+                        }
+                    }
+                    if (showDevicesPopup) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colors.background.copy(0.5f))
+                                .clickable { showDevicesPopup = false },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize(0.9f)
+                                    .background(MaterialTheme.colors.onSurface.copy(0.1f))
+                            ) {
+                                Column {
+                                    Text("Audio Source", modifier = Modifier.padding(10.dp))
+
+                                    LazyColumn(
+                                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                    ) {
+                                        items(devices) { device ->
+                                            Card(
+                                                onClick = {
+                                                    showDevicesPopup = false
+                                                    recordDevice.postValue(device)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                            ) {
+                                                Row(
+                                                    modifier = Modifier
+                                                        .background(
+                                                            MaterialTheme.colors.onSurface.copy(
+                                                                0.2f
+                                                            )
+                                                        )
+                                                        .padding(10.dp)
+                                                ) {
+                                                    Icon(
+                                                        imageVector = when (device.type) {
+                                                            AudioDeviceInfo.TYPE_BUILTIN_MIC -> Icons.Default.PhoneAndroid
+                                                            AudioDeviceInfo.TYPE_WIRED_HEADSET -> Icons.Default.HeadsetMic
+                                                            AudioDeviceInfo.TYPE_BLE_HEADSET -> Icons.Default.Bluetooth
+                                                            AudioDeviceInfo.TYPE_USB_HEADSET -> Icons.Default.MicExternalOn
+                                                            else -> Icons.Default.PhoneAndroid
+                                                        },
+                                                        contentDescription = null,
+                                                    )
+                                                    Spacer(modifier = Modifier.width(10.dp))
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && device.address.isNotBlank()) {
+                                                        Text("${device.productName} (${device.address})")
+                                                    } else {
+                                                        Text("${device.productName}")
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -299,6 +402,7 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
         fun modelClicked()
         fun settingsClicked()
         fun buttonClicked(text: String)
+        fun deviceChanged(device: AudioDeviceInfo)
     }
 
     companion object {

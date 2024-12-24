@@ -31,6 +31,7 @@
     <string name="notification_download_content_unzipping">Extraccion del modèl…</string>
     <string name="models_download_state_finished">Acabat</string>
     <string name="p_keep_screen_awake_mode_when_listening">Pendent l\'escota</string>
+    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Seleccionatz lo modèl</string>
     <string name="notification_download_channel_description">Notificacion de l\'estatut del telecargament</string>
     <string name="ui_light_theme_foreground_material_you_title">Utilizar la color de rèire plan Material You</string>
