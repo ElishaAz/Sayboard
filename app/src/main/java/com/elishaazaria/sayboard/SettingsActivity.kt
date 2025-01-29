@@ -27,11 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import com.elishaazaria.sayboard.data.VoskLocalModel
 import com.elishaazaria.sayboard.downloader.FileDownloader
 import com.elishaazaria.sayboard.theme.AppTheme
 import com.elishaazaria.sayboard.ui.GrantPermissionUi
@@ -39,7 +37,6 @@ import com.elishaazaria.sayboard.ui.KeyboardSettingsUi
 import com.elishaazaria.sayboard.ui.LogicSettingsUi
 import com.elishaazaria.sayboard.ui.ModelsSettingsUi
 import com.elishaazaria.sayboard.ui.UISettingsUi
-import java.util.Locale
 
 class SettingsActivity : ComponentActivity() {
 
@@ -137,7 +134,7 @@ class SettingsActivity : ComponentActivity() {
                     0 -> modelSettingsUi.Content()
                     1 -> UISettingsUi()
                     2 -> KeyboardSettingsUi()
-                    3 -> LogicSettingsUi()
+                    3 -> LogicSettingsUi(this@SettingsActivity)
                 }
             }
         }

@@ -7,7 +7,9 @@
     <string name="models_download_state_unknown">未知</string>
     <string name="button_cancel">取消</string>
     <string name="ui_dark_theme_foreground_material_you_title">使用 Material You 前景色</string>
+    <string name="option_none">None</string>
     <string name="title_setup">设置</string>
+    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">从不</string>
     <string name="models_download_state_download_finished">下载完毕</string>
     <string name="ui_dark_theme_foreground_color_title">前景色</string>
@@ -94,4 +96,6 @@
     <string name="logic_listen_immediately_summery">识别器就绪时马上开始聆听语音。</string>
     <string name="dialog_add_vosk_server_port">端口</string>
     <string name="open_ime_switcher">打开输入法切换器</string>
+    <string name="logic_default_ime">Default IME</string>
+    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>

@@ -50,6 +50,16 @@ class AppPrefs : PreferenceModel("example-app-preferences") {
         default = true
     )
 
+    val logicDefaultIME = string(
+        key = "s_default_keyboard",
+        default = "",
+    )
+
+    val logicReturnToDefaultIME = boolean(
+        key = "b_always_return_default_keyboard",
+        default = false
+    )
+
     val keyboardHeightPortrait = float(
         key = "f_keyboard_height_portrait",
         default = 0.3f

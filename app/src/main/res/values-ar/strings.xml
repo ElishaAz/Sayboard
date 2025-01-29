@@ -9,7 +9,9 @@
     <string name="models_import_dialog_text_before_link">Manually download a Vosk model from</string>
     <string name="models_download_state_unknown">غير معروف</string>
     <string name="ui_dark_theme_foreground_material_you_title">Use Material You foreground color</string>
+    <string name="option_none">None</string>
     <string name="title_setup">الإعداد</string>
+    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">أبدًا</string>
     <string name="models_download_state_download_finished">Download Finished</string>
     <string name="ui_dark_theme_foreground_color_title">Foreground color</string>
@@ -94,4 +96,6 @@
     <string name="logic_listen_immediately_summery">Start listening immediately when the recognizer is ready.</string>
     <string name="dialog_add_vosk_server_port">المنفذ</string>
     <string name="open_ime_switcher">Open IME Switcher</string>
+    <string name="logic_default_ime">Default IME</string>
+    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>

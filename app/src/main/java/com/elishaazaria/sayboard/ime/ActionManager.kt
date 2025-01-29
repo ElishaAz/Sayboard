@@ -10,8 +10,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.SettingsActivity
+import com.elishaazaria.sayboard.sayboardPreferenceModel
 
 class ActionManager(private val ime: IME, private val viewManager: ViewManager) {
+    private val prefs by sayboardPreferenceModel()
     private val mInputMethodManager: InputMethodManager =
         ime.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private var selectionStart = 0
@@ -82,13 +84,22 @@ class ActionManager(private val ime: IME, private val viewManager: ViewManager) 
     }
 
     fun switchToLastIme(showError: Boolean) {
-        val result: Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ime.switchToPreviousInputMethod()
+        if (prefs.logicReturnToDefaultIME.get() && prefs.logicDefaultIME.get().isNotBlank()) {
+            ime.switchInputMethod(prefs.logicDefaultIME.get())
         } else {
-            mInputMethodManager.switchToLastInputMethod(ime.token)
-        }
-        if (!result && showError) {
-            Toast.makeText(ime, R.string.toast_error_no_previous_ime, Toast.LENGTH_SHORT).show()
+            val result: Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ime.switchToPreviousInputMethod()
+            } else {
+                mInputMethodManager.switchToLastInputMethod(ime.token)
+            }
+            if (!result) {
+                if (prefs.logicDefaultIME.get().isNotBlank()) {
+                    ime.switchInputMethod(prefs.logicDefaultIME.get())
+                } else if (showError) {
+                    Toast.makeText(ime, R.string.toast_error_no_previous_ime, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
         }
     }
 
