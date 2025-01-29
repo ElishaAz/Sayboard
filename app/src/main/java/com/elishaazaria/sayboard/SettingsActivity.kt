@@ -58,7 +58,6 @@ class SettingsActivity : ComponentActivity() {
                 val micGrantedState = micGranted.observeAsState(true)
                 val imeGrantedState = imeGranted.observeAsState(true)
                 if (micGrantedState.value && imeGrantedState.value) {
-
                     MainUi()
                 } else {
                     GrantPermissionUi(mic = micGrantedState, ime = imeGrantedState, requestMic = {

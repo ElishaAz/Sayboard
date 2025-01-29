@@ -7,10 +7,16 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.Dialog
 import com.elishaazaria.sayboard.R
+import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 
 @Composable
 public fun GrantPermissionUi(
@@ -36,6 +42,22 @@ public fun GrantPermissionUi(
                 Text(text = stringResource(id = R.string.keyboard_enabled))
             } else {
                 Text(text = stringResource(id = R.string.keyboard_not_enabled))
+            }
+        }
+
+        var showLibrariesPopup by remember { mutableStateOf(false) }
+        Button(onClick = {
+            showLibrariesPopup = true
+        }) {
+            Text(stringResource(id = R.string.show_libraries))
+        }
+        if (showLibrariesPopup) {
+            Dialog(onDismissRequest = {
+                showLibrariesPopup = false
+            }) {
+                LibrariesContainer(
+                    Modifier.fillMaxSize()
+                )
             }
         }
     }

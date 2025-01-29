@@ -71,6 +71,7 @@
     <string name="notification_download_content_downloading">下载进行中…</string>
     <string name="models_import_dialog_text_link">Vosk 网站</string>
     <string name="keyboard_keys_header">按键</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">顶部键</string>
     <string name="notification_download_channel_name">下载模型</string>

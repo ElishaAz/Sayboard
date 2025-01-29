@@ -71,6 +71,7 @@
     <string name="notification_download_content_downloading">Scaricamento in corso…</string>
     <string name="models_import_dialog_text_link">sito Vosk</string>
     <string name="keyboard_keys_header">Pulsanti</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">Pulsanti in alto</string>
     <string name="notification_download_channel_name">Scaricamento modello</string>

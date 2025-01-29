@@ -71,6 +71,7 @@
     <string name="notification_download_content_downloading">در حال دریافت…</string>
     <string name="models_import_dialog_text_link">وبسایت Vosk</string>
     <string name="keyboard_keys_header">کلید ها</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">تنظیمات فعالیت</string>
     <string name="keyboard_keys_top_title">کلید های بالا‐کلید های پایین</string>
     <string name="notification_download_channel_name">دریافت مدل</string>

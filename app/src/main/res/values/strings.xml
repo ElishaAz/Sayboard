@@ -45,6 +45,8 @@
     <string name="switch_keyboard">Switch Keyboard</string>
     <string name="open_ime_switcher">Open IME Switcher</string>
     <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
+    <string name="show_libraries">Show Used Libraries</string>
+
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!--  Models Preferences  -->

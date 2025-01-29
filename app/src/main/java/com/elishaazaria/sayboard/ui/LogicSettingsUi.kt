@@ -3,13 +3,24 @@ package com.elishaazaria.sayboard.ui
 import android.content.Context
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.Dialog
 import com.elishaazaria.sayboard.R
 import com.elishaazaria.sayboard.data.KeepScreenAwakeMode
 import com.elishaazaria.sayboard.sayboardPreferenceModel
+import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import dev.patrickgold.jetpref.datastore.ui.ListPreference
 import dev.patrickgold.jetpref.datastore.ui.ListPreferenceEntry
+import dev.patrickgold.jetpref.datastore.ui.Preference
 import dev.patrickgold.jetpref.datastore.ui.ScrollablePreferenceLayout
 import dev.patrickgold.jetpref.datastore.ui.SwitchPreference
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
@@ -75,4 +86,18 @@ fun LogicSettingsUi(context: Context) = ScrollablePreferenceLayout(sayboardPrefe
         title = stringResource(id = R.string.logic_return_to_default_ime_title),
         summary = stringResource(id = R.string.logic_return_to_default_ime_summary)
     )
+
+    var showLibrariesPopup by remember { mutableStateOf(false) }
+    Preference(
+        title = stringResource(id = R.string.show_libraries),
+        onClick = { showLibrariesPopup = true })
+    if (showLibrariesPopup) {
+        Dialog(onDismissRequest = {
+            showLibrariesPopup = false
+        }) {
+            LibrariesContainer(
+                Modifier.fillMaxSize()
+            )
+        }
+    }
 }

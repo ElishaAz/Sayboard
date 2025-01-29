@@ -71,6 +71,7 @@
     <string name="notification_download_content_downloading">Descarga en proceso…</string>
     <string name="models_import_dialog_text_link">o sitio web Vosk</string>
     <string name="keyboard_keys_header">Teclas</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">Teclas superiores</string>
     <string name="notification_download_channel_name">Descarga de Modelo</string>

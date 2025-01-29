@@ -43,6 +43,7 @@
     <string name="switch_keyboard">Wechsle Tastatur</string>
     <string name="open_ime_switcher">Öffne IME Switcher</string>
     <string name="open_ime_note">Notiz: Man kann den IME Switcher öffnen wenn die Tastatur offen ist indem man den Mikrofon Konpf lange drückt.</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">Aktivitäts Einstellungen</string>
 
     <!--  Models Preferences  -->

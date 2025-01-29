@@ -72,6 +72,7 @@
     <string name="notification_download_content_downloading">Downloading in progress…</string>
     <string name="models_import_dialog_text_link">the Vosk website</string>
     <string name="keyboard_keys_header">Tiqeffalin</string>
+    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">Top Keys</string>
     <string name="notification_download_channel_name">Model download</string>

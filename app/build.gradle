@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'org.jetbrains.kotlin.plugin.serialization'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 
 android {
@@ -190,4 +191,5 @@ dependencies {
     // Optional - Integration with RxJava
 //    implementation 'androidx.compose.runtime:runtime-rxjava2'
 
+    implementation "com.mikepenz:aboutlibraries-compose:11.1.4"
 }
