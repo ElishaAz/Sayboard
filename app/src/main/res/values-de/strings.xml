@@ -25,7 +25,7 @@
     <string name="button_confirm">OK</string>
 
 
-    <string name="option_none">None</string>
+    <string name="option_none">Keine</string>
     <string name="title_setup">Setup</string>
     <string name="title_models">Modelle</string>
     <string name="title_ui">Benutzer Schnittstelle</string>
@@ -43,7 +43,7 @@
     <string name="switch_keyboard">Wechsle Tastatur</string>
     <string name="open_ime_switcher">Öffne IME Switcher</string>
     <string name="open_ime_note">Notiz: Man kann den IME Switcher öffnen wenn die Tastatur offen ist indem man den Mikrofon Konpf lange drückt.</string>
-    <string name="show_libraries">Show Used Libraries</string>
+    <string name="show_libraries">Zeige genutzte Libraries</string>
     <string name="title_activity_settings">Aktivitäts Einstellungen</string>
 
     <!--  Models Preferences  -->
@@ -102,8 +102,9 @@
     <string name="logic_keep_model_in_ram_summery">Hält das Modell im Ram um das Öffnen zu beschleunigen. Braucht mehr Ram.</string>
     <string name="logic_auto_capitalize_title">Autom. Großschreiben</string>
     <string name="logic_auto_capitalize_summary">Automatisch den Anfangsbuchstaben nach einem Satzzeichen großschreiben.</string>
-
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
+    <string name="logic_default_ime">Standart IME</string>
+    <string name="logic_return_to_default_ime_title">Zurück zur Standart IME</string>
+    <string name="logic_return_to_default_ime_summary">Zurück zur Standart IME statt der vorherigen IME wenn back* gedrückt wird.</string>
     <string name="p_keep_screen_awake_mode_never">Niemals</string>
     <string name="p_keep_screen_awake_mode_when_listening">Beim Zuhören</string>
     <string name="p_keep_screen_awake_mode_when_open">Wenn Offen</string>
@@ -133,6 +134,4 @@
     <string name="notification_download_content_unzipping">Extrahiere Modell…</string>
     <string name="notification_download_content_finished">Download Fertig!</string>
     <string name="notification_download_content_error">Fehler downloading Modell</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>
