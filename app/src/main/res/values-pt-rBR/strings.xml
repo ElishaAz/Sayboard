@@ -7,7 +7,7 @@
     <string name="mic_info_ready">Pronto</string>
     <string name="mic_info_error_failed">Falha ao inicializar o reconhecedor %s</string>
     <string name="mic_info_recording">Fale algo</string>
-    <string name="toast_error_no_previous_ime">Não há uma IME anterior!</string>
+    <string name="toast_error_no_previous_ime">Não há um método de entrada anterior!</string>
     <string name="mic_error_no_recognizers">Nenhum reconhecedor instalado!</string>
     <string name="mic_error_no_permission">A permissão de microfone não foi concedida!</string>
     <string name="mic_error_recognizer_error">Erro do reconhecedor</string>
@@ -32,7 +32,7 @@
     <string name="keyboard_enabled">Teclado habilitado</string>
     <string name="switch_keyboard">Alternar teclado</string>
     <string name="open_ime_switcher">Abrir o alternador de método de entrada</string>
-    <string name="open_ime_note">Nota: você pode abrir o alternador de método de etnrada pressionando o botão de microfone quando o teclado estiver aberto.</string>
+    <string name="open_ime_note">Nota: você pode abrir o alternador de método de entrada pressionando o botão de microfone enquanto o teclado estiver aberto.</string>
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Adicionar servidor Vosk</string>
     <string name="dialog_add_vosk_server_title">Adicionar servidor Vosk</string>
