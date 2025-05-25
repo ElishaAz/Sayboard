@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sayboard</string>
+
 
     <!--  Mic  -->
 
@@ -16,17 +16,13 @@
     <string name="mic_error_recognizer_error">Erkennungs Fehler</string>
     <string name="mic_error_mic_in_use">Mikrofon ist wird bereits benutzt!</string>
 
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">WähleModel</string>
 
     <string name="button_cancel">Abbruch</string>
     <string name="button_select">Auswählen</string>
-    <string name="button_default">Default</string>
-    <string name="button_confirm">OK</string>
 
 
     <string name="option_none">Keine</string>
-    <string name="title_setup">Setup</string>
     <string name="title_models">Modelle</string>
     <string name="title_ui">Benutzer Schnittstelle</string>
     <string name="title_keyboard">Tastatur</string>
@@ -44,13 +40,11 @@
     <string name="open_ime_switcher">Öffne IME Switcher</string>
     <string name="open_ime_note">Notiz: Man kann den IME Switcher öffnen wenn die Tastatur offen ist indem man den Mikrofon Konpf lange drückt.</string>
     <string name="show_libraries">Zeige genutzte Libraries</string>
-    <string name="title_activity_settings">Aktivitäts Einstellungen</string>
+
 
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Vosk Server zufügen</string>
     <string name="dialog_add_vosk_server_title">Vosk Server zufügen</string>
-    <string name="dialog_add_vosk_server_hostname">Host Name</string>
-    <string name="dialog_add_vosk_server_port">Port</string>
     <string name="dialog_add_vosk_server_add">Zufügen</string>
     <string name="dialog_add_vosk_server_cancel">Abbruch</string>
 
@@ -64,14 +58,8 @@
     <string name="models_download_state_error">Fehler</string>
     <string name="models_download_state_canceled">Abegebrochen</string>
 
-    <string name="models_download_state">Status: %s</string>
-    <string name="models_pending_download_state">Status: Pending Download</string>
-
-    <string name="models_model_display_name_null">Null</string>
-
     <string name="models_download_dialog_title">Download Modell</string>
 
-    <string name="models_import_dialog_import">Import</string>
     <string name="models_import_dialog_title">Importiere Modell</string>
     <string name="models_import_dialog_text_before_link">Manueller download eines Vosk Modells von </string>
     <string name="models_import_dialog_text_link">Die Vosk Internetseite</string>
@@ -88,8 +76,6 @@
     <string name="ui_dark_theme_foreground_material_you_title">Benutze Material You Vordergrund Farbe</string>
     <string name="ui_dark_theme_foreground_color_title">Vordergrund Farbe</string>
     <string name="ui_dark_theme_background_color_title">Hintergrund Farbe</string>
-
-    <string name="ui_theme_reset_color">Reset</string>
 
     <!--  Logic Preferences  -->
     <string name="logic_logic_header">Logik</string>
@@ -119,10 +105,6 @@
     <string name="keyboard_keys_top_title">Oberste Tasten</string>
     <string name="keyboard_keys_left_title">Linke Tasten Keys</string>
     <string name="keyboard_keys_right_title">Rechte Tasten</string>
-
-    <string name="keyboard_keys_dialog_key_entry">Label: %1$s, Text: %2$s</string>
-    <string name="keyboard_keys_dialog_key_label_label">Label</string>
-    <string name="keyboard_keys_dialog_key_text_label">Text</string>
 
 
     <!--  Notifications  -->

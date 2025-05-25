@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sayboard</string>
     <!--  Mic  -->
 
     <string name="mic_info_error">Erro</string>
     <string name="mic_info_preparing">Preparando o reconhecedor</string>
     <string name="mic_info_ready">Pronto</string>
-    <string name="mic_info_error_failed">Falha ao inicializar reconhecedor %s</string>
+    <string name="mic_info_error_failed">Falha ao inicializar o reconhecedor %s</string>
     <string name="mic_info_recording">Fale algo</string>
-    <string name="toast_error_no_previous_ime">Sem IME prévia!</string>
+    <string name="toast_error_no_previous_ime">Não há um método de entrada anterior!</string>
     <string name="mic_error_no_recognizers">Nenhum reconhecedor instalado!</string>
     <string name="mic_error_no_permission">A permissão de microfone não foi concedida!</string>
     <string name="mic_error_recognizer_error">Erro do reconhecedor</string>
     <string name="mic_error_mic_in_use">O microfone já está em uso!</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
+    <string name="mic_audio_device_title">Dispositivo de entrada de áudio</string>
     <string name="model_dialog_title">Selecionar modelo</string>
     <string name="button_cancel">Cancelar</string>
     <string name="button_select">Selecionar</string>
     <string name="button_default">Padrão</string>
     <string name="button_confirm">OK</string>
-    <string name="option_none">None</string>
-    <string name="title_setup">Configurar</string>
+    <string name="option_none">Nenhuma</string>
+    <string name="title_setup">Configuração</string>
     <string name="title_models">Modelos</string>
-    <string name="title_ui">Interface de usuário</string>
+    <string name="title_ui">Interface</string>
     <string name="title_keyboard">Teclado</string>
     <string name="title_logic">Lógica</string>
     <!--  Setup  -->
@@ -32,10 +31,8 @@
     <string name="keyboard_not_enabled">Habilitar teclado</string>
     <string name="keyboard_enabled">Teclado habilitado</string>
     <string name="switch_keyboard">Alternar teclado</string>
-    <string name="open_ime_switcher">Abrir alternador de IME</string>
-    <string name="open_ime_note">Nota: você pode abrir o alternador de IME pressionando o botão de microfone quando o teclado estiver aberto.</string>
-    <string name="show_libraries">Show Used Libraries</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="open_ime_switcher">Abrir o alternador de método de entrada</string>
+    <string name="open_ime_note">Nota: você pode abrir o alternador de método de entrada pressionando o botão de microfone enquanto o teclado estiver aberto.</string>
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Adicionar servidor Vosk</string>
     <string name="dialog_add_vosk_server_title">Adicionar servidor Vosk</string>
@@ -46,10 +43,10 @@
     <string name="models_download_state_unknown">Desconhecido</string>
     <string name="models_download_state_pending">Pendente</string>
     <string name="models_download_state_download_started">Baixando</string>
-    <string name="models_download_state_download_finished">Download finalizado</string>
+    <string name="models_download_state_download_finished">Download concluído</string>
     <string name="models_download_state_unzip_started">Descomprimindo</string>
-    <string name="models_download_state_unzip_finished">Descompressão finalizada</string>
-    <string name="models_download_state_finished">Finalizado</string>
+    <string name="models_download_state_unzip_finished">Descompressão concluída</string>
+    <string name="models_download_state_finished">Concluído</string>
     <string name="models_download_state_error">Erro</string>
     <string name="models_download_state_canceled">Cancelado</string>
     <string name="models_download_state">Estado: %s</string>
@@ -58,14 +55,14 @@
     <string name="models_download_dialog_title">Baixar modelo</string>
     <string name="models_import_dialog_import">Importar</string>
     <string name="models_import_dialog_title">Importar modelo</string>
-    <string name="models_import_dialog_text_before_link">Baixe um modelo Vosk manualmente</string>
+    <string name="models_import_dialog_text_before_link">Baixar um modelo Vosk manualmente</string>
     <string name="models_import_dialog_text_link">da página do Vosk</string>
     <string name="models_import_dialog_text_after_link">- certifique-se de escolher um modelo pequeno - e então selecione-o no seletor de arquivos após pressionar Importar</string>
     <!-- UI Preferences -->
     <string name="ui_light_theme_header">Tema claro</string>
     <string name="ui_light_theme_foreground_material_you_title">Utilizar cor de primeiro plano do Material You</string>
     <string name="ui_light_theme_foreground_color_title">Cor de primeiro plano</string>
-    <string name="ui_light_theme_background_color_title">Cor do fundo</string>
+    <string name="ui_light_theme_background_color_title">Cor de fundo</string>
     <string name="ui_dark_theme_header">Tema escuro</string>
     <string name="ui_dark_theme_foreground_material_you_title">Utilizar cor de primeiro plano do Material You</string>
     <string name="ui_dark_theme_foreground_color_title">Cor de primeiro plano</string>
@@ -77,35 +74,36 @@
     <string name="logic_listen_immediately_title">Escutar imediatamente</string>
     <string name="logic_listen_immediately_summery">Começar a escutar imediatamente quando o reconhecedor estiver pronto.</string>
     <string name="logic_auto_switch_back_title">Voltar automaticamente</string>
-    <string name="logic_auto_switch_back_summery">Alternar automaticamente para o teclado anterior quando o teclado for escondido.</string>
+    <string name="logic_auto_switch_back_summery">Alternar automaticamente para o teclado anterior quando o teclado for oculto.</string>
     <string name="logic_keep_model_in_ram_title">Manter o modelo na memória RAM (quando fechado)</string>
     <string name="logic_keep_model_in_ram_summery">Mantém o modelo em memória RAM para acelerar a abertura do teclado. Aumenta o uso de RAM.</string>
-    <string name="logic_auto_capitalize_title">Capitalizar automaticamente</string>
-    <string name="logic_auto_capitalize_summary">Capitaliza automaticamente a primeira letra após um ponto (onde aplicável).</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
+    <string name="logic_auto_capitalize_title">Maiúsculos automáticos</string>
+    <string name="logic_auto_capitalize_summary">Deixa a primeira letra após um ponto em maiúsculos (onde aplicável).</string>
     <string name="p_keep_screen_awake_mode_never">Nunca</string>
-    <string name="p_keep_screen_awake_mode_when_listening">Ao escutar</string>
-    <string name="p_keep_screen_awake_mode_when_open">Quando aberto</string>
+    <string name="p_keep_screen_awake_mode_when_listening">Enquanto está escutando</string>
+    <string name="p_keep_screen_awake_mode_when_open">Enquanto está aberto</string>
     <!--  Keyboard Preferences  -->
     <string name="keyboard_height_header">Altura do teclado</string>
-    <string name="keyboard_height_portrait_title">Altura do teclado em modo retrato (%)</string>
-    <string name="keyboard_height_landscape_title">Altura do teclado em modo paisagem (%)</string>
+    <string name="keyboard_height_portrait_title">Altura do teclado no modo retrato (%)</string>
+    <string name="keyboard_height_landscape_title">Altura do teclado em no paisagem (%)</string>
     <string name="keyboard_keys_header">Teclas</string>
-    <string name="keyboard_keys_top_title">Teclas do topo</string>
+    <string name="keyboard_keys_top_title">Teclas superiores</string>
     <string name="keyboard_keys_left_title">Teclas da esquerda</string>
     <string name="keyboard_keys_right_title">Teclas da direita</string>
     <string name="keyboard_keys_dialog_key_entry">Rótulo: %1$s, Texto: %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Rótulo</string>
     <string name="keyboard_keys_dialog_key_text_label">Texto</string>
     <!--  Notifications  -->
-    <string name="notification_download_channel_name">Download de modelo</string>
+    <string name="notification_download_channel_name">Download de modelos</string>
     <string name="notification_download_channel_description">Notificações do estado do download de modelo.</string>
     <string name="notification_download_title">Baixando modelo</string>
     <string name="notification_download_content_unknown">Carregando…</string>
-    <string name="notification_download_content_downloading">Download em progresso…</string>
+    <string name="notification_download_content_downloading">Baixando…</string>
     <string name="notification_download_content_unzipping">Extraindo modelo…</string>
-    <string name="notification_download_content_finished">Download finalizado!</string>
-    <string name="notification_download_content_error">Erro ao baixar modelo</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
+    <string name="notification_download_content_finished">Download concluído!</string>
+    <string name="notification_download_content_error">Erro ao baixar o modelo</string>
+    <string name="show_libraries">Mostrar as bibliotecas utilizadas</string>
+    <string name="logic_return_to_default_ime_title">Retornar ao método de entrada padrão</string>
+    <string name="logic_return_to_default_ime_summary">Retornar ao método de entrada padrão em vez do anterior quando o botão voltar é pressionado.</string>
+    <string name="logic_default_ime">Método de entrada padrão</string>
 </resources>

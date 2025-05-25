@@ -1,0 +1,10 @@
+<p>Esse projeto fornece um teclado de voz usando o <a href="https://alphacephei.com/vosk/android">Vosk</a>. É baseado em <a href="https://github.com/Felicis/vosk-android-demo">https://github.com/Felicis/vosk-android-demo</a></p>.
+<p>Esse app requer um modelo Vosk para funcionar. Você pode utilizar a ferramenta de download integrada ou baixar manualmnete de <a href="https://alphacephei.com/vosk/models">https://alphacephei.com/vosk/models</a>, e então importar no app.</p>
+<br/>
+<p>O Sayboard usa as seguintes permissões:</p>
+<ul>
+  <li>INTERNET - para baixar os modelos. Essa permissão não é necessária, e pode ser bloqueada nas configurações do dispositivo em ROMs compatíveis <strong>O Sayboard não envia das suas informações pela internet, e nunca enviará!</strong>.</li>
+  <li>RECORD_AUDIO - bem, esse é um teclado de voz.</li>
+  <li>POST_NOTIFICATIONS - para mostrar o progresso de download e importação.</li>
+  <li>FOREGROUND_SERVICE - para baixar e importar modelos em segundo plano.</li>
+</ul>

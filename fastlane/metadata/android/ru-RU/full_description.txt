@@ -1,0 +1,10 @@
+<p>Этот проект предоставляет голосовую клавиатуру с использованием <a href="https://alphacephei.com/vosk/android">Vosk</a>. Он основан на <a href="https://github.com/Felicis/vosk-android-demo">github.com/Felicis/vosk-android-demo</a></p>.
+<p>Для работы этого приложения требуется модель Vosk. Вы можете использовать встроенный загрузчик или загрузить вручную с <a href="https://alphacephei.com/vosk/models">alphacephei.com/vosk/models</a>, а затем импортировать в приложение.</p>
+<br/>
+<p>Sayboard использует следующие разрешения:</p>
+<ul>
+   <li>INTERNET – для скачивания моделей. Это разрешение не требуется и может быть отозвано через настройки устройства в совместимых ROMaх. <strong>Sayboard не отправляет и никогда не будет отправлять вашу информацию через Интернет!</strong>.</li>
+   <li>RECORD_AUDIO — ну, это ведь голосовая клавиатура.</li>
+   <li>POST_NOTIFICATIONS – для отображения хода загрузки и импорта.</li>
+   <li>FOREGROUND_SERVICE — для загрузки и импорта моделей в фоновом режиме.</li>
+</ul>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Sayboard</string>
+    <string name="app_name" translatable="false">Sayboard</string>
 
     <!--  Mic  -->
 
@@ -47,7 +47,7 @@
     <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
     <string name="show_libraries">Show Used Libraries</string>
 
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Add Vosk Server</string>

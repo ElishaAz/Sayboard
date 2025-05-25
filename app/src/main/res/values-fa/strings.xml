@@ -7,9 +7,7 @@
     <string name="models_download_state_unknown">ناشناس</string>
     <string name="button_cancel">لغو</string>
     <string name="ui_dark_theme_foreground_material_you_title">از رنگ پیش زمینه Material You استفاده کنید</string>
-    <string name="option_none">None</string>
     <string name="title_setup">تنظیم</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">هیچ‌وقت</string>
     <string name="models_download_state_download_finished">دریافت پایان یافت</string>
     <string name="ui_dark_theme_foreground_color_title">رنگ پیش‌زمینه</string>
@@ -32,7 +30,6 @@
     <string name="models_download_state_finished">تمام شد</string>
     <string name="dialog_add_vosk_server_title">افزودن سرور Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">وقتی در حال شنیدن است</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">مدل را انتخاب کنید</string>
     <string name="notification_download_channel_description">آگاه‌ساز های وضعیت دانلود مدل.</string>
     <string name="ui_light_theme_foreground_material_you_title">از رنگ پیش‌زمینه Material You استفاده کنید</string>
@@ -71,8 +68,7 @@
     <string name="notification_download_content_downloading">در حال دریافت…</string>
     <string name="models_import_dialog_text_link">وبسایت Vosk</string>
     <string name="keyboard_keys_header">کلید ها</string>
-    <string name="show_libraries">Show Used Libraries</string>
-    <string name="title_activity_settings">تنظیمات فعالیت</string>
+
     <string name="keyboard_keys_top_title">کلید های بالا‐کلید های پایین</string>
     <string name="notification_download_channel_name">دریافت مدل</string>
     <string name="logic_auto_switch_back_summery">هر زمان که صفحه‌کلید پنهان است، به‌طور خودکار به صفحه‌کلید قبلی بروید.</string>
@@ -85,7 +81,7 @@
     <string name="keyboard_keys_dialog_key_entry">برچسب: %1$s, متن: %2$s</string>
     <string name="title_keyboard">صفحه کلید</string>
     <string name="mic_error_no_recognizers">هیچ شناساگری نصب نشده!</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_model_display_name_null">خالی</string>
     <string name="models_download_state_unzip_started">در حال استخراج</string>
     <string name="switch_keyboard">جا‌به‌جایی صفحه کلید</string>
@@ -97,6 +93,4 @@
     <string name="logic_listen_immediately_summery">پس ا‮ز آماده‌سازی شناساگر فوراً گوش دادن را شروع کن.</string>
     <string name="dialog_add_vosk_server_port">پورت</string>
     <string name="open_ime_switcher">بازکردن جا‌به‌جاگر IME</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>
