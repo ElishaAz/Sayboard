@@ -68,7 +68,7 @@
     <string name="notification_download_content_downloading">正在下載……</string>
     <string name="models_import_dialog_text_link">Vosk 網站</string>
     <string name="keyboard_keys_header">按鍵</string>
-    <string name="title_activity_settings">設定活動</string>
+
     <string name="keyboard_keys_top_title">頂部按鍵</string>
     <string name="notification_download_channel_name">下載模型</string>
     <string name="logic_auto_switch_back_summery">每當鍵盤隱藏時，自動切換到上一個鍵盤。</string>

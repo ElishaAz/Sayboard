@@ -29,7 +29,7 @@
     <string name="switch_keyboard">Changer de clavier</string>
     <string name="open_ime_switcher">Ouvrir le sélecteur d\'IME</string>
     <string name="open_ime_note">Note : vous pouvez ouvrir le sélecteur d\'IME quand le clavier est ouvert en appuyement longuement sur le boutton Microphone.</string>
-    <string name="title_activity_settings">Activité de réglages</string>
+
     <string name="menu_models_add_server">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_title">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_hostname">Nom d\'hôte</string>

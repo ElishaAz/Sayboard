@@ -61,7 +61,7 @@
     <string name="logic_auto_switch_back_title">Bascular automaticament enrèire</string>
     <string name="notification_download_content_downloading">Telecargament…</string>
     <string name="models_import_dialog_text_link">site Web Vosk</string>
-    <string name="title_activity_settings">Activitat de paramètres</string>
+
     <string name="keyboard_keys_top_title">Tòcas superioras</string>
     <string name="notification_download_channel_name">Telecargament de modèl</string>
     <string name="keyboard_keys_header">Tòcas</string>

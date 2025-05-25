@@ -40,7 +40,7 @@
     <string name="open_ime_switcher">Öffne IME Switcher</string>
     <string name="open_ime_note">Notiz: Man kann den IME Switcher öffnen wenn die Tastatur offen ist indem man den Mikrofon Konpf lange drückt.</string>
     <string name="show_libraries">Zeige genutzte Libraries</string>
-    <string name="title_activity_settings">Aktivitäts Einstellungen</string>
+
 
     <!--  Models Preferences  -->
     <string name="menu_models_add_server">Vosk Server zufügen</string>
