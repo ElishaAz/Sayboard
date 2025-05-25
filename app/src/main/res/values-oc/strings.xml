@@ -74,7 +74,7 @@
     <string name="keyboard_keys_dialog_key_entry">Etiqueta : %1$s, Tèxte : %2$s</string>
     <string name="title_keyboard">Clavièr</string>
     <string name="mic_error_no_recognizers">Cap de detector pas installat !</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_model_display_name_null">Nul</string>
     <string name="models_download_state_unzip_started">Descompression</string>
     <string name="switch_keyboard">Cambiar de clavièr</string>

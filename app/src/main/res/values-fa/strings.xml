@@ -81,7 +81,7 @@
     <string name="keyboard_keys_dialog_key_entry">برچسب: %1$s, متن: %2$s</string>
     <string name="title_keyboard">صفحه کلید</string>
     <string name="mic_error_no_recognizers">هیچ شناساگری نصب نشده!</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_model_display_name_null">خالی</string>
     <string name="models_download_state_unzip_started">در حال استخراج</string>
     <string name="switch_keyboard">جا‌به‌جایی صفحه کلید</string>

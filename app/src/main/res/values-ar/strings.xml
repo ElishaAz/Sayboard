@@ -32,7 +32,7 @@
     <string name="keyboard_keys_dialog_key_text_label">نص</string>
     <string name="notification_download_content_unknown">التحميل جارٍ…</string>
     <string name="title_keyboard">لوحة المفاتيح</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_download_state_unzip_started">فك الضغط جارٍ…</string>
     <string name="dialog_add_vosk_server_port">المنفذ</string>
 </resources>

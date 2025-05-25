@@ -78,7 +78,7 @@
     <string name="keyboard_keys_dialog_key_entry">标签：%1$s，文本： %2$s</string>
     <string name="title_keyboard">键盘</string>
     <string name="mic_error_no_recognizers">未安装识别器！</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_download_state_unzip_started">解压缩中</string>
     <string name="switch_keyboard">切换键盘</string>
     <string name="logic_auto_capitalize_title">自动大写字母</string>

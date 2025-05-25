@@ -2,7 +2,7 @@
 <resources>
     <string name="mic_info_error">Tuccḍa</string>
     <string name="mic_info_ready">Yewjed</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_download_state_unknown">Arussin</string>
     <string name="button_cancel">Sefsex</string>
     <string name="title_setup">Iɣewwaṛen</string>

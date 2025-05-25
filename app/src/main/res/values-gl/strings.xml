@@ -80,7 +80,7 @@
     <string name="keyboard_keys_dialog_key_entry">Etiqueta: %1$s, Texto: %2$s</string>
     <string name="title_keyboard">Teclado</string>
     <string name="mic_error_no_recognizers">Non hai Analizadores instalados!</string>
-    <string name="app_name">Sayboard</string>
+
     <string name="models_download_state_unzip_started">A descomprimir</string>
     <string name="switch_keyboard">Cambiar de Teclado</string>
     <string name="logic_auto_capitalize_title">Maiúsculas automáticas</string>
