@@ -1,0 +1,1 @@
+Mètode d'introducció per veu, intern i codi obert, que usa la biblioteca Vosk

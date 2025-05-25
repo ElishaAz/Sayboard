@@ -1,0 +1,10 @@
+<p>Aquest projecte ofereix un teclat de veu que usa<a href="https://alphacephei.com/vosk/android">Vosk</a>. Està basat en<a href="https://github.com/Felicis/vosk-android-demo">https://github.com/Felicis/vosk-android-demo</a></p>.
+<p>A l'aplicació li cal un model Vosk per funcionar. Pots fer servir el gestor de descarrega integrat o descarregar-lo manualment de<a href="https://alphacephei.com/vosk/models">https://alphacephei.com/vosk/models</a>, i després importar-lo a l'aplicació.</p>
+<br/>
+<p>Sayboard usa els següents permisos:</p>
+<ul>
+<li>INTERNET - per descarregar els models. Aquest permís no és necessari i pot ser revocat als paràmetres del dispositiu en les ROMs compatibles.<strong>Sayboard no envia, ni enviarà mai, cap informació teva a través d'internet!</strong>.</li>
+<li>RECORD_AUDIO - bé, al cap i a la fi, això no deixa de ser un teclat de veu.</li>
+<li>POST_NOTIFICATIONS - per mostrar el progrés de descàrrega i importació.</li>
+<li>FOREGROUND_SERVICE - per descarregar i importar models en segon pla.</li>
+</ul>
