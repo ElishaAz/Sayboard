@@ -12,9 +12,7 @@
     <string name="logic_auto_capitalize_summary">Inicia con maiúsculas automáticamente despois dun punto (cando sexa aplicable).</string>
     <string name="models_import_dialog_text_before_link">Descargar manualmente un modelo Vosk desde</string>
     <string name="button_cancel">Desbotar</string>
-    <string name="option_none">None</string>
     <string name="title_setup">Axustes</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">Nunca</string>
     <string name="models_download_state_download_finished">Rematou a descarga</string>
     <string name="models_download_dialog_title">Descargar Modelo</string>
@@ -33,7 +31,6 @@
     <string name="models_download_state_finished">Rematou</string>
     <string name="dialog_add_vosk_server_title">Engadir Servidor Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">Ao Escoitar</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Elixe o Modelo</string>
     <string name="notification_download_channel_description">Notificacións do estado da descarga do modelo.</string>
     <string name="ui_light_theme_foreground_material_you_title">Usar a cor principal de Material You</string>
@@ -71,8 +68,6 @@
     <string name="notification_download_content_downloading">Descarga en proceso…</string>
     <string name="models_import_dialog_text_link">o sitio web Vosk</string>
     <string name="keyboard_keys_header">Teclas</string>
-    <string name="show_libraries">Show Used Libraries</string>
-    <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">Teclas superiores</string>
     <string name="notification_download_channel_name">Descarga de Modelo</string>
     <string name="logic_auto_switch_back_summery">Volver automáticamente ao teclado anterior sempre que este estea oculto.</string>
@@ -86,7 +81,6 @@
     <string name="title_keyboard">Teclado</string>
     <string name="mic_error_no_recognizers">Non hai Analizadores instalados!</string>
     <string name="app_name">Sayboard</string>
-    <string name="models_model_display_name_null">Null</string>
     <string name="models_download_state_unzip_started">A descomprimir</string>
     <string name="switch_keyboard">Cambiar de Teclado</string>
     <string name="logic_auto_capitalize_title">Maiúsculas automáticas</string>
@@ -96,7 +90,4 @@
     <string name="toast_error_no_previous_ime">Sen IME anterior!</string>
     <string name="mic_permission_granted">Concedeuse permiso ao Micrófono</string>
     <string name="dialog_add_vosk_server_port">Porto</string>
-    <string name="open_ime_switcher">Selector Open IME</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>

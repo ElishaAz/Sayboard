@@ -3,29 +3,22 @@
     <string name="button_cancel">Annular</string>
     <string name="title_logic">Logica</string>
     <string name="dialog_add_vosk_server_title">Apondre un servidor Vosk</string>
-    <string name="models_download_state_error">Error</string>
     <string name="ui_dark_theme_foreground_material_you_title">Utilizar la color de rèire plan Material You</string>
-    <string name="logic_auto_capitalize_summary">Automatically capitalize the first letter after a period (where applicable).</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">Jamai</string>
     <string name="mic_info_preparing">Preparacion del detector</string>
-    <string name="models_import_dialog_text_after_link">- make sure to pick a small model - and then choose it in the file picker after pressing import</string>
     <string name="models_import_dialog_text_before_link">Telecargar manualament un modèl Vosk a partir du</string>
     <string name="models_download_state_unknown">Desconeguda</string>
-    <string name="option_none">None</string>
     <string name="title_setup">Configuracion</string>
     <string name="models_download_state_download_finished">Telecargament acabat</string>
     <string name="ui_dark_theme_foreground_color_title">Color de primièr plan</string>
     <string name="notification_download_title">Telecargament del modèl</string>
     <string name="models_download_dialog_title">Telecargar lo modèl</string>
-    <string name="logic_keep_model_in_ram_summery">Keeps the model in RAM to make opening the keyboard faster. Takes more RAM.</string>
     <string name="title_ui">Interfàcia utilizaire</string>
     <string name="keyboard_height_landscape_title">Nautor del clavièr en mode paisatge (%)</string>
     <string name="models_download_state_unzip_finished">Descompression acabada</string>
     <string name="ui_theme_reset_color">Reinicializar</string>
     <string name="dialog_add_vosk_server_add">Ajustar</string>
     <string name="keyboard_keys_left_title">Tòcas d\'esquèrra</string>
-    <string name="mic_info_error">Error</string>
     <string name="logic_keep_screen_awake_title">Gardar l\'ecran alucat</string>
     <string name="logic_listen_immediately_title">Escotar sul pic</string>
     <string name="models_pending_download_state">Estat : en espèra de telecargament</string>
@@ -33,7 +26,6 @@
     <string name="notification_download_content_unzipping">Extraccion del modèl…</string>
     <string name="models_download_state_finished">Acabat</string>
     <string name="p_keep_screen_awake_mode_when_listening">Pendent l\'escota</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Seleccionatz lo modèl</string>
     <string name="notification_download_channel_description">Notificacion de l\'estatut del telecargament</string>
     <string name="ui_light_theme_foreground_material_you_title">Utilizar la color de rèire plan Material You</string>
@@ -45,7 +37,6 @@
     <string name="keyboard_height_header">Nautor del clavièr</string>
     <string name="dialog_add_vosk_server_hostname">Nom d\'òste</string>
     <string name="mic_info_error_failed">Fracàs de l\'inicializacion del detector %s</string>
-    <string name="open_ime_note">Note: you can open the IME switcher when the keyboard is open by long pressing the Mic button.</string>
     <string name="keyboard_height_portrait_title">Nautor del clavièr en mòde retrach (%)</string>
     <string name="mic_error_mic_in_use">Lo microfòn es ja utilizat !</string>
     <string name="ui_light_theme_foreground_color_title">Color de primièr plan</string>
@@ -70,12 +61,10 @@
     <string name="logic_auto_switch_back_title">Bascular automaticament enrèire</string>
     <string name="notification_download_content_downloading">Telecargament…</string>
     <string name="models_import_dialog_text_link">site Web Vosk</string>
-    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">Activitat de paramètres</string>
     <string name="keyboard_keys_top_title">Tòcas superioras</string>
     <string name="notification_download_channel_name">Telecargament de modèl</string>
     <string name="keyboard_keys_header">Tòcas</string>
-    <string name="logic_auto_switch_back_summery">Automatically switch to previous keyboard whenever the keyboard is hidden.</string>
     <string name="models_import_dialog_import">Importar</string>
     <string name="models_download_state_download_started">Telecargament</string>
     <string name="keyboard_keys_dialog_key_text_label">Tèxte</string>
@@ -97,6 +86,4 @@
     <string name="logic_listen_immediately_summery">Començar d\'escotar just aprèp que lo detector siá prèst.</string>
     <string name="dialog_add_vosk_server_port">Pòrt</string>
     <string name="open_ime_switcher">Dobrir lo selector d\'IME</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>

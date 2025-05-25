@@ -7,9 +7,7 @@
     <string name="models_download_state_unknown">Sconosciuto</string>
     <string name="button_cancel">Annulla</string>
     <string name="ui_dark_theme_foreground_material_you_title">Usa il colore di primo piano di Material You</string>
-    <string name="option_none">None</string>
     <string name="title_setup">Impostazioni</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">Mai</string>
     <string name="models_download_state_download_finished">Scaricamento terminato</string>
     <string name="ui_dark_theme_foreground_color_title">Colore di primo piano</string>
@@ -32,15 +30,12 @@
     <string name="models_download_state_finished">Terminato</string>
     <string name="dialog_add_vosk_server_title">Aggiunta server Vosk</string>
     <string name="p_keep_screen_awake_mode_when_listening">Quando in ascolto</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Scelta modello</string>
     <string name="notification_download_channel_description">Notifiche di stato scaricamento modelli.</string>
     <string name="ui_light_theme_foreground_material_you_title">Usa il colore di primo piano di Material You</string>
     <string name="ui_dark_theme_header">Tema scuro</string>
     <string name="menu_models_add_server">Aggiungi server Vosk</string>
     <string name="mic_permission_not_granted">È richiesto il permesso di accedere al microfono</string>
-    <string name="button_default">Default</string>
-    <string name="button_confirm">OK</string>
     <string name="keyboard_height_header">Altezza tastiera</string>
     <string name="dialog_add_vosk_server_hostname">Nome dell\'host</string>
     <string name="mic_info_error_failed">Impossibile inizializzare il riconoscimento %s</string>
@@ -71,8 +66,6 @@
     <string name="notification_download_content_downloading">Scaricamento in corso…</string>
     <string name="models_import_dialog_text_link">sito Vosk</string>
     <string name="keyboard_keys_header">Pulsanti</string>
-    <string name="show_libraries">Show Used Libraries</string>
-    <string name="title_activity_settings">SettingsActivity</string>
     <string name="keyboard_keys_top_title">Pulsanti in alto</string>
     <string name="notification_download_channel_name">Scaricamento modello</string>
     <string name="logic_auto_switch_back_summery">Torna automaticamente alla tastiera precedente quando la tastiera viene nascosta.</string>
@@ -86,7 +79,6 @@
     <string name="title_keyboard">Tastiera</string>
     <string name="mic_error_no_recognizers">Nessun modello di riconoscimento installato!</string>
     <string name="app_name">Sayboard</string>
-    <string name="models_model_display_name_null">Null</string>
     <string name="models_download_state_unzip_started">Decompressione in corso</string>
     <string name="switch_keyboard">Cambia tastiera</string>
     <string name="logic_auto_capitalize_title">Maiuscole automatiche</string>
@@ -97,6 +89,4 @@
     <string name="logic_listen_immediately_summery">Incomincia ad ascoltare non appena il modello di riconoscimento è pronto.</string>
     <string name="dialog_add_vosk_server_port">Porta</string>
     <string name="open_ime_switcher">Apri selettore IME</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>

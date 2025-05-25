@@ -11,7 +11,6 @@
     <string name="mic_error_no_permission">L\'accès au microphone n\'a pas été autorisé !</string>
     <string name="mic_error_recognizer_error">Erreur du détecteur</string>
     <string name="mic_error_mic_in_use">Le microphone est déjà en cours d\'utilisation !</string>
-    <string name="mic_audio_device_title">Audio Input Device</string>
     <string name="model_dialog_title">Sélectionnez le modèle</string>
     <string name="button_cancel">Annuler</string>
     <string name="button_select">Sélectionner</string>
@@ -30,7 +29,6 @@
     <string name="switch_keyboard">Changer de clavier</string>
     <string name="open_ime_switcher">Ouvrir le sélecteur d\'IME</string>
     <string name="open_ime_note">Note : vous pouvez ouvrir le sélecteur d\'IME quand le clavier est ouvert en appuyement longuement sur le boutton Microphone.</string>
-    <string name="show_libraries">Show Used Libraries</string>
     <string name="title_activity_settings">Activité de réglages</string>
     <string name="menu_models_add_server">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_title">Ajouter un serveur Vosk</string>
@@ -75,7 +73,6 @@
     <string name="logic_keep_model_in_ram_summery">Garder le modèle dans la mémoire vive afin d\'accélérer le démarrage du clavier. Utilise plus de mémoire vive.</string>
     <string name="logic_auto_capitalize_title">Majuscule automatique</string>
     <string name="logic_auto_capitalize_summary">Mettre automatiquement une majuscule à la première lettre après une virgule (là où c\'est applicable).</string>
-    <string name="logic_return_to_default_ime_summary">Return to the default IME instead of the previous IME when back is pressed.</string>
     <string name="p_keep_screen_awake_mode_never">Jamais</string>
     <string name="p_keep_screen_awake_mode_when_listening">Lors de l\'écoute</string>
     <string name="p_keep_screen_awake_mode_when_open">Lorsqu\'il est ouvert</string>
@@ -97,6 +94,4 @@
     <string name="notification_download_content_unzipping">Extraction du modèle en cours…</string>
     <string name="notification_download_content_finished">Téléchargement terminé !</string>
     <string name="notification_download_content_error">Erreur lors du téléchargement du modèle</string>
-    <string name="logic_default_ime">Default IME</string>
-    <string name="logic_return_to_default_ime_title">Return to default IME</string>
 </resources>
