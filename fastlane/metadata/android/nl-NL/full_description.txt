@@ -1,0 +1,10 @@
+<p>Dit project biedt een spraakgestuurd toetsenbord aan op basis van <a href="https://alphacephei.com/vosk/android">Vosk</a>. De app is gebaseerd op <a href="https://github.com/Felicis/vosk-android-demo">https://github.com/Felicis/vosk-android-demo</a></p>.
+<p>Voor het gebruik van de app is een Vosk-model vereist. Je kunt de ingebouwde downloadhulp gebruiken of zelf modellen downloaden van <a href="https://alphacephei.com/vosk/models">https://alphacephei.com/vosk/models</a>, en deze importeren.</p>
+<br/>
+<p>Sayboard maakt gebruik van de volgende toegangsrechten:</p>
+<ul>
+  <li>INTERNET - om modellen te downloaden. Dit recht is niet vereist en kan te allen tijde worden ingetrokken via de apparaatinstellingen. <strong>Sayboard zal nooit en te nimmer enige informatie via het internet versturen!</strong></li>
+  <li>RECORD_AUDIO - tja, dit is een spraakgestuurd toetsenbord.</li>
+  <li>POST_NOTIFICATIONS - om de download- en importvoortgang te tonen.</li>
+  <li>FOREGROUND_SERVICE - to download and import models in the background.</li>
+</ul>
