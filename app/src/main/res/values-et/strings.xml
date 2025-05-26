@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="mic_info_error">Viga</string>
+    <string name="mic_info_preparing">Valmistan ette kõnetuvastust</string>
+    <string name="mic_info_ready">Valmis</string>
+</resources>
