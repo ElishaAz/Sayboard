@@ -2,7 +2,6 @@
 <resources>
     <string name="mic_info_error">Tuccḍa</string>
     <string name="mic_info_ready">Yewjed</string>
-
     <string name="models_download_state_unknown">Arussin</string>
     <string name="button_cancel">Sefsex</string>
     <string name="title_setup">Iɣewwaṛen</string>
@@ -24,10 +23,38 @@
     <string name="models_download_state_canceled">Yettwasefsex</string>
     <string name="keyboard_keys_header">Tiqeffalin</string>
     <string name="models_import_dialog_import">Kter</string>
-    <string name="models_download_state_download_started">Asider …</string>
+    <string name="models_download_state_download_started">Asider</string>
     <string name="keyboard_keys_dialog_key_text_label">Aḍris</string>
     <string name="notification_download_content_unknown">Yessalay-d …</string>
     <string name="title_keyboard">Anasiw</string>
     <string name="models_download_state_pending">Yettṛaǧu</string>
     <string name="dialog_add_vosk_server_port">Tawwurt</string>
+    <string name="notification_download_content_finished">Immed wezdam!</string>
+    <string name="notification_download_content_downloading">Azdam iteddu…</string>
+    <string name="logic_logic_header">Tameẓla</string>
+    <string name="dialog_add_vosk_server_title">Rnu aqeddac n Vosk</string>
+    <string name="model_dialog_title">Fren tamudemt</string>
+    <string name="title_models">Timudmiwin</string>
+    <string name="title_logic">Ameẓẓul</string>
+    <string name="switch_keyboard">Senfel anasiw</string>
+    <string name="menu_models_add_server">Rnu aqeddac n Vosk</string>
+    <string name="models_download_state_download_finished">Ifukk wezdam</string>
+    <string name="models_import_dialog_title">Kter tamudemt</string>
+    <string name="ui_light_theme_header">Asentel aceεlal</string>
+    <string name="ui_light_theme_background_color_title">Ini n ugilal</string>
+    <string name="models_import_dialog_text_link">asmel web n Vosk</string>
+    <string name="ui_light_theme_foreground_color_title">Ini n uzdat ɣawas</string>
+    <string name="ui_dark_theme_header">Asentel ubrik</string>
+    <string name="ui_dark_theme_background_color_title">Ini n ugilal</string>
+    <string name="keyboard_keys_top_title">Tiqeffalin ufella</string>
+    <string name="keyboard_keys_left_title">Tiqeffalin tizelmaḍin</string>
+    <string name="keyboard_keys_right_title">Tiqeffalin tiyeffusin</string>
+    <string name="keyboard_keys_dialog_key_entry">Tabzimt : %1$s, Aḍris : %2$s</string>
+    <string name="notification_download_channel_name">Adam n tmudemt</string>
+    <string name="notification_download_title">Azdam n tmudemt</string>
+    <string name="option_none">Ula yiwen</string>
+    <string name="keyboard_enabled">Anasiw yettwarmed</string>
+    <string name="ui_dark_theme_foreground_color_title">Ini n uzdat ɣawas</string>
+    <string name="models_download_dialog_title">Zdem-d tamudemt</string>
+    <string name="keyboard_height_header">Teɣzi n unasiw</string>
 </resources>
