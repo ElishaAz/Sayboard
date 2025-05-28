@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="mic_info_error">Erreur</string>
     <string name="mic_info_preparing">Préparation du détecteur</string>
     <string name="mic_info_ready">Prêt</string>
@@ -16,7 +15,7 @@
     <string name="button_select">Sélectionner</string>
     <string name="button_default">Par défaut</string>
     <string name="button_confirm">OK</string>
-    <string name="option_none">None</string>
+    <string name="option_none">Rien</string>
     <string name="title_setup">Réglages</string>
     <string name="title_models">Modèles</string>
     <string name="title_ui">Interface utilisateur</string>
@@ -29,7 +28,6 @@
     <string name="switch_keyboard">Changer de clavier</string>
     <string name="open_ime_switcher">Ouvrir le sélecteur d\'IME</string>
     <string name="open_ime_note">Note : vous pouvez ouvrir le sélecteur d\'IME quand le clavier est ouvert en appuyement longuement sur le boutton Microphone.</string>
-
     <string name="menu_models_add_server">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_title">Ajouter un serveur Vosk</string>
     <string name="dialog_add_vosk_server_hostname">Nom d\'hôte</string>
@@ -47,7 +45,7 @@
     <string name="models_download_state_canceled">Annulé</string>
     <string name="models_download_state">État : %s</string>
     <string name="models_pending_download_state">État : En attente de téléchargement</string>
-    <string name="models_model_display_name_null">Null</string>
+    <string name="models_model_display_name_null">Rien</string>
     <string name="models_download_dialog_title">Télécharger le modèle</string>
     <string name="models_import_dialog_import">Importer</string>
     <string name="models_import_dialog_title">Importer le modèle</string>
@@ -94,4 +92,9 @@
     <string name="notification_download_content_unzipping">Extraction du modèle en cours…</string>
     <string name="notification_download_content_finished">Téléchargement terminé !</string>
     <string name="notification_download_content_error">Erreur lors du téléchargement du modèle</string>
+    <string name="logic_default_ime">IME par défaut</string>
+    <string name="mic_audio_device_title">Dispositif d\'entrée audio</string>
+    <string name="show_libraries">Afficher les librairies utilisées</string>
+    <string name="logic_return_to_default_ime_summary">Revenir au IME par défaut au lieu du précédent IME quand le bouton retour est appuyé.</string>
+    <string name="logic_return_to_default_ime_title">Revenir au IME par défaut</string>
 </resources>
