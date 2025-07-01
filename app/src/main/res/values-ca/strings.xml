@@ -95,6 +95,6 @@
     <string name="keyboard_keys_dialog_key_text_label">Text</string>
     <string name="notification_download_channel_name">Descàrrega de model</string>
     <string name="notification_download_channel_description">Notificacions de l/\'estat de la descàrrega de model.</string>
-    <string name="notification_download_title">Descarrega el model</string>
+    <string name="notification_download_title">Descarregant el model</string>
     <string name="notification_download_content_unknown">Carregant…</string>
 </resources>

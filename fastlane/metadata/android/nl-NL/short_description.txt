@@ -1,0 +1,1 @@
+Een opensource spraakgestuurd toetsenbord voor Android op basis van Vosk

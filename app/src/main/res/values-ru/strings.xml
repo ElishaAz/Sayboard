@@ -52,7 +52,7 @@
     <string name="models_import_dialog_title">Импортировать модель</string>
     <string name="models_import_dialog_text_before_link">Вручную загрузите модель Vosk с</string>
     <string name="models_import_dialog_text_link">вебсайта Vosk</string>
-    <string name="models_import_dialog_text_after_link">- обязательно выберите «маленькую» модель, а затем выберите ее в средстве выбора файлов после нажатия кнопки «Импорт».</string>
+    <string name="models_import_dialog_text_after_link">- обязательно выберите «маленькую» модель, а затем выберите ее в средстве выбора файлов после нажатия кнопки «Импорт»</string>
     <string name="ui_light_theme_header">Светлая тема</string>
     <string name="ui_light_theme_foreground_material_you_title">Использовать Material You для цвета переднего плана</string>
     <string name="ui_light_theme_foreground_color_title">Передний цвет</string>
@@ -85,10 +85,16 @@
     <string name="keyboard_keys_dialog_key_entry">Метка: %1$s, Текст: %2$s</string>
     <string name="keyboard_keys_dialog_key_label_label">Метка</string>
     <string name="keyboard_keys_dialog_key_text_label">Текст</string>
-    <string name="notification_download_channel_name">Скачивание модели</string>
+    <string name="notification_download_channel_name">Модель скачана</string>
     <string name="notification_download_channel_description">Уведомления о статусе загрузки модели.</string>
     <string name="notification_download_title">Скачивание модели</string>
     <string name="notification_download_content_unknown">Загрузка…</string>
     <string name="notification_download_content_downloading">Скачивание в процессе…</string>
     <string name="notification_download_content_unzipping">Извлечение модели…</string>
+    <string name="option_none">Ничего</string>
+    <string name="logic_return_to_default_ime_title">Возврат на IME по умолчанию</string>
+    <string name="mic_audio_device_title">Устройства ввода аудио</string>
+    <string name="show_libraries">Показать используемые библиотеки</string>
+    <string name="logic_default_ime">IME по умолчанию</string>
+    <string name="logic_return_to_default_ime_summary">Возвращаться на IME по умолчанию вместо предыдущего IME когда нажата Назад.</string>
 </resources>
