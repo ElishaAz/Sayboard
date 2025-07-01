@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.media.AudioDeviceInfo
-import android.os.Build
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.background
@@ -40,12 +39,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Backspace
-import androidx.compose.material.icons.filled.Bluetooth
-import androidx.compose.material.icons.filled.HeadsetMic
 import androidx.compose.material.icons.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.MicExternalOn
 import androidx.compose.material.icons.filled.MicNone
 import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.NavigateBefore
@@ -75,6 +71,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.elishaazaria.sayboard.AppPrefs
@@ -86,6 +83,8 @@ import com.elishaazaria.sayboard.theme.Shapes
 import com.elishaazaria.sayboard.ui.utils.MyIconButton
 import com.elishaazaria.sayboard.ui.utils.MyTextButton
 import com.elishaazaria.sayboard.utils.AudioDevices
+import com.elishaazaria.sayboard.utils.describe
+import com.elishaazaria.sayboard.utils.toIcon
 import dev.patrickgold.jetpref.datastore.model.observeAsState
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -278,18 +277,19 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                 devices = AudioDevices.validAudioDevices(ime)
                                 showDevicesPopup = true
                             }) {
-                                Icon(
-                                    imageVector = when (recordDeviceS?.type) {
-                                        AudioDeviceInfo.TYPE_BUILTIN_MIC -> Icons.Default.PhoneAndroid
-                                        AudioDeviceInfo.TYPE_WIRED_HEADSET -> Icons.Default.HeadsetMic
-                                        AudioDeviceInfo.TYPE_BLE_HEADSET -> Icons.Default.Bluetooth
-                                        AudioDeviceInfo.TYPE_USB_HEADSET -> Icons.Default.MicExternalOn
-                                        else -> Icons.Default.PhoneAndroid
-                                    },
-                                    contentDescription = null,
-                                )
+                                Row {
+                                    Icon(
+                                        imageVector = recordDeviceS?.toIcon()
+                                            ?: Icons.Default.PhoneAndroid,
+                                        contentDescription = null,
+                                    )
+                                    Text(
+                                        recordDeviceS?.describe() ?: "",
+                                        fontSize = 9.sp,
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                }
                             }
-                            Spacer(modifier = Modifier.weight(1f))
                             IconButton(onClick = { listener?.returnClicked() }) {
                                 val enterAction by enterActionLD.observeAsState()
                                 Icon(
@@ -314,12 +314,11 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                 .clickable { showDevicesPopup = false },
                             contentAlignment = Alignment.Center
                         ) {
-                            Box(
+                            Card(
                                 modifier = Modifier
-                                    .fillMaxSize(0.9f)
-                                    .background(MaterialTheme.colors.onSurface.copy(0.1f))
+                                    .fillMaxSize(0.8f)
                             ) {
-                                Column {
+                                Column(modifier = Modifier.padding(10.dp)) {
                                     Text("Audio Source", modifier = Modifier.padding(10.dp))
 
                                     LazyColumn(
@@ -347,21 +346,11 @@ class ViewManager(private val ime: Context) : AbstractComposeView(ime),
                                                         .padding(10.dp)
                                                 ) {
                                                     Icon(
-                                                        imageVector = when (device.type) {
-                                                            AudioDeviceInfo.TYPE_BUILTIN_MIC -> Icons.Default.PhoneAndroid
-                                                            AudioDeviceInfo.TYPE_WIRED_HEADSET -> Icons.Default.HeadsetMic
-                                                            AudioDeviceInfo.TYPE_BLE_HEADSET -> Icons.Default.Bluetooth
-                                                            AudioDeviceInfo.TYPE_USB_HEADSET -> Icons.Default.MicExternalOn
-                                                            else -> Icons.Default.PhoneAndroid
-                                                        },
+                                                        imageVector = device.toIcon(),
                                                         contentDescription = null,
                                                     )
                                                     Spacer(modifier = Modifier.width(10.dp))
-                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && device.address.isNotBlank()) {
-                                                        Text("${device.productName} (${device.address})")
-                                                    } else {
-                                                        Text("${device.productName}")
-                                                    }
+                                                    Text(device.describe())
                                                 }
                                             }
                                         }

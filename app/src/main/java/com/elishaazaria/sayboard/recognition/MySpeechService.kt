@@ -62,7 +62,7 @@ class MySpeechService @RequiresPermission(Manifest.permission.RECORD_AUDIO) cons
     }
 
     var recordDevice: AudioDeviceInfo?
-        get() = recorder.preferredDevice
+        get() = recorder.routedDevice
         set(value) {
             recorder.preferredDevice = value
         }
