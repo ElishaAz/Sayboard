@@ -33,3 +33,10 @@ https://github.com/ElishaAz/Sayboard/assets/26592879/58f1421e-0e10-488f-a7fa-4aa
 Note: prior to commit [Multiple language support!](https://github.com/ElishaAz/Sayboard/commit/9d61c774e6eb623c2b8603a85a5bd73d98ab9af1),
 this repository had another gradle model named `models`. As it is large and not needed anymore, I removed it from git history.
 If you want to use any earlier commits, you can find it [here](https://github.com/Felicis/vosk-android-demo/tree/master/models).
+
+## Help to translate!
+Please help to improve translation using the [Codeberg Weblate](https://translate.codeberg.org/projects/sayboard/)
+<a href="https://translate.codeberg.org/projects/sayboard/">
+<img src="https://translate.codeberg.org/widget/sayboard/multi-auto.svg" alt="Translation status" />
+</a>
+
