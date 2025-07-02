@@ -1,0 +1,10 @@
+<p>See projekt on loonud <a href="https://alphacephei.com/vosk/android">Voskil</a> põhineva häälsisestusmeetodi. Rakenduse aluseks on <a href="https://github.com/Felicis/vosk-android-demo">https://github.com/Felicis/vosk-android-demo</a></p>.
+<p>Rakenduse toimimiseks on vajalik Voski mudel. Võid kasutada sisseehitatud allalaadijat või laadi siit <a href="https://alphacephei.com/vosk/models">https://alphacephei.com/vosk/models</a> käsitsi alla ja impordi rakendusse.</p>
+<br/>
+<p>Sayboard kasutab nutiseadmes järgmisi õigusi:</p>
+<ul>
+  <li>INTERNET - võrguühendus on kasutusel häälemudelite allalaadimiseks. See õigus pole kohustuslik ja on nutiseadme seadistustest üldjuhul tühistatatav. <strong>Sayboard ei saada ega iialgi hakka saatma sinu andmeid üle internetiühenduse!</strong>.</li>
+  <li>RECORD_AUDIO - heli salvestamine on paratamatult vajalik, tegemist on ju hääljuhitava klahvistikuga.</li>
+  <li>POST_NOTIFICATIONS - teavitused on kasutusel importimise ja allalaadimise edenemise kuvamiseks.</li>
+  <li>FOREGROUND_SERVICE - mudelite taustal allalaadimiseks ja importimiseks.</li>
+</ul>
